@@ -1,0 +1,148 @@
+name: Inventory Update Automation
+
+on:
+  # Webhook trigger from cron-job.org
+  repository_dispatch:
+    types: [inventory-update]
+
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Execution mode"
+        required: false
+        default: "dropbox"
+        type: choice
+        options:
+          - dropbox
+          - test
+      test_file:
+        description: "Path to test file (optional)"
+        required: false
+        type: string
+
+# Ensure only one instance runs at a time
+concurrency:
+  group: inventory-update
+  cancel-in-progress: false
+
+jobs:
+  inventory-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create environment variables file
+        run: |
+          cat > .env << EOF
+          # Email Configuration (Strato SMTP - for notifications only)
+          SMTP_HOST=${{ secrets.SMTP_HOST }}
+          SMTP_PORT=${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+
+          # Dropbox Configuration
+          DROPBOX_ACCESS_TOKEN=${{ secrets.DROPBOX_ACCESS_TOKEN }}
+          DROPBOX_FOLDER_PATH=${{ secrets.DROPBOX_FOLDER_PATH }}
+
+          # Holded API Configuration
+          HOLDED_API_KEY=${{ secrets.HOLDED_API_KEY }}
+          HOLDED_BASE_URL=${{ secrets.HOLDED_BASE_URL }}
+
+          # Notification Email
+          NOTIFICATION_EMAIL=${{ secrets.NOTIFICATION_EMAIL }}
+
+          # File Processing
+          ALLOWED_EXTENSIONS=csv,xlsx,xls
+          MAX_FILE_SIZE_MB=10
+          EOF
+
+      - name: Test connections (if test mode)
+        if: ${{ github.event.inputs.mode == 'test' }}
+        run: python main.py test
+
+      - name: Run Dropbox automation
+        if: ${{ github.event.inputs.mode == 'dropbox' || github.event.inputs.mode == '' || github.event_name == 'repository_dispatch' }}
+        run: python main.py dropbox
+
+      - name: Process test file
+        if: ${{ github.event.inputs.mode == 'test' && github.event.inputs.test_file != '' }}
+        run: python main.py file "${{ github.event.inputs.test_file }}"
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: inventory-update-logs-${{ github.run_number }}
+          path: |
+            inventory_update.log
+            dropbox_state.json
+          retention-days: 30
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "Workflow failed. Check the logs for details."
+          # The Python script should have already sent error notifications
+
+      - name: Clean up temporary files
+        if: always()
+        run: |
+          # Clean up any remaining temporary files
+          find /tmp -name "dropbox_*" -type f -delete 2>/dev/null || true
+          echo "Cleanup completed"
+
+  # Health check job that runs when triggered by webhook
+  health-check:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'repository_dispatch'
+    needs: inventory-update
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Create environment variables file
+        run: |
+          cat > .env << EOF
+          SMTP_HOST=${{ secrets.SMTP_HOST }}
+          SMTP_PORT=${{ secrets.SMTP_PORT }}
+          SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}
+          SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+          DROPBOX_ACCESS_TOKEN=${{ secrets.DROPBOX_ACCESS_TOKEN }}
+          DROPBOX_FOLDER_PATH=${{ secrets.DROPBOX_FOLDER_PATH }}
+          HOLDED_API_KEY=${{ secrets.HOLDED_API_KEY }}
+          HOLDED_BASE_URL=${{ secrets.HOLDED_BASE_URL }}
+          NOTIFICATION_EMAIL=${{ secrets.NOTIFICATION_EMAIL }}
+          ALLOWED_EXTENSIONS=csv,xlsx,xls
+          MAX_FILE_SIZE_MB=10
+          EOF
+
+      - name: Run connection tests
+        run: python main.py test
