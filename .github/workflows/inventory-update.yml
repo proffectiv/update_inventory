@@ -21,6 +21,11 @@ on:
         required: false
         type: string
 
+# Grant permissions for the workflow to write to the repository
+permissions:
+  contents: write
+  actions: read
+
 # Ensure only one instance runs at a time
 concurrency:
   group: inventory-update
@@ -94,6 +99,46 @@ jobs:
             dropbox_state.json
           retention-days: 30
 
+      - name: Configure Git
+        if: always()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and push logs
+        if: always()
+        run: |
+          # Add timestamp to commit message
+          TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
+
+          # Stage log files if they exist
+          if [ -f "inventory_update.log" ]; then
+            git add inventory_update.log
+            echo "Added inventory_update.log"
+          fi
+
+          if [ -f "dropbox_state.json" ]; then
+            git add dropbox_state.json
+            echo "Added dropbox_state.json"
+          fi
+
+          # Check if there are changes to commit
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            # Commit with [skip ci] to prevent infinite loops
+            git commit -m "📊 Auto-update logs - $TIMESTAMP [skip ci]
+            
+            - Updated inventory logs
+            - Run #${{ github.run_number }}
+            - Trigger: ${{ github.event_name }}
+            - Mode: ${{ github.event.inputs.mode || 'dropbox' }}"
+            
+            # Push changes
+            git push
+            echo "✅ Logs committed and pushed successfully"
+          fi
+
       - name: Notify on failure
         if: failure()
         run: |
@@ -106,4 +151,3 @@ jobs:
           # Clean up any remaining temporary files
           find /tmp -name "dropbox_*" -type f -delete 2>/dev/null || true
           echo "Cleanup completed"
-

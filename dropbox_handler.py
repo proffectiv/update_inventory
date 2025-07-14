@@ -3,8 +3,8 @@ Dropbox handler module for monitoring file changes.
 
 This module handles:
 - Connecting to Dropbox API
-- Monitoring specific folder for new/updated files
-- Downloading files with allowed extensions
+- Monitoring specific folder for the most recent file containing "stock" in its name
+- Downloading the most recent stock file if it's new/updated
 - Tracking file modification times to detect changes
 """
 
@@ -20,7 +20,7 @@ from config import config
 
 
 class DropboxHandler:
-    """Handles Dropbox file monitoring and downloading."""
+    """Handles Dropbox file monitoring and downloading of the most recent stock file."""
     
     def __init__(self):
         """Initialize Dropbox handler with configuration."""
@@ -70,10 +70,10 @@ class DropboxHandler:
     
     def check_for_updated_files(self) -> List[str]:
         """
-        Check Dropbox folder for new or updated files.
+        Check Dropbox folder for the most recent file containing "stock" in its name.
         
         Returns:
-            List of downloaded file paths
+            List containing single most recent stock file path (if found and new/updated)
         """
         downloaded_files = []
         
@@ -88,11 +88,24 @@ class DropboxHandler:
             try:
                 result = self.dbx.files_list_folder(self.folder_path, recursive=True)
             except dropbox.exceptions.ApiError as e:
-                if e.error.is_path_not_found():
+                # Handle path not found error
+                if hasattr(e.error, 'get_path') and e.error.get_path() and hasattr(e.error.get_path(), 'is_not_found'):
+                    if e.error.get_path().is_not_found():
+                        self.logger.error(f"Dropbox folder not found: {self.folder_path}")
+                        return downloaded_files
+                # Handle other path lookup errors
+                elif 'path_lookup' in str(e.error) and 'not_found' in str(e.error):
                     self.logger.error(f"Dropbox folder not found: {self.folder_path}")
                     return downloaded_files
                 else:
-                    raise
+                    self.logger.error(f"Dropbox API error: {e}")
+                    return downloaded_files
+            except Exception as e:
+                self.logger.error(f"Error connecting to Dropbox: {e}")
+                return downloaded_files
+            
+            # Collect all qualifying stock files
+            stock_files = []
             
             # Process each file
             for entry in result.entries:
@@ -112,19 +125,22 @@ class DropboxHandler:
                         self.logger.warning(f"File too large, skipping: {file_name}")
                         continue
                     
-                    # Update current state
+                    # Check if filename contains "stock" (case-insensitive)
+                    if "stock" not in file_name.lower():
+                        self.logger.debug(f"Skipping file (no 'stock' in name): {file_name}")
+                        continue
+                    
+                    # Update current state for all stock files (for tracking)
                     current_state[file_path] = modified_time
                     
-                    # Check if file is new or updated
-                    if (file_path not in previous_state or 
-                        previous_state[file_path] != modified_time):
-                        
-                        self.logger.info(f"Detected new/updated file: {file_name}")
-                        
-                        # Download the file
-                        local_path = self._download_file(entry)
-                        if local_path:
-                            downloaded_files.append(local_path)
+                    # Add to stock files collection
+                    stock_files.append({
+                        'entry': entry,
+                        'file_path': file_path,
+                        'file_name': file_name,
+                        'modified_time': modified_time,
+                        'server_modified': entry.server_modified
+                    })
             
             # Handle pagination if there are more files
             while result.has_more:
@@ -145,21 +161,52 @@ class DropboxHandler:
                         if file_size > self.max_file_size:
                             continue
                         
+                        # Check if filename contains "stock" (case-insensitive)
+                        if "stock" not in file_name.lower():
+                            continue
+                        
                         # Update current state
                         current_state[file_path] = modified_time
                         
-                        # Check if file is new or updated
-                        if (file_path not in previous_state or 
-                            previous_state[file_path] != modified_time):
-                            
-                            local_path = self._download_file(entry)
-                            if local_path:
-                                downloaded_files.append(local_path)
+                        # Add to stock files collection
+                        stock_files.append({
+                            'entry': entry,
+                            'file_path': file_path,
+                            'file_name': file_name,
+                            'modified_time': modified_time,
+                            'server_modified': entry.server_modified
+                        })
             
-            # Save current state
+            # Find the most recent stock file
+            if stock_files:
+                # Sort by modification time (most recent first)
+                stock_files.sort(key=lambda x: x['server_modified'], reverse=True)
+                most_recent_file = stock_files[0]
+                
+                self.logger.info(f"Found {len(stock_files)} stock files, most recent: {most_recent_file['file_name']}")
+                
+                # Check if the most recent file is new or updated
+                file_path = most_recent_file['file_path']
+                modified_time = most_recent_file['modified_time']
+                
+                if (file_path not in previous_state or 
+                    previous_state[file_path] != modified_time):
+                    
+                    self.logger.info(f"Processing most recent stock file: {most_recent_file['file_name']}")
+                    
+                    # Download the most recent file
+                    local_path = self._download_file(most_recent_file['entry'])
+                    if local_path:
+                        downloaded_files.append(local_path)
+                else:
+                    self.logger.info(f"Most recent stock file unchanged: {most_recent_file['file_name']}")
+            else:
+                self.logger.info("No stock files found in Dropbox folder")
+            
+            # Save current state (including all stock files for future reference)
             self._save_state(current_state)
             
-            self.logger.info(f"Found {len(downloaded_files)} new/updated files")
+            self.logger.info(f"Downloaded {len(downloaded_files)} stock file(s)")
             return downloaded_files
             
         except Exception as e:
@@ -229,10 +276,10 @@ class DropboxHandler:
 
 def check_dropbox_trigger() -> List[str]:
     """
-    Main function to check for Dropbox triggers.
+    Main function to check for the most recent stock file in Dropbox.
     
     Returns:
-        List of file paths to process
+        List containing path to the most recent stock file (if found and new/updated)
     """
     handler = DropboxHandler()
     

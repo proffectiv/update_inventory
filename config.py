@@ -78,7 +78,7 @@ class Config:
     
     @property
     def dropbox_folder_path(self) -> str:
-        return os.getenv('DROPBOX_FOLDER_PATH', '/STOCK-UPDATES')
+        return os.getenv('DROPBOX_FOLDER_PATH', '/STOCK-UPDATE')
     
     # Holded API Configuration
     @property
