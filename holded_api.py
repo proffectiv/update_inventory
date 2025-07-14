@@ -52,7 +52,7 @@ class HoldedAPI:
                 self.logger.info(f"Fetching products page {page}")
                 
                 # Make API request
-                url = f"{self.base_url}/v1/products"
+                url = f"{self.base_url}/products"
                 params = {
                     'page': page,
                     'per_page': per_page
@@ -104,7 +104,7 @@ class HoldedAPI:
         """
         try:
             # Search for product by SKU
-            url = f"{self.base_url}/v1/products"
+            url = f"{self.base_url}/products"
             params = {'sku': sku}
             
             response = self.session.get(url, params=params)
@@ -142,7 +142,7 @@ class HoldedAPI:
             True if successful, False otherwise
         """
         try:
-            url = f"{self.base_url}/v1/products/{product_id}"
+            url = f"{self.base_url}/products/{product_id}"
             
             # Prepare update data
             update_data = {
@@ -188,7 +188,7 @@ class HoldedAPI:
         """
         try:
             # Holded might use a different endpoint for stock updates
-            url = f"{self.base_url}/v1/products/{product_id}/stock"
+            url = f"{self.base_url}/products/{product_id}/stock"
             
             # Try stock endpoint first
             stock_data = {
@@ -200,7 +200,7 @@ class HoldedAPI:
             
             # If stock endpoint doesn't exist, try updating via product endpoint
             if response.status_code == 404:
-                url = f"{self.base_url}/v1/products/{product_id}"
+                url = f"{self.base_url}/products/{product_id}"
                 update_data = {'stock': stock}
                 response = self.session.put(url, json=update_data)
             
@@ -226,7 +226,7 @@ class HoldedAPI:
             Product dictionary or None if not found
         """
         try:
-            url = f"{self.base_url}/v1/products/{product_id}"
+            url = f"{self.base_url}/products/{product_id}"
             response = self.session.get(url)
             
             if response.status_code == 200:
@@ -247,12 +247,12 @@ class HoldedAPI:
         """
         try:
             # Try to get company info or a simple endpoint
-            url = f"{self.base_url}/v1/company"
+            url = f"{self.base_url}/company"
             response = self.session.get(url)
             
             # If company endpoint doesn't exist, try products with limit 1
             if response.status_code == 404:
-                url = f"{self.base_url}/v1/products"
+                url = f"{self.base_url}/products"
                 params = {'per_page': 1}
                 response = self.session.get(url, params=params)
             

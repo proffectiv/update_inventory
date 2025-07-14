@@ -45,9 +45,9 @@ update_inventory/
 Create a `.env` file in the project root:
 
 ```bash
-# Email Configuration (Strato SMTP - for notifications only)
+# Email Configuration (Strato SMTP - for notifications only, using SSL)
 SMTP_HOST=smtp.strato.de
-SMTP_PORT=587
+SMTP_PORT=465
 SMTP_USERNAME=your-email@yourdomain.com
 SMTP_PASSWORD=your-email-password
 

@@ -6,7 +6,7 @@ configuration for Dropbox, Holded API, email notifications (SMTP), and other set
 
 Required environment variables (create a .env file):
 - SMTP_HOST=smtp.strato.de
-- SMTP_PORT=587
+- SMTP_PORT=465
 - SMTP_USERNAME=your-email@yourdomain.com
 - SMTP_PASSWORD=your-email-password
 - DROPBOX_ACCESS_TOKEN=your-dropbox-access-token
@@ -60,7 +60,7 @@ class Config:
     
     @property
     def smtp_port(self) -> int:
-        return int(os.getenv('SMTP_PORT', '587'))
+        return int(os.getenv('SMTP_PORT', '465'))
     
     @property
     def smtp_username(self) -> str:

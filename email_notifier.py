@@ -130,11 +130,10 @@ class EmailNotifier:
             msg.attach(part1)
             msg.attach(part2)
             
-            # Connect to SMTP server and send email
+            # Connect to SMTP server and send email (using SSL for port 465)
             self.logger.info(f"Connecting to SMTP server: {self.smtp_host}:{self.smtp_port}")
             
-            with smtplib.SMTP(self.smtp_host, self.smtp_port) as server:
-                server.starttls()  # Enable TLS encryption
+            with smtplib.SMTP_SSL(self.smtp_host, self.smtp_port) as server:
                 server.login(self.username, self.password)
                 
                 # Send email
