@@ -907,3 +907,55 @@
 2025-07-14 17:14:15,440 - email_notifier - INFO - Email sent successfully to cabagu35@gmail.com
 2025-07-14 17:14:15,554 - email_notifier - INFO - Update confirmation email sent successfully
 2025-07-14 17:14:15,554 - __main__ - INFO - Cleaned up temporary file: /tmp/dropbox_stock_test_file.csv
+2025-07-14 17:18:41,064 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-07-14 17:18:41,065 - dropbox - INFO - Request to users/get_current_account
+2025-07-14 17:18:41,928 - dropbox_handler - INFO - Connected to Dropbox account: info@proffectiv.com
+2025-07-14 17:18:41,928 - dropbox_handler - INFO - Checking Dropbox folder: /STOCK-UPDATE
+2025-07-14 17:18:41,928 - dropbox - INFO - Request to files/list_folder
+2025-07-14 17:18:42,289 - dropbox_handler - INFO - Found 1 stock files, most recent: stock_test_file.csv
+2025-07-14 17:18:42,289 - dropbox_handler - INFO - Processing most recent stock file: stock_test_file.csv
+2025-07-14 17:18:42,290 - dropbox_handler - INFO - Downloading file: stock_test_file.csv
+2025-07-14 17:18:42,290 - dropbox - INFO - Request to files/download
+2025-07-14 17:18:43,006 - dropbox_handler - INFO - Downloaded file to: /tmp/dropbox_stock_test_file.csv
+2025-07-14 17:18:43,007 - dropbox_handler - INFO - Downloaded 1 stock file(s)
+2025-07-14 17:18:43,009 - __main__ - INFO - Found 1 files from Dropbox
+2025-07-14 17:18:43,009 - inventory_updater - INFO - Retrieving products from Holded...
+2025-07-14 17:18:43,345 - holded_api - INFO - Holded API connection successful
+2025-07-14 17:18:43,346 - holded_api - INFO - Fetching products page 1
+2025-07-14 17:18:43,671 - holded_api - INFO - Retrieved 71 products from Holded
+2025-07-14 17:18:43,673 - inventory_updater - INFO - Created SKU lookup with 108 total SKUs:
+2025-07-14 17:18:43,673 - inventory_updater - INFO -   - Main product SKUs: 70
+2025-07-14 17:18:43,673 - inventory_updater - INFO -   - Variant SKUs: 38
+2025-07-14 17:18:43,673 - inventory_updater - INFO -   - Skipped products without valid SKU: 0
+2025-07-14 17:18:43,673 - inventory_updater - INFO - Sample Holded SKUs: ['VAS8006', 'VAS8005', 'VAS8004', 'VAS8003', 'VAS8002']
+2025-07-14 17:18:43,673 - inventory_updater - INFO -   - VAS8006: MAIN product 'VA-AFO S8 Swift White XL'
+2025-07-14 17:18:43,673 - inventory_updater - INFO -   - VAS8005: MAIN product 'VA-AFO S8 Swift White L'
+2025-07-14 17:18:43,673 - inventory_updater - INFO -   - VAS8004: MAIN product 'VA-AFO S8 Swift White M'
+2025-07-14 17:18:43,673 - inventory_updater - INFO - Loaded 108 products from Holded
+2025-07-14 17:18:43,673 - inventory_updater - INFO - Processing file: /tmp/dropbox_stock_test_file.csv
+2025-07-14 17:18:43,675 - file_processor - INFO - Successfully read CSV with encoding: utf-8
+2025-07-14 17:18:43,676 - file_processor - INFO - Column mappings - SKU: item, Price: evp, Offer: oferta, Stock: stock qty
+2025-07-14 17:18:43,677 - file_processor - INFO - Extracted 4 valid products from file
+2025-07-14 17:18:43,677 - file_processor - INFO - Processed 4 products from file: dropbox_stock_test_file.csv
+2025-07-14 17:18:43,677 - file_processor - INFO - Validated 4 products out of 4
+2025-07-14 17:18:43,677 - inventory_updater - INFO - Found 4 products in file
+2025-07-14 17:18:43,677 - inventory_updater - WARNING - UNIFIED VARIANT PRICE UPDATE REQUIRED: Main product 686fa97ea6f71849fb0b69d5 (Cairon 529 SE)
+2025-07-14 17:18:43,677 - inventory_updater - WARNING -   - All 4 variants need price update: 2999.95 -> 1499.95 (OFFER)
+2025-07-14 17:18:43,677 - inventory_updater - WARNING -   - Variant SKUs: 2879351, 2879369, 2879377, 2879385
+2025-07-14 17:18:43,677 - inventory_updater - WARNING - Manual update required in Holded - set main product price
+2025-07-14 17:18:43,677 - inventory_updater - INFO - Updating stock for VARIANT 686fa97ea6f71849fb0b69d1 (Talla: S, Color: Negro Mate, Medida de la Rueda: 29, Tipo de Bici: MTB, Forma del Cuadro: Rígida): 10 -> 5
+2025-07-14 17:18:43,677 - holded_api - INFO - Updating VARIANT stock 686fa97ea6f71849fb0b69d1: 10 -> 5 (difference: -5)
+2025-07-14 17:18:44,153 - holded_api - INFO - Successfully updated stock for variant 686fa97ea6f71849fb0b69d1
+2025-07-14 17:18:44,153 - inventory_updater - INFO - Updating stock for VARIANT 686fa97ea6f71849fb0b69d2 (Talla: M, Color: Negro Mate, Medida de la Rueda: 29, Tipo de Bici: MTB, Forma del Cuadro: Rígida): 25 -> 5
+2025-07-14 17:18:44,154 - holded_api - INFO - Updating VARIANT stock 686fa97ea6f71849fb0b69d2: 25 -> 5 (difference: -20)
+2025-07-14 17:18:44,514 - holded_api - INFO - Successfully updated stock for variant 686fa97ea6f71849fb0b69d2
+2025-07-14 17:18:44,514 - inventory_updater - INFO - Updating stock for VARIANT 686fa97ea6f71849fb0b69d3 (Talla: L, Color: Negro Mate, Medida de la Rueda: 29, Tipo de Bici: MTB, Forma del Cuadro: Rígida): 2 -> 5
+2025-07-14 17:18:44,514 - holded_api - INFO - Updating VARIANT stock 686fa97ea6f71849fb0b69d3: 2 -> 5 (difference: +3)
+2025-07-14 17:18:44,894 - holded_api - INFO - Successfully updated stock for variant 686fa97ea6f71849fb0b69d3
+2025-07-14 17:18:44,894 - inventory_updater - INFO - Updating stock for VARIANT 686fa97ea6f71849fb0b69d4 (Talla: XL, Color: Negro Mate, Medida de la Rueda: 29, Tipo de Bici: MTB, Forma del Cuadro: Rígida): 10 -> 5
+2025-07-14 17:18:44,894 - holded_api - INFO - Updating VARIANT stock 686fa97ea6f71849fb0b69d4: 10 -> 5 (difference: -5)
+2025-07-14 17:18:45,309 - holded_api - INFO - Successfully updated stock for variant 686fa97ea6f71849fb0b69d4
+2025-07-14 17:18:45,311 - email_notifier - INFO - Connecting to SMTP server: smtp.strato.com:465
+2025-07-14 17:18:47,055 - email_notifier - INFO - Email sent successfully to cabagu35@gmail.com
+2025-07-14 17:18:47,217 - email_notifier - INFO - Update confirmation email sent successfully
+2025-07-14 17:18:47,217 - __main__ - INFO - Cleaned up temporary file: /tmp/dropbox_stock_test_file.csv
