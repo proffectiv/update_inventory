@@ -811,3 +811,12 @@
 2025-07-14 18:54:46,560 - dropbox_handler - INFO - Most recent stock file unchanged: stock_test_file.csv
 2025-07-14 18:54:46,561 - dropbox_handler - INFO - Downloaded 0 stock file(s)
 2025-07-14 18:54:46,563 - __main__ - INFO - No Dropbox file updates found. Automation completed.
+2025-07-14 17:08:51,721 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-07-14 17:08:51,722 - dropbox - INFO - Request to users/get_current_account
+2025-07-14 17:08:52,619 - dropbox_handler - INFO - Connected to Dropbox account: info@proffectiv.com
+2025-07-14 17:08:52,620 - dropbox_handler - INFO - Checking Dropbox folder: /STOCK-UPDATE
+2025-07-14 17:08:52,620 - dropbox - INFO - Request to files/list_folder
+2025-07-14 17:08:52,938 - dropbox_handler - INFO - Found 1 stock files, most recent: stock_test_file.csv
+2025-07-14 17:08:52,938 - dropbox_handler - INFO - Most recent stock file unchanged: stock_test_file.csv
+2025-07-14 17:08:52,938 - dropbox_handler - INFO - Downloaded 0 stock file(s)
+2025-07-14 17:08:52,940 - __main__ - INFO - No Dropbox files found
