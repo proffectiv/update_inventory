@@ -24,16 +24,22 @@ class HoldedAPI:
         """Initialize Holded API client."""
         self.api_key = config.holded_api_key
         self.base_url = config.holded_base_url.rstrip('/')
+        self.warehouse_id = config.holded_warehouse_id
         
         # Set up logging
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         
+        # Validate required configuration
+        if not self.warehouse_id:
+            self.logger.error("HOLDED_WAREHOUSE_ID is required for stock updates")
+            raise ValueError("Missing required configuration: HOLDED_WAREHOUSE_ID")
+        
         # Set up session with headers
         self.session = requests.Session()
         self.session.headers.update({
             'Content-Type': 'application/json',
-            'Authorization': f'Bearer {self.api_key}'
+            'key': f'{self.api_key}'
         })
     
     def get_all_products(self) -> Optional[List[Dict[str, Any]]]:
@@ -131,22 +137,26 @@ class HoldedAPI:
     
     def update_product_price(self, product_id: str, price: float, add_offer_tag: bool = False) -> bool:
         """
-        Update product price in Holded.
+        Update product price in Holded using correct API structure.
+        For variants, this method updates the main product price which applies to all variants.
+        
+        IMPORTANT: Always use productId (global product identifier) for price updates.
         
         Args:
-            product_id: Holded product ID
-            price: New price
+            product_id: Holded product ID (main product ID - the global identifier)
+            price: New price (subtotal)
             add_offer_tag: Whether to add "oferta" tag
             
         Returns:
             True if successful, False otherwise
         """
         try:
+            # Use the main product endpoint
             url = f"{self.base_url}/products/{product_id}"
             
-            # Prepare update data
+            # Prepare update data using Holded's required structure
             update_data = {
-                'price': price
+                "subtotal": price
             }
             
             # Add offer tag if needed
@@ -162,6 +172,8 @@ class HoldedAPI:
                     update_data['tags'] = ['oferta']
             
             # Make API request
+            self.logger.info(f"Updating price for PRODUCT {product_id}: {price}")
+            
             response = self.session.put(url, json=update_data)
             
             if response.status_code in [200, 201, 204]:
@@ -169,46 +181,68 @@ class HoldedAPI:
                 return True
             else:
                 self.logger.error(f"Failed to update price: {response.status_code} - {response.text}")
+                self.logger.error(f"Request payload: {update_data}")
                 return False
                 
         except Exception as e:
             self.logger.error(f"Error updating product price: {e}")
             return False
-    
-    def update_product_stock(self, product_id: str, stock: int) -> bool:
+
+    def update_product_stock(self, product_id: str, new_stock: int, current_stock: int, variant_id: str = None) -> bool:
         """
-        Update product stock in Holded.
+        Update product stock in Holded using correct API structure.
+        Enhanced to handle both main products and product variants.
         
         Args:
-            product_id: Holded product ID
-            stock: New stock quantity
+            product_id: Holded product ID (main product ID for variants)
+            new_stock: Target stock quantity
+            current_stock: Current stock quantity
+            variant_id: Variant ID if updating a variant (optional)
             
         Returns:
             True if successful, False otherwise
         """
         try:
-            # Holded might use a different endpoint for stock updates
+            # Calculate the stock difference (what to add/subtract)
+            stock_difference = new_stock - current_stock
+            
+            if stock_difference == 0:
+                self.logger.info(f"No stock change needed for product {product_id}")
+                return True
+            
+            # Use the stock endpoint with correct payload structure
             url = f"{self.base_url}/products/{product_id}/stock"
             
-            # Try stock endpoint first
-            stock_data = {
-                'quantity': stock,
-                'movement_type': 'set'  # Set absolute stock level
-            }
+            if variant_id:
+                # For variants: warehouse_id -> variant_id -> stock_difference
+                stock_data = {
+                    "stock": {
+                        self.warehouse_id: {
+                            variant_id: stock_difference
+                        }
+                    }
+                }
+                self.logger.info(f"Updating VARIANT stock {variant_id}: {current_stock} -> {new_stock} (difference: {stock_difference:+d})")
+            else:
+                # For main products, we might need a different structure
+                # Try the main product format first
+                stock_data = {
+                    "stock": {
+                        self.warehouse_id: {
+                            product_id: stock_difference
+                        }
+                    }
+                }
+                self.logger.info(f"Updating MAIN PRODUCT stock {product_id}: {current_stock} -> {new_stock} (difference: {stock_difference:+d})")
             
             response = self.session.put(url, json=stock_data)
             
-            # If stock endpoint doesn't exist, try updating via product endpoint
-            if response.status_code == 404:
-                url = f"{self.base_url}/products/{product_id}"
-                update_data = {'stock': stock}
-                response = self.session.put(url, json=update_data)
-            
             if response.status_code in [200, 201, 204]:
-                self.logger.info(f"Successfully updated stock for product {product_id}: {stock}")
+                self.logger.info(f"Successfully updated stock for {'variant' if variant_id else 'product'} {variant_id or product_id}")
                 return True
             else:
                 self.logger.error(f"Failed to update stock: {response.status_code} - {response.text}")
+                self.logger.error(f"Request payload: {stock_data}")
                 return False
                 
         except Exception as e:
@@ -269,18 +303,18 @@ class HoldedAPI:
     
     def format_price_update_json(self, product_id: str, price: float, add_offer_tag: bool = False) -> str:
         """
-        Format JSON for price update request.
+        Format JSON for price update request using Holded's required structure.
         
         Args:
             product_id: Holded product ID
-            price: New price
+            price: New price (subtotal)
             add_offer_tag: Whether to add offer tag
             
         Returns:
             JSON string for the request
         """
         update_data = {
-            'price': price
+            "subtotal": price
         }
         
         if add_offer_tag:
@@ -288,21 +322,39 @@ class HoldedAPI:
         
         return json.dumps(update_data, indent=2)
     
-    def format_stock_update_json(self, product_id: str, stock: int) -> str:
+    def format_stock_update_json(self, product_id: str, new_stock: int, current_stock: int, variant_id: str = None) -> str:
         """
-        Format JSON for stock update request.
+        Format JSON for stock update request using Holded's warehouse structure.
         
         Args:
             product_id: Holded product ID
-            stock: New stock quantity
+            new_stock: Target stock quantity
+            current_stock: Current stock quantity
+            variant_id: Variant ID if updating a variant (optional)
             
         Returns:
             JSON string for the request
         """
-        stock_data = {
-            'quantity': stock,
-            'movement_type': 'set'
-        }
+        stock_difference = new_stock - current_stock
+        
+        if variant_id:
+            # Variant stock update format
+            stock_data = {
+                "stock": {
+                    self.warehouse_id: {
+                        variant_id: stock_difference
+                    }
+                }
+            }
+        else:
+            # Main product stock update format
+            stock_data = {
+                "stock": {
+                    self.warehouse_id: {
+                        product_id: stock_difference
+                    }
+                }
+            }
         
         return json.dumps(stock_data, indent=2)
 

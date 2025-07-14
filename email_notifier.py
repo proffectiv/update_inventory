@@ -167,8 +167,21 @@ class EmailNotifier:
         stock_updates = update_results.get('stock_updates', 0)
         errors = len(update_results.get('errors', []))
         
+        # Check for variant warnings
+        variant_warnings = []
+        if 'details' in update_results:
+            for file_detail in update_results['details']:
+                if 'variant_warnings' in file_detail:
+                    variant_warnings.extend(file_detail['variant_warnings'])
+        
+        # Also check summary for variant warnings
+        if 'summary' in update_results and 'variant_warnings' in update_results['summary']:
+            variant_warnings.extend(update_results['summary']['variant_warnings'])
+        
         if errors > 0:
             return f"⚠️ Inventory Update Completed with {errors} Errors"
+        elif variant_warnings:
+            return f"⚠️ Inventory Update - {price_updates} Price, {stock_updates} Stock Updates + {len(variant_warnings)} Manual Required"
         elif price_updates > 0 or stock_updates > 0:
             return f"✅ Inventory Update Successful - {price_updates} Price, {stock_updates} Stock Updates"
         else:
@@ -236,9 +249,16 @@ class EmailNotifier:
             
             for update in update_results['summary']['price_updates'][:10]:  # Limit to first 10
                 offer_tag = "🏷️ Yes" if update.get('is_offer', False) else "No"
+                
+                # Handle variant groups vs individual products
+                if 'variant_skus' in update:
+                    sku_display = f"Main Product (variants: {', '.join(update['variant_skus'][:3])}{'...' if len(update['variant_skus']) > 3 else ''})"
+                else:
+                    sku_display = update.get('sku', 'N/A')
+                
                 html += f"""
                     <tr>
-                        <td>{update.get('sku', 'N/A')}</td>
+                        <td>{sku_display}</td>
                         <td>€{update.get('old_price', 0):.2f}</td>
                         <td>€{update.get('new_price', 0):.2f}</td>
                         <td>{offer_tag}</td>
@@ -249,6 +269,98 @@ class EmailNotifier:
                 html += f"<tr><td colspan='4'>... and {len(update_results['summary']['price_updates']) - 10} more</td></tr>"
             
             html += "</table></div>"
+        
+        # Add variant warnings if any - organized by type
+        variant_warnings = []
+        if 'details' in update_results:
+            for file_detail in update_results['details']:
+                if 'variant_warnings' in file_detail:
+                    variant_warnings.extend(file_detail['variant_warnings'])
+        
+        if variant_warnings:
+            # Separate unified price updates from individual variant updates
+            unified_warnings = [w for w in variant_warnings if w.get('type') == 'unified_price']
+            individual_warnings = [w for w in variant_warnings if w.get('type') == 'individual_prices']
+            
+            if unified_warnings:
+                html += """
+                <div class="details">
+                    <h3>💰 Global Product Price Updates Required</h3>
+                    <p style="color: #f39c12; font-weight: bold;">The following products with variants need unified price updates (same price for all variants):</p>
+                    <table>
+                        <tr>
+                            <th>Product</th>
+                            <th>Current Price</th>
+                            <th>New Price</th>
+                            <th>Variants Affected</th>
+                            <th>Offer</th>
+                        </tr>
+                """
+                
+                for warning in unified_warnings[:10]:  # Limit to first 10
+                    unified = warning['unified_price']
+                    current_price = unified.get('current_price', 'N/A')
+                    current_price_str = f"€{current_price:.2f}" if current_price != 'N/A' else 'N/A'
+                    offer_tag = "🏷️ Yes" if unified.get('is_offer', False) else "No"
+                    
+                    variant_display = f"{unified['variant_count']} variants"
+                    if len(unified['variant_skus']) <= 3:
+                        variant_display += f"<br><small>({', '.join(unified['variant_skus'])})</small>"
+                    else:
+                        variant_display += f"<br><small>({', '.join(unified['variant_skus'][:3])}...)</small>"
+                    
+                    html += f"""
+                        <tr>
+                            <td>{warning['main_product_name']}<br><small>ID: {warning['main_product_id']}</small></td>
+                            <td>{current_price_str}</td>
+                            <td>€{unified['new_price']:.2f}</td>
+                            <td>{variant_display}</td>
+                            <td>{offer_tag}</td>
+                        </tr>
+                    """
+                
+                if len(unified_warnings) > 10:
+                    html += f"<tr><td colspan='5'>... and {len(unified_warnings) - 10} more products</td></tr>"
+                
+                html += "</table></div>"
+            
+            if individual_warnings:
+                html += """
+                <div class="details">
+                    <h3>⚠️ Individual Variant Price Updates Required</h3>
+                    <p style="color: #e74c3c; font-weight: bold;">The following variants have different prices and require individual updates in Holded:</p>
+                    <table>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Product</th>
+                            <th>Current Price</th>
+                            <th>New Price</th>
+                            <th>Offer</th>
+                            <th>Variant Details</th>
+                        </tr>
+                """
+                
+                for warning in individual_warnings[:5]:  # Limit to first 5 products
+                    for variant in warning['variant_prices'][:10]:  # Show up to 10 variants per product
+                        current_price = variant.get('current_price', 'N/A')
+                        current_price_str = f"€{current_price:.2f}" if current_price != 'N/A' else 'N/A'
+                        offer_tag = "🏷️ Yes" if variant.get('is_offer', False) else "No"
+                        
+                        html += f"""
+                            <tr>
+                                <td><strong>{variant['sku']}</strong></td>
+                                <td>{warning['main_product_name']}</td>
+                                <td>{current_price_str}</td>
+                                <td>€{variant['new_price']:.2f}</td>
+                                <td>{offer_tag}</td>
+                                <td><small>{variant['variant_details']}</small></td>
+                            </tr>
+                        """
+                
+                if len(individual_warnings) > 5:
+                    html += f"<tr><td colspan='6'>... and {len(individual_warnings) - 5} more products with individual variants</td></tr>"
+                
+                html += "</table></div>"
         
         # Add stock updates details if any
         if 'summary' in update_results and update_results['summary'].get('stock_updates'):
@@ -347,6 +459,57 @@ Errors: {len(update_results.get('errors', []))}
             
             if len(update_results['summary']['price_updates']) > 5:
                 text += f"... and {len(update_results['summary']['price_updates']) - 5} more\n"
+        
+        # Add variant warnings if any - organized by type
+        variant_warnings = []
+        if 'details' in update_results:
+            for file_detail in update_results['details']:
+                if 'variant_warnings' in file_detail:
+                    variant_warnings.extend(file_detail['variant_warnings'])
+        
+        if variant_warnings:
+            # Separate unified price updates from individual variant updates
+            unified_warnings = [w for w in variant_warnings if w.get('type') == 'unified_price']
+            individual_warnings = [w for w in variant_warnings if w.get('type') == 'individual_prices']
+            
+            if unified_warnings:
+                text += f"\n\nGLOBAL PRODUCT PRICE UPDATES REQUIRED ({len(unified_warnings)})\n"
+                text += "=" * 50 + "\n"
+                text += "These products need unified price updates (same price for all variants):\n\n"
+                
+                for warning in unified_warnings[:5]:
+                    unified = warning['unified_price']
+                    current_price = unified.get('current_price', 'N/A')
+                    current_price_str = f"€{current_price:.2f}" if current_price != 'N/A' else 'N/A'
+                    offer_text = " (OFFER)" if unified.get('is_offer', False) else ""
+                    
+                    text += f"Product: {warning['main_product_name']}\n"
+                    text += f"Price: {current_price_str} -> €{unified['new_price']:.2f}{offer_text}\n"
+                    text += f"Affects: {unified['variant_count']} variants ({', '.join(unified['variant_skus'][:3])}{'...' if len(unified['variant_skus']) > 3 else ''})\n"
+                    text += f"ID: {warning['main_product_id']}\n\n"
+                
+                if len(unified_warnings) > 5:
+                    text += f"... and {len(unified_warnings) - 5} more products\n"
+            
+            if individual_warnings:
+                text += f"\n\nINDIVIDUAL VARIANT PRICE UPDATES REQUIRED\n"
+                text += "=" * 50 + "\n"
+                text += "These variants have different prices and need individual updates:\n\n"
+                
+                for warning in individual_warnings[:3]:
+                    text += f"Product: {warning['main_product_name']} (ID: {warning['main_product_id']})\n"
+                    for variant in warning['variant_prices'][:5]:
+                        current_price = variant.get('current_price', 'N/A')
+                        current_price_str = f"€{current_price:.2f}" if current_price != 'N/A' else 'N/A'
+                        offer_text = " (OFFER)" if variant.get('is_offer', False) else ""
+                        text += f"  - {variant['sku']}: {current_price_str} -> €{variant['new_price']:.2f}{offer_text}\n"
+                        text += f"    Details: {variant['variant_details']}\n"
+                    if len(warning['variant_prices']) > 5:
+                        text += f"  ... and {len(warning['variant_prices']) - 5} more variants\n"
+                    text += "\n"
+                
+                if len(individual_warnings) > 3:
+                    text += f"... and {len(individual_warnings) - 3} more products with individual variants\n"
         
         # Add stock updates if any
         if 'summary' in update_results and update_results['summary'].get('stock_updates'):

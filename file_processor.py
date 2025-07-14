@@ -28,9 +28,11 @@ class FileProcessor:
         self.logger = logging.getLogger(__name__)
         
         # Common column name variations for auto-detection
-        self.sku_columns = ['sku', 'codigo', 'code', 'product_code', 'item_code', 'ref']
-        self.price_columns = ['price', 'precio', 'cost', 'coste', 'amount', 'importe']
-        self.stock_columns = ['stock', 'quantity', 'cantidad', 'units', 'unidades', 'inventory']
+        # Updated to include Conway-specific columns
+        self.sku_columns = ['sku', 'codigo', 'code', 'product_code', 'item_code', 'ref', 'item']
+        self.price_columns = ['price', 'precio', 'cost', 'coste', 'amount', 'importe', 'evp']
+        self.offer_columns = ['oferta', 'offer', 'special_price', 'promo_price']
+        self.stock_columns = ['stock', 'quantity', 'cantidad', 'units', 'unidades', 'inventory', 'stock qty']
     
     def process_file(self, file_path: str) -> Optional[List[Dict[str, Any]]]:
         """
@@ -138,11 +140,14 @@ class FileProcessor:
         # Auto-detect column mappings
         sku_col = self._find_column(df, self.sku_columns)
         price_col = self._find_column(df, self.price_columns)
+        offer_col = self._find_column(df, self.offer_columns)
         stock_col = self._find_column(df, self.stock_columns)
         
         if not sku_col:
             self.logger.error("Could not find SKU column in file")
             return []
+        
+        self.logger.info(f"Column mappings - SKU: {sku_col}, Price: {price_col}, Offer: {offer_col}, Stock: {stock_col}")
         
         products = []
         
@@ -153,22 +158,58 @@ class FileProcessor:
                 if not sku or sku.lower() in ['nan', 'none', '']:
                     continue
                 
+                # Clean up SKU format - remove .0 from numeric SKUs
+                if sku.endswith('.0') and sku[:-2].isdigit():
+                    sku = sku[:-2]
+                
                 product = {'sku': sku}
                 
-                # Extract price (optional)
-                if price_col and pd.notna(row[price_col]):
+                # Extract price - prioritize offer price if available
+                final_price = None
+                is_offer = False
+                
+                # Check for offer price first
+                if offer_col and pd.notna(row[offer_col]):
+                    try:
+                        # Clean offer price value
+                        offer_str = str(row[offer_col]).replace('€', '').replace('$', '').replace(',', '.').strip()
+                        # Skip dash/hyphen values that indicate no price
+                        if offer_str and offer_str.lower() not in ['nan', 'none', ''] and not offer_str.replace('-', '').replace(' ', '') == '':
+                            final_price = float(offer_str)
+                            is_offer = True
+                    except (ValueError, TypeError):
+                        self.logger.warning(f"Invalid offer price format for SKU {sku}: {row[offer_col]}")
+                
+                # If no offer price, use regular price
+                if final_price is None and price_col and pd.notna(row[price_col]):
                     try:
                         # Clean price value (remove currency symbols, etc.)
                         price_str = str(row[price_col]).replace('€', '').replace('$', '').replace(',', '.').strip()
-                        price = float(price_str)
-                        product['price'] = price
+                        # Handle formats like "  4.499,95 € "
+                        price_str = price_str.replace(' ', '').replace('.', '', price_str.count('.') - 1 if price_str.count('.') > 1 else 0)
+                        # Skip dash/hyphen values that indicate no price
+                        if price_str and price_str.lower() not in ['nan', 'none', ''] and not price_str.replace('-', '').replace(' ', '') == '':
+                            final_price = float(price_str)
                     except (ValueError, TypeError):
                         self.logger.warning(f"Invalid price format for SKU {sku}: {row[price_col]}")
+                
+                if final_price is not None:
+                    product['price'] = final_price
+                    product['is_offer'] = is_offer
                 
                 # Extract stock (optional)
                 if stock_col and pd.notna(row[stock_col]):
                     try:
-                        stock = int(float(row[stock_col]))
+                        stock_str = str(row[stock_col]).strip()
+                        
+                        # Handle ">10" format - convert to 10
+                        if stock_str.startswith('>'):
+                            stock = 10
+                        elif stock_str.lower() in ['nan', 'none', '']:
+                            continue
+                        else:
+                            stock = int(float(stock_str))
+                        
                         product['stock'] = stock
                     except (ValueError, TypeError):
                         self.logger.warning(f"Invalid stock format for SKU {sku}: {row[stock_col]}")
@@ -181,6 +222,7 @@ class FileProcessor:
                 self.logger.warning(f"Error processing row {index}: {e}")
                 continue
         
+        self.logger.info(f"Extracted {len(products)} valid products from file")
         return products
     
     def _find_column(self, df: pd.DataFrame, possible_names: List[str]) -> Optional[str]:

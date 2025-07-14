@@ -58,6 +58,7 @@ DROPBOX_FOLDER_PATH=/inventory-updates
 # Holded API Configuration
 HOLDED_API_KEY=your-holded-api-key
 HOLDED_BASE_URL=https://api.holded.com
+HOLDED_WAREHOUSE_ID=your-holded-warehouse-id
 
 # Notification Email
 NOTIFICATION_EMAIL=admin@yourdomain.com
@@ -144,13 +145,25 @@ Your inventory files (CSV/Excel) should contain columns for:
 - **Price**: Product price (optional)
 - **Stock**: Stock quantity (optional)
 
+### Conway-Specific CSV Format
+
+The system is optimized for Conway inventory files with these columns:
+
+- **Item**: Product SKU/reference (maps to SKU)
+- **EVP**: Regular price (maps to Price)
+- **OFERTA**: Offer/special price (takes priority over EVP)
+- **Stock qty**: Stock quantity (maps to Stock)
+
+**Special Stock Handling**: Stock values like ">10" are automatically converted to 10.
+
 ### Supported Column Names
 
 The system auto-detects columns using these variations:
 
-- **SKU**: `sku`, `codigo`, `code`, `product_code`, `item_code`, `ref`
-- **Price**: `price`, `precio`, `cost`, `coste`, `amount`, `importe`
-- **Stock**: `stock`, `quantity`, `cantidad`, `units`, `unidades`, `inventory`
+- **SKU**: `sku`, `codigo`, `code`, `product_code`, `item_code`, `ref`, `item`
+- **Price**: `price`, `precio`, `cost`, `coste`, `amount`, `importe`, `evp`
+- **Offer**: `oferta`, `offer`, `special_price`, `promo_price`
+- **Stock**: `stock`, `quantity`, `cantidad`, `units`, `unidades`, `inventory`, `stock qty`
 
 ### Example CSV
 
@@ -194,6 +207,28 @@ GHI789,8.75,200
 6. **Notification**:
    - Sends detailed email report with update summary
    - Includes tables of changed products and any errors
+
+## 🔧 Technical Implementation
+
+### Holded API Integration
+
+The system uses the correct Holded API endpoints and data structures:
+
+- **Price Updates**: `PUT /api/invoicing/v1/products/{productId}`
+  - Uses `{"kind": "variants", "subtotal": price}` structure for both main products and variants
+  - Adds "oferta" tag for discounted prices
+- **Stock Updates**: `PUT /api/invoicing/v1/products/{productId}/stock`
+  - Uses warehouse-based structure: `{"stock": {"warehouseId": {"variantId": stock_difference}}}`
+  - Calculates stock difference (target - current) instead of absolute values
+  - Requires `HOLDED_WAREHOUSE_ID` configuration
+
+### Product Matching
+
+Products are matched between CSV and Holded using multiple SKU field variations:
+
+- `sku`, `code`, `reference`, `item_code`, `product_code`, `ref`, `item`, `codigo`
+
+The system creates a lookup table for efficient matching and logs detailed information for debugging.
 
 ## 📧 Email Notifications
 

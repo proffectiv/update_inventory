@@ -10,9 +10,10 @@ Required environment variables (create a .env file):
 - SMTP_USERNAME=your-email@yourdomain.com
 - SMTP_PASSWORD=your-email-password
 - DROPBOX_ACCESS_TOKEN=your-dropbox-access-token
-- DROPBOX_FOLDER_PATH=/inventory-updates
+- DROPBOX_FOLDER_PATH=/STOCK-UPDATES
 - HOLDED_API_KEY=your-holded-api-key
-- HOLDED_BASE_URL=https://api.holded.com
+- HOLDED_BASE_URL=https://api.holded.com/api/invoicing/v1
+- HOLDED_WAREHOUSE_ID=your-warehouse-id
 - NOTIFICATION_EMAIL=admin@yourdomain.com
 - ALLOWED_EXTENSIONS=csv,xlsx,xls
 - MAX_FILE_SIZE_MB=10
@@ -46,7 +47,7 @@ class Config:
         """Validate that all required environment variables are set."""
         required_vars = [
             'SMTP_HOST', 'SMTP_PORT', 'SMTP_USERNAME', 'SMTP_PASSWORD',
-            'DROPBOX_ACCESS_TOKEN', 'HOLDED_API_KEY', 'NOTIFICATION_EMAIL'
+            'DROPBOX_ACCESS_TOKEN', 'HOLDED_API_KEY', 'HOLDED_WAREHOUSE_ID', 'NOTIFICATION_EMAIL'
         ]
         
         missing_vars = [var for var in required_vars if not os.getenv(var)]
@@ -56,7 +57,7 @@ class Config:
     # Email Configuration (Strato SMTP - for notifications only)
     @property
     def smtp_host(self) -> str:
-        return os.getenv('SMTP_HOST', 'smtp.strato.de')
+        return os.getenv('SMTP_HOST', 'smtp.strato.com')
     
     @property
     def smtp_port(self) -> int:
@@ -77,7 +78,7 @@ class Config:
     
     @property
     def dropbox_folder_path(self) -> str:
-        return os.getenv('DROPBOX_FOLDER_PATH', '/inventory-updates')
+        return os.getenv('DROPBOX_FOLDER_PATH', '/STOCK-UPDATES')
     
     # Holded API Configuration
     @property
@@ -86,7 +87,11 @@ class Config:
     
     @property
     def holded_base_url(self) -> str:
-        return os.getenv('HOLDED_BASE_URL', 'https://api.holded.com')
+        return os.getenv('HOLDED_BASE_URL', 'https://api.holded.com/api/invoicing/v1')
+    
+    @property
+    def holded_warehouse_id(self) -> str:
+        return os.getenv('HOLDED_WAREHOUSE_ID')
     
     # Notification Configuration
     @property

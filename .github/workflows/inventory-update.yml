@@ -62,6 +62,7 @@ jobs:
           # Holded API Configuration
           HOLDED_API_KEY=${{ secrets.HOLDED_API_KEY }}
           HOLDED_BASE_URL=${{ secrets.HOLDED_BASE_URL }}
+          HOLDED_WAREHOUSE_ID=${{ secrets.HOLDED_WAREHOUSE_ID }}
 
           # Notification Email
           NOTIFICATION_EMAIL=${{ secrets.NOTIFICATION_EMAIL }}
