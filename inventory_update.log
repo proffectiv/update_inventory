@@ -820,3 +820,43 @@
 2025-07-14 17:08:52,938 - dropbox_handler - INFO - Most recent stock file unchanged: stock_test_file.csv
 2025-07-14 17:08:52,938 - dropbox_handler - INFO - Downloaded 0 stock file(s)
 2025-07-14 17:08:52,940 - __main__ - INFO - No Dropbox files found
+2025-07-14 17:10:53,640 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-07-14 17:10:53,640 - dropbox - INFO - Request to users/get_current_account
+2025-07-14 17:10:54,426 - dropbox_handler - INFO - Connected to Dropbox account: info@proffectiv.com
+2025-07-14 17:10:54,426 - dropbox_handler - INFO - Checking Dropbox folder: /STOCK-UPDATE
+2025-07-14 17:10:54,426 - dropbox - INFO - Request to files/list_folder
+2025-07-14 17:10:54,708 - dropbox_handler - INFO - Found 1 stock files, most recent: stock_test_file_v2.csv
+2025-07-14 17:10:54,708 - dropbox_handler - INFO - Processing most recent stock file: stock_test_file_v2.csv
+2025-07-14 17:10:54,708 - dropbox_handler - INFO - Downloading file: stock_test_file_v2.csv
+2025-07-14 17:10:54,708 - dropbox - INFO - Request to files/download
+2025-07-14 17:10:55,389 - dropbox_handler - INFO - Downloaded file to: /tmp/dropbox_stock_test_file_v2.csv
+2025-07-14 17:10:55,389 - dropbox_handler - INFO - Downloaded 1 stock file(s)
+2025-07-14 17:10:55,391 - __main__ - INFO - Found 1 files from Dropbox
+2025-07-14 17:10:55,392 - inventory_updater - INFO - Retrieving products from Holded...
+2025-07-14 17:10:55,661 - holded_api - INFO - Holded API connection successful
+2025-07-14 17:10:55,661 - holded_api - INFO - Fetching products page 1
+2025-07-14 17:10:55,916 - holded_api - INFO - Retrieved 71 products from Holded
+2025-07-14 17:10:55,918 - inventory_updater - INFO - Created SKU lookup with 108 total SKUs:
+2025-07-14 17:10:55,918 - inventory_updater - INFO -   - Main product SKUs: 70
+2025-07-14 17:10:55,918 - inventory_updater - INFO -   - Variant SKUs: 38
+2025-07-14 17:10:55,918 - inventory_updater - INFO -   - Skipped products without valid SKU: 0
+2025-07-14 17:10:55,918 - inventory_updater - INFO - Sample Holded SKUs: ['VAS8006', 'VAS8005', 'VAS8004', 'VAS8003', 'VAS8002']
+2025-07-14 17:10:55,918 - inventory_updater - INFO -   - VAS8006: MAIN product 'VA-AFO S8 Swift White XL'
+2025-07-14 17:10:55,918 - inventory_updater - INFO -   - VAS8005: MAIN product 'VA-AFO S8 Swift White L'
+2025-07-14 17:10:55,918 - inventory_updater - INFO -   - VAS8004: MAIN product 'VA-AFO S8 Swift White M'
+2025-07-14 17:10:55,918 - inventory_updater - INFO - Loaded 108 products from Holded
+2025-07-14 17:10:55,918 - inventory_updater - INFO - Processing file: /tmp/dropbox_stock_test_file_v2.csv
+2025-07-14 17:10:55,921 - file_processor - INFO - Successfully read CSV with encoding: utf-8
+2025-07-14 17:10:55,921 - file_processor - INFO - Column mappings - SKU: item, Price: evp, Offer: oferta, Stock: stock qty
+2025-07-14 17:10:55,922 - file_processor - INFO - Extracted 4 valid products from file
+2025-07-14 17:10:55,922 - file_processor - INFO - Processed 4 products from file: dropbox_stock_test_file_v2.csv
+2025-07-14 17:10:55,922 - file_processor - INFO - Validated 4 products out of 4
+2025-07-14 17:10:55,922 - inventory_updater - INFO - Found 4 products in file
+2025-07-14 17:10:55,922 - inventory_updater - WARNING - UNIFIED VARIANT PRICE UPDATE REQUIRED: Main product 686fa97ea6f71849fb0b69d5 (Cairon 529 SE)
+2025-07-14 17:10:55,922 - inventory_updater - WARNING -   - All 4 variants need price update: 2999.95 -> 1499.95 (OFFER)
+2025-07-14 17:10:55,922 - inventory_updater - WARNING -   - Variant SKUs: 2879351, 2879369, 2879377, 2879385
+2025-07-14 17:10:55,922 - inventory_updater - WARNING - Manual update required in Holded - set main product price
+2025-07-14 17:10:55,923 - email_notifier - INFO - Connecting to SMTP server: smtp.strato.com:465
+2025-07-14 17:10:57,110 - email_notifier - INFO - Email sent successfully to cabagu35@gmail.com
+2025-07-14 17:10:57,213 - email_notifier - INFO - Update confirmation email sent successfully
+2025-07-14 17:10:57,213 - __main__ - INFO - Cleaned up temporary file: /tmp/dropbox_stock_test_file_v2.csv
