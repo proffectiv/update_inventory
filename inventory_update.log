@@ -959,3 +959,11 @@
 2025-07-14 17:18:47,055 - email_notifier - INFO - Email sent successfully to cabagu35@gmail.com
 2025-07-14 17:18:47,217 - email_notifier - INFO - Update confirmation email sent successfully
 2025-07-14 17:18:47,217 - __main__ - INFO - Cleaned up temporary file: /tmp/dropbox_stock_test_file.csv
+2025-07-15 07:00:29,669 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-07-15 07:00:29,670 - dropbox - INFO - Request to users/get_current_account
+2025-07-15 07:00:29,845 - dropbox - INFO - ExpiredCredentials status_code=401: Refreshing and Retrying
+2025-07-15 07:00:29,845 - dropbox - WARNING - Unable to refresh access token without                 refresh token and app key
+2025-07-15 07:00:29,845 - dropbox - INFO - Request to users/get_current_account
+2025-07-15 07:00:29,907 - dropbox_handler - ERROR - Dropbox connection failed: AuthError('5d942ee0407f4c47bb8a73ab9958bc45', AuthError('expired_access_token', None))
+2025-07-15 07:00:29,907 - root - ERROR - Dropbox connection failed
+2025-07-15 07:00:29,909 - __main__ - INFO - No Dropbox files found
