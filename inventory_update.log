@@ -1007,3 +1007,11 @@
 2025-07-18 10:30:27,823 - dropbox_handler - ERROR - Dropbox connection failed: AuthError('fa00b7f8d675475296515656dcea1458', AuthError('expired_access_token', None))
 2025-07-18 10:30:27,823 - root - ERROR - Dropbox connection failed
 2025-07-18 10:30:27,824 - __main__ - INFO - No Dropbox files found
+2025-07-19 10:30:26,934 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-07-19 10:30:26,935 - dropbox - INFO - Request to users/get_current_account
+2025-07-19 10:30:27,144 - dropbox - INFO - ExpiredCredentials status_code=401: Refreshing and Retrying
+2025-07-19 10:30:27,144 - dropbox - WARNING - Unable to refresh access token without                 refresh token and app key
+2025-07-19 10:30:27,144 - dropbox - INFO - Request to users/get_current_account
+2025-07-19 10:30:27,213 - dropbox_handler - ERROR - Dropbox connection failed: AuthError('bd8c3c815a4b42ccbf47aea90feba4bb', AuthError('expired_access_token', None))
+2025-07-19 10:30:27,214 - root - ERROR - Dropbox connection failed
+2025-07-19 10:30:27,215 - __main__ - INFO - No Dropbox files found
