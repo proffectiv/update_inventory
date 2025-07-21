@@ -15,6 +15,7 @@ from typing import List, Dict, Optional
 import logging
 from datetime import datetime, timezone
 import json
+import requests
 
 from config import config
 
@@ -24,20 +25,24 @@ class DropboxHandler:
     
     def __init__(self):
         """Initialize Dropbox handler with configuration."""
-        self.access_token = config.dropbox_access_token
+        self.app_key = config.dropbox_app_key
+        self.app_secret = config.dropbox_app_secret
+        self.refresh_token = config.dropbox_refresh_token
         self.folder_path = config.dropbox_folder_path
         self.allowed_extensions = config.allowed_extensions
         self.max_file_size = config.max_file_size_mb * 1024 * 1024  # Convert to bytes
         
         # File to store last check timestamps
         self.state_file = 'dropbox_state.json'
+        # File to store access token
+        self.token_file = 'dropbox_token.json'
         
         # Set up logging
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         
-        # Initialize Dropbox client
-        self.dbx = dropbox.Dropbox(self.access_token)
+        # Initialize Dropbox client with refresh token handling
+        self.dbx = self._get_dropbox_client()
     
     def _load_state(self) -> Dict[str, str]:
         """
@@ -55,6 +60,89 @@ class DropboxHandler:
         
         return {}
     
+    def _get_access_token(self) -> Optional[str]:
+        """
+        Get a valid access token, refreshing if necessary.
+        
+        Returns:
+            Valid access token or None if refresh fails
+        """
+        try:
+            # Check if we have a stored token
+            if os.path.exists(self.token_file):
+                with open(self.token_file, 'r') as f:
+                    token_data = json.load(f)
+                    stored_token = token_data.get('access_token')
+                    expires_at = token_data.get('expires_at', 0)
+                    
+                    # Check if token is still valid (with 5 minute buffer)
+                    if stored_token and datetime.now().timestamp() < (expires_at - 300):
+                        return stored_token
+            
+            # Token expired or doesn't exist, refresh it
+            return self._refresh_access_token()
+            
+        except Exception as e:
+            self.logger.error(f"Error getting access token: {e}")
+            return self._refresh_access_token()
+    
+    def _refresh_access_token(self) -> Optional[str]:
+        """
+        Refresh the access token using the refresh token.
+        
+        Returns:
+            New access token or None if refresh fails
+        """
+        try:
+            url = 'https://api.dropboxapi.com/oauth2/token'
+            data = {
+                'grant_type': 'refresh_token',
+                'refresh_token': self.refresh_token,
+                'client_id': self.app_key,
+                'client_secret': self.app_secret
+            }
+            
+            self.logger.debug(f"Refreshing token with app_key: {self.app_key[:8]}...")
+            response = requests.post(url, data=data)
+            
+            if response.status_code != 200:
+                self.logger.error(f"Token refresh failed with status {response.status_code}: {response.text}")
+                
+            response.raise_for_status()
+            
+            token_data = response.json()
+            access_token = token_data['access_token']
+            expires_in = token_data.get('expires_in', 14400)  # Default 4 hours
+            expires_at = datetime.now().timestamp() + expires_in
+            
+            # Save token for future use
+            with open(self.token_file, 'w') as f:
+                json.dump({
+                    'access_token': access_token,
+                    'expires_at': expires_at
+                }, f)
+            
+            self.logger.info("Successfully refreshed Dropbox access token")
+            return access_token
+            
+        except Exception as e:
+            self.logger.error(f"Error refreshing access token: {e}")
+            return None
+    
+    def _get_dropbox_client(self) -> Optional[dropbox.Dropbox]:
+        """
+        Get a Dropbox client with a valid access token.
+        
+        Returns:
+            Dropbox client or None if authentication fails
+        """
+        access_token = self._get_access_token()
+        if access_token:
+            return dropbox.Dropbox(access_token)
+        else:
+            self.logger.error("Failed to get valid access token")
+            return None
+    
     def _save_state(self, state: Dict[str, str]):
         """
         Save the current state to file.
@@ -68,6 +156,38 @@ class DropboxHandler:
         except Exception as e:
             self.logger.error(f"Could not save state file: {e}")
     
+    def _ensure_valid_client(self) -> bool:
+        """
+        Ensure we have a valid Dropbox client, refreshing token if needed.
+        
+        Returns:
+            True if client is valid, False otherwise
+        """
+        if not self.dbx:
+            self.dbx = self._get_dropbox_client()
+        
+        if not self.dbx:
+            return False
+            
+        try:
+            # Test the connection
+            self.dbx.users_get_current_account()
+            return True
+        except dropbox.exceptions.AuthError:
+            # Token might be expired, try to refresh
+            self.logger.info("Access token expired, refreshing...")
+            self.dbx = self._get_dropbox_client()
+            if self.dbx:
+                try:
+                    self.dbx.users_get_current_account()
+                    return True
+                except Exception as e:
+                    self.logger.error(f"Failed to authenticate with new token: {e}")
+            return False
+        except Exception as e:
+            self.logger.error(f"Unexpected error checking client: {e}")
+            return False
+    
     def check_for_updated_files(self) -> List[str]:
         """
         Check Dropbox folder for the most recent file containing "stock" in its name.
@@ -78,6 +198,11 @@ class DropboxHandler:
         downloaded_files = []
         
         try:
+            # Ensure we have a valid client
+            if not self._ensure_valid_client():
+                self.logger.error("Failed to authenticate with Dropbox")
+                return downloaded_files
+            
             # Load previous state
             previous_state = self._load_state()
             current_state = {}
@@ -265,6 +390,9 @@ class DropboxHandler:
         Returns:
             True if connection is successful
         """
+        if not self._ensure_valid_client():
+            return False
+            
         try:
             account_info = self.dbx.users_get_current_account()
             self.logger.info(f"Connected to Dropbox account: {account_info.email}")

@@ -9,7 +9,9 @@ Required environment variables (create a .env file):
 - SMTP_PORT=465
 - SMTP_USERNAME=your-email@yourdomain.com
 - SMTP_PASSWORD=your-email-password
-- DROPBOX_ACCESS_TOKEN=your-dropbox-access-token
+- DROPBOX_APP_KEY=your-dropbox-app-key
+- DROPBOX_APP_SECRET=your-dropbox-app-secret
+- DROPBOX_REFRESH_TOKEN=your-dropbox-refresh-token
 - DROPBOX_FOLDER_PATH=/STOCK-UPDATES
 - HOLDED_API_KEY=your-holded-api-key
 - HOLDED_BASE_URL=https://api.holded.com/api/invoicing/v1
@@ -47,7 +49,8 @@ class Config:
         """Validate that all required environment variables are set."""
         required_vars = [
             'SMTP_HOST', 'SMTP_PORT', 'SMTP_USERNAME', 'SMTP_PASSWORD',
-            'DROPBOX_ACCESS_TOKEN', 'HOLDED_API_KEY', 'HOLDED_WAREHOUSE_ID', 'NOTIFICATION_EMAIL'
+            'DROPBOX_APP_KEY', 'DROPBOX_APP_SECRET', 'DROPBOX_REFRESH_TOKEN', 
+            'HOLDED_API_KEY', 'HOLDED_WAREHOUSE_ID', 'NOTIFICATION_EMAIL'
         ]
         
         missing_vars = [var for var in required_vars if not os.getenv(var)]
@@ -73,8 +76,16 @@ class Config:
     
     # Dropbox Configuration
     @property
-    def dropbox_access_token(self) -> str:
-        return os.getenv('DROPBOX_ACCESS_TOKEN', '')
+    def dropbox_app_key(self) -> str:
+        return os.getenv('DROPBOX_APP_KEY', '')
+    
+    @property
+    def dropbox_app_secret(self) -> str:
+        return os.getenv('DROPBOX_APP_SECRET', '')
+    
+    @property
+    def dropbox_refresh_token(self) -> str:
+        return os.getenv('DROPBOX_REFRESH_TOKEN', '')
     
     @property
     def dropbox_folder_path(self) -> str:

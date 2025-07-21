@@ -135,58 +135,6 @@ class HoldedAPI:
             self.logger.error(f"Error retrieving product by SKU {sku}: {e}")
             return None
     
-    def update_product_price(self, product_id: str, price: float, add_offer_tag: bool = False) -> bool:
-        """
-        Update product price in Holded using correct API structure.
-        For variants, this method updates the main product price which applies to all variants.
-        
-        IMPORTANT: Always use productId (global product identifier) for price updates.
-        
-        Args:
-            product_id: Holded product ID (main product ID - the global identifier)
-            price: New price (subtotal)
-            add_offer_tag: Whether to add "oferta" tag
-            
-        Returns:
-            True if successful, False otherwise
-        """
-        try:
-            # Use the main product endpoint
-            url = f"{self.base_url}/products/{product_id}"
-            
-            # Prepare update data using Holded's required structure
-            update_data = {
-                "subtotal": price
-            }
-            
-            # Add offer tag if needed
-            if add_offer_tag:
-                # Get current product to preserve existing tags
-                current_product = self._get_product_by_id(product_id)
-                if current_product:
-                    existing_tags = current_product.get('tags', [])
-                    if 'oferta' not in [tag.lower() for tag in existing_tags]:
-                        existing_tags.append('oferta')
-                    update_data['tags'] = existing_tags
-                else:
-                    update_data['tags'] = ['oferta']
-            
-            # Make API request
-            self.logger.info(f"Updating price for PRODUCT {product_id}: {price}")
-            
-            response = self.session.put(url, json=update_data)
-            
-            if response.status_code in [200, 201, 204]:
-                self.logger.info(f"Successfully updated price for product {product_id}: {price}")
-                return True
-            else:
-                self.logger.error(f"Failed to update price: {response.status_code} - {response.text}")
-                self.logger.error(f"Request payload: {update_data}")
-                return False
-                
-        except Exception as e:
-            self.logger.error(f"Error updating product price: {e}")
-            return False
 
     def update_product_stock(self, product_id: str, new_stock: int, current_stock: int, variant_id: str = None) -> bool:
         """
@@ -301,26 +249,6 @@ class HoldedAPI:
             self.logger.error(f"Holded API connection test failed: {e}")
             return False
     
-    def format_price_update_json(self, product_id: str, price: float, add_offer_tag: bool = False) -> str:
-        """
-        Format JSON for price update request using Holded's required structure.
-        
-        Args:
-            product_id: Holded product ID
-            price: New price (subtotal)
-            add_offer_tag: Whether to add offer tag
-            
-        Returns:
-            JSON string for the request
-        """
-        update_data = {
-            "subtotal": price
-        }
-        
-        if add_offer_tag:
-            update_data['tags'] = ['oferta']
-        
-        return json.dumps(update_data, indent=2)
     
     def format_stock_update_json(self, product_id: str, new_stock: int, current_stock: int, variant_id: str = None) -> str:
         """

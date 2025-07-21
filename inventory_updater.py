@@ -29,10 +29,8 @@ class InventoryUpdater:
         self.holded_api = HoldedAPI()
         
         # Track updates for reporting
-        self.price_updates = []
         self.stock_updates = []
         self.errors = []
-        self.variant_warnings = []  # Track variant warnings separately
     
     def process_inventory_update(self, file_paths: List[str]) -> Dict[str, Any]:
         """
@@ -47,7 +45,6 @@ class InventoryUpdater:
         results = {
             'processed_files': 0,
             'processed_products': 0,
-            'price_updates': 0,
             'stock_updates': 0,
             'errors': [],
             'details': []
@@ -76,14 +73,9 @@ class InventoryUpdater:
                     # Update overall results
                     results['processed_files'] += 1
                     results['processed_products'] += file_result['processed_products']
-                    results['price_updates'] += file_result['price_updates']
                     results['stock_updates'] += file_result['stock_updates']
                     results['errors'].extend(file_result['errors'])
                     results['details'].append(file_result)
-                    
-                    # Collect variant warnings
-                    if 'variant_warnings' in file_result:
-                        self.variant_warnings.extend(file_result['variant_warnings'])
                     
                 except Exception as e:
                     error_msg = f"Error processing file {file_path}: {e}"
@@ -112,11 +104,9 @@ class InventoryUpdater:
         file_result = {
             'file_path': file_path,
             'processed_products': 0,
-            'price_updates': 0,
             'stock_updates': 0,
             'errors': [],
-            'skipped_products': [],
-            'variant_warnings': []  # New: Track variant price conflicts
+            'skipped_products': []
         }
         
         # Process the file
@@ -131,38 +121,7 @@ class InventoryUpdater:
         
         self.logger.info(f"Found {len(file_products)} products in file")
         
-        # Group products by main product ID to handle variants correctly
-        main_product_groups = self._group_products_by_main_id(file_products, holded_lookup)
-        
-        # Process each group
-        for main_product_id, group_data in main_product_groups.items():
-            try:
-                # Process price updates for this product group
-                price_result = self._process_product_group_prices(group_data, file_result)
-                if price_result:
-                    file_result['price_updates'] += 1
-                
-                # Process stock updates for each product in the group
-                for product_data in group_data['products']:
-                    product = product_data['file_product']
-                    holded_product = product_data['holded_product']
-                    
-                    file_result['processed_products'] += 1
-                    
-                    # Check for stock differences
-                    if 'stock' in product:
-                        stock_updated = self._update_stock_if_different(
-                            holded_product, product['stock']
-                        )
-                        if stock_updated:
-                            file_result['stock_updates'] += 1
-                
-            except Exception as e:
-                error_msg = f"Error processing product group {main_product_id}: {e}"
-                self.logger.error(error_msg)
-                file_result['errors'].append(error_msg)
-        
-        # Process any remaining individual products (non-variants)
+        # Process each product individually
         for product in file_products:
             try:
                 sku = product['sku']
@@ -175,23 +134,9 @@ class InventoryUpdater:
                     continue
                 
                 holded_product = holded_lookup[sku]
-                
-                # Skip if already processed as part of a variant group
-                main_product_id = holded_product.get('_main_product_id') or holded_product.get('id')
-                if main_product_id in main_product_groups:
-                    continue
-                
                 file_result['processed_products'] += 1
                 
-                # Check for price differences
-                if 'price' in product:
-                    price_updated = self._update_price_if_different(
-                        holded_product, product
-                    )
-                    if price_updated:
-                        file_result['price_updates'] += 1
-                
-                # Check for stock differences
+                # Check for stock differences only
                 if 'stock' in product:
                     stock_updated = self._update_stock_if_different(
                         holded_product, product['stock']
@@ -204,176 +149,10 @@ class InventoryUpdater:
                 self.logger.error(error_msg)
                 file_result['errors'].append(error_msg)
         
+        
         return file_result
     
-    def _group_products_by_main_id(self, file_products: List[Dict[str, Any]], holded_lookup: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
-        """
-        Group file products by their main product ID to handle variants correctly.
-        
-        Args:
-            file_products: List of products from the file
-            holded_lookup: Dictionary mapping SKUs to Holded products
-            
-        Returns:
-            Dictionary mapping main product IDs to grouped product data
-        """
-        groups = {}
-        
-        for product in file_products:
-            sku = product['sku']
-            
-            if sku not in holded_lookup:
-                continue
-            
-            holded_product = holded_lookup[sku]
-            
-            # Only group variants (not main products)
-            if not holded_product.get('_is_variant', False):
-                continue
-            
-            main_product_id = holded_product.get('_main_product_id')
-            if not main_product_id:
-                continue
-            
-            # Initialize group if needed
-            if main_product_id not in groups:
-                groups[main_product_id] = {
-                    'main_product_id': main_product_id,
-                    'main_product_name': holded_product.get('name', 'Unknown'),
-                    'products': []
-                }
-            
-            # Add product to group
-            groups[main_product_id]['products'].append({
-                'file_product': product,
-                'holded_product': holded_product
-            })
-        
-        return groups
     
-    def _process_product_group_prices(self, group_data: Dict[str, Any], file_result: Dict[str, Any]) -> bool:
-        """
-        Process price updates for a group of variants belonging to the same main product.
-        
-        Since Holded API does not allow automatic price updates on products with variants,
-        all variant groups are skipped and warnings are generated for manual handling.
-        
-        Args:
-            group_data: Group data containing variants of the same main product
-            file_result: File processing results to update
-            
-        Returns:
-            False (no automatic updates performed for variants)
-        """
-        products = group_data['products']
-        main_product_id = group_data['main_product_id']
-        main_product_name = group_data['main_product_name']
-        
-        # Check if all variants have prices in the file
-        products_with_prices = [p for p in products if 'price' in p['file_product']]
-        
-        if not products_with_prices:
-            return False
-        
-        # Extract all prices and check if they're the same
-        prices = [p['file_product']['price'] for p in products_with_prices]
-        offers = [p['file_product'].get('is_offer', False) for p in products_with_prices]
-        
-        # Check if all prices are the same (within 0.01 tolerance)
-        unique_prices = []
-        for price in prices:
-            is_duplicate = False
-            for existing_price in unique_prices:
-                if abs(price - existing_price) < 0.01:
-                    is_duplicate = True
-                    break
-            if not is_duplicate:
-                unique_prices.append(price)
-        
-        if len(unique_prices) == 1:
-            # All variants have the same price - create unified warning
-            target_price = unique_prices[0]
-            is_offer = any(offers)  # If any variant is marked as offer
-            variant_skus = [p['file_product']['sku'] for p in products_with_prices]
-            
-            # Get current price for comparison
-            first_variant = products_with_prices[0]['holded_product']
-            current_price = None
-            for price_field in ['price', 'cost', 'amount', 'sell_price']:
-                if price_field in first_variant and first_variant[price_field] is not None:
-                    current_price = float(first_variant[price_field])
-                    break
-            
-            warning = {
-                'main_product_id': main_product_id,
-                'main_product_name': main_product_name,
-                'type': 'unified_price',  # New: indicates same price across variants
-                'reason': 'Product with variants requires manual price update in Holded',
-                'unified_price': {
-                    'current_price': current_price,
-                    'new_price': target_price,
-                    'is_offer': is_offer,
-                    'variant_skus': variant_skus,
-                    'variant_count': len(variant_skus)
-                }
-            }
-            
-            file_result['variant_warnings'].append(warning)
-            
-            offer_text = " (OFFER)" if is_offer else ""
-            self.logger.warning(f"UNIFIED VARIANT PRICE UPDATE REQUIRED: Main product {main_product_id} ({main_product_name})")
-            self.logger.warning(f"  - All {len(variant_skus)} variants need price update: {current_price} -> {target_price}{offer_text}")
-            self.logger.warning(f"  - Variant SKUs: {', '.join(variant_skus)}")
-            self.logger.warning("Manual update required in Holded - set main product price")
-            
-        else:
-            # Different prices across variants - create individual variant warning
-            variant_info = []
-            for product_data in products_with_prices:
-                variant = product_data['holded_product']
-                price = product_data['file_product']['price']
-                sku = product_data['file_product']['sku']
-                is_offer = product_data['file_product'].get('is_offer', False)
-                
-                # Get current price
-                current_price = None
-                for price_field in ['price', 'cost', 'amount', 'sell_price']:
-                    if price_field in variant and variant[price_field] is not None:
-                        current_price = float(variant[price_field])
-                        break
-                
-                # Get variant details for display
-                details = []
-                if '_variant_data' in variant and 'categoryFields' in variant['_variant_data']:
-                    for field in variant['_variant_data']['categoryFields']:
-                        if 'name' in field and 'field' in field:
-                            details.append(f"{field['name']}: {field['field']}")
-                
-                variant_info.append({
-                    'sku': sku,
-                    'current_price': current_price,
-                    'new_price': price,
-                    'is_offer': is_offer,
-                    'variant_details': ', '.join(details) if details else 'No details'
-                })
-            
-            warning = {
-                'main_product_id': main_product_id,
-                'main_product_name': main_product_name,
-                'type': 'individual_prices',  # New: indicates different prices per variant
-                'reason': 'Variants have different prices - individual updates required',
-                'variant_prices': variant_info
-            }
-            
-            file_result['variant_warnings'].append(warning)
-            
-            self.logger.warning(f"INDIVIDUAL VARIANT PRICE UPDATES REQUIRED: Main product {main_product_id} ({main_product_name})")
-            for info in variant_info:
-                offer_text = " (OFFER)" if info['is_offer'] else ""
-                self.logger.warning(f"  - SKU {info['sku']}: {info.get('current_price', 'N/A')} -> €{info['new_price']:.2f}{offer_text} ({info['variant_details']})")
-            self.logger.warning("Manual update required in Holded - update individual variant prices")
-        
-        return False
     
     def _create_sku_lookup(self, holded_products: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
         """
@@ -485,86 +264,6 @@ class InventoryUpdater:
         
         return lookup
     
-    def _update_price_if_different(self, holded_product: Dict[str, Any], new_product: Dict[str, Any]) -> bool:
-        """
-        Update price if it's different from current price.
-        This method now only handles main products. Variants are handled by _process_product_group_prices.
-        
-        Args:
-            holded_product: Holded product data (main product only)
-            new_product: New product data from file
-            
-        Returns:
-            True if price was updated, False otherwise
-        """
-        try:
-            # Skip variants - they are handled by group processing
-            is_variant = holded_product.get('_is_variant', False)
-            if is_variant:
-                return False
-            
-            # Get current price from main product
-            current_price = None
-            for price_field in ['price', 'cost', 'amount', 'sell_price']:
-                if price_field in holded_product and holded_product[price_field] is not None:
-                    current_price = float(holded_product[price_field])
-                    break
-            
-            if current_price is None:
-                product_name = holded_product.get('name', 'Unknown')
-                sku = holded_product.get('sku', 'Unknown')
-                self.logger.warning(f"No current price found for product {product_name} (SKU: {sku})")
-                return False
-            
-            # Get new price from the product object
-            new_price = float(new_product['price'])
-            
-            # Check if prices are different (with small tolerance for floating point)
-            price_difference = abs(current_price - new_price)
-            if price_difference < 0.01:  # Less than 1 cent difference
-                return False
-            
-            # Get offer flag from product data, or determine by price comparison
-            is_offer = new_product.get('is_offer', False)
-            if not is_offer:
-                # Fallback: determine if this is an offer (price reduction)
-                is_offer = new_price < current_price
-            
-            # Get the product ID for the update
-            update_id = holded_product.get('id')
-            if not update_id:
-                self.logger.error("Product ID not found in Holded product")
-                return False
-            
-            offer_text = " (OFFER)" if is_offer else ""
-            self.logger.info(f"Updating price for MAIN PRODUCT {update_id}: {current_price} -> {new_price}{offer_text}")
-            
-            # Update the price - standard main product update
-            success = self.holded_api.update_product_price(
-                product_id=str(update_id),
-                price=new_price,
-                add_offer_tag=is_offer
-            )
-            
-            if success:
-                update_info = {
-                    'product_id': update_id,
-                    'sku': holded_product.get('sku', 'unknown'),
-                    'product_name': holded_product.get('name', 'Unknown'),
-                    'is_variant': False,
-                    'old_price': current_price,
-                    'new_price': new_price,
-                    'is_offer': is_offer
-                }
-                
-                self.price_updates.append(update_info)
-                return True
-            
-            return False
-            
-        except Exception as e:
-            self.logger.error(f"Error updating price: {e}")
-            return False
     
     def _update_stock_if_different(self, holded_product: Dict[str, Any], new_stock: int) -> bool:
         """
@@ -699,12 +398,9 @@ class InventoryUpdater:
             Dictionary containing update summary
         """
         return {
-            'price_updates': self.price_updates,
             'stock_updates': self.stock_updates,
-            'total_price_updates': len(self.price_updates),
             'total_stock_updates': len(self.stock_updates),
-            'errors': self.errors,
-            'variant_warnings': self.variant_warnings # Include variant warnings in summary
+            'errors': self.errors
         }
 
 
@@ -735,7 +431,6 @@ def update_inventory_from_files(file_paths: List[str]) -> Dict[str, Any]:
         return {
             'processed_files': 0,
             'processed_products': 0,
-            'price_updates': 0,
             'stock_updates': 0,
             'errors': [str(e)],
             'details': []

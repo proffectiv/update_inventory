@@ -1,11 +1,11 @@
 """
-Email handler module for monitoring and processing emails.
+Módulo manejador de email para monitoreo y procesamiento de emails.
 
-This module handles:
-- Connecting to IMAP server (Strato)
-- Checking for emails with specific keywords and attachments
-- Downloading and validating attachments
-- Extracting files for processing
+Este módulo maneja:
+- Conexión al servidor IMAP (Strato)
+- Verificación de emails con palabras clave específicas y adjuntos
+- Descarga y validación de adjuntos
+- Extracción de archivos para procesamiento
 """
 
 import imaplib
@@ -20,10 +20,10 @@ from config import config
 
 
 class EmailHandler:
-    """Handles email monitoring and attachment processing."""
+    """Maneja el monitoreo de emails y procesamiento de adjuntos."""
     
     def __init__(self):
-        """Initialize email handler with configuration."""
+        """Inicializa el manejador de email con configuración."""
         self.imap_host = config.imap_host
         self.imap_port = config.imap_port
         self.username = config.imap_username
@@ -31,32 +31,32 @@ class EmailHandler:
         self.monitored_email = config.monitored_email
         self.keywords = config.email_keywords
         self.allowed_extensions = config.allowed_extensions
-        self.max_file_size = config.max_file_size_mb * 1024 * 1024  # Convert to bytes
+        self.max_file_size = config.max_file_size_mb * 1024 * 1024  # Convertir a bytes
         
-        # Set up logging
+        # Configurar logging
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
     
     def connect_to_imap(self) -> imaplib.IMAP4_SSL:
-        """Connect to IMAP server and authenticate."""
+        """Conecta al servidor IMAP y se autentica."""
         try:
-            # Connect to IMAP server
+            # Conectar al servidor IMAP
             mail = imaplib.IMAP4_SSL(self.imap_host, self.imap_port)
             mail.login(self.username, self.password)
             
-            self.logger.info(f"Successfully connected to IMAP server: {self.imap_host}")
+            self.logger.info(f"Conectado exitosamente al servidor IMAP: {self.imap_host}")
             return mail
             
         except Exception as e:
-            self.logger.error(f"Failed to connect to IMAP server: {e}")
+            self.logger.error(f"Falló la conexión al servidor IMAP: {e}")
             raise
     
     def check_for_new_emails(self) -> List[Tuple[str, str]]:
         """
-        Check for new emails with keywords and attachments.
+        Verifica nuevos emails con palabras clave y adjuntos.
         
         Returns:
-            List of tuples containing (email_id, attachment_filename)
+            Lista de tuplas que contienen (email_id, attachment_filename)
         """
         mail = None
         found_files = []
@@ -65,41 +65,41 @@ class EmailHandler:
             mail = self.connect_to_imap()
             mail.select('INBOX')
             
-            # Search for unread emails to the monitored address
+            # Buscar emails no leídos a la dirección monitoreada
             search_criteria = f'(UNSEEN TO "{self.monitored_email}")'
             status, message_ids = mail.search(None, search_criteria)
             
             if status != 'OK' or not message_ids[0]:
-                self.logger.info("No new emails found")
+                self.logger.info("No se encontraron nuevos emails")
                 return found_files
             
-            # Process each email
+            # Procesar cada email
             for email_id in message_ids[0].split():
                 email_id_str = email_id.decode()
                 
-                # Fetch the email
+                # Obtener el email
                 status, msg_data = mail.fetch(email_id, '(RFC822)')
                 if status != 'OK':
                     continue
                 
-                # Parse the email
+                # Analizar el email
                 raw_email = msg_data[0][1]
                 email_message = email.message_from_bytes(raw_email)
                 
-                # Check if email has relevant keywords and attachments
+                # Verificar si el email tiene palabras clave relevantes y adjuntos
                 if self._has_relevant_content(email_message):
                     attachment_files = self._process_attachments(email_message)
                     for filename in attachment_files:
                         found_files.append((email_id_str, filename))
                         
-                        # Mark email as read after processing
+                        # Marcar email como leído después del procesamiento
                         mail.store(email_id, '+FLAGS', '\\Seen')
             
-            self.logger.info(f"Found {len(found_files)} relevant files in emails")
+            self.logger.info(f"Se encontraron {len(found_files)} archivos relevantes en emails")
             return found_files
             
         except Exception as e:
-            self.logger.error(f"Error checking emails: {e}")
+            self.logger.error(f"Error verificando emails: {e}")
             return found_files
             
         finally:
@@ -112,18 +112,18 @@ class EmailHandler:
     
     def _has_relevant_content(self, email_message: EmailMessage) -> bool:
         """
-        Check if email has relevant keywords in subject or body.
+        Verifica si el email tiene palabras clave relevantes en asunto o cuerpo.
         
         Args:
-            email_message: The email message to check
+            email_message: El mensaje de email a verificar
             
         Returns:
-            True if email contains relevant keywords
+            True si el email contiene palabras clave relevantes
         """
-        # Get subject and body text
+        # Obtener asunto y texto del cuerpo
         subject = email_message.get('Subject', '').lower()
         
-        # Get email body
+        # Obtener cuerpo del email
         body = ""
         if email_message.is_multipart():
             for part in email_message.walk():
@@ -132,28 +132,28 @@ class EmailHandler:
         else:
             body = email_message.get_payload(decode=True).decode('utf-8', errors='ignore').lower()
         
-        # Check if any keyword is present
+        # Verificar si alguna palabra clave está presente
         content = f"{subject} {body}"
         has_keywords = any(keyword in content for keyword in self.keywords)
         
         if has_keywords:
-            self.logger.info(f"Email contains relevant keywords: {subject}")
+            self.logger.info(f"El email contiene palabras clave relevantes: {subject}")
         
         return has_keywords
     
     def _process_attachments(self, email_message: EmailMessage) -> List[str]:
         """
-        Process and save valid attachments from email.
+        Procesa y guarda adjuntos válidos del email.
         
         Args:
-            email_message: The email message to process
+            email_message: El mensaje de email a procesar
             
         Returns:
-            List of saved attachment filenames
+            Lista de nombres de archivos adjuntos guardados
         """
         saved_files = []
         
-        # Process attachments
+        # Procesar adjuntos
         for part in email_message.walk():
             if part.get_content_disposition() == 'attachment':
                 filename = part.get_filename()
@@ -161,21 +161,21 @@ class EmailHandler:
                 if not filename:
                     continue
                 
-                # Check if file has valid extension
+                # Verificar si el archivo tiene una extensión válida
                 file_extension = filename.lower().split('.')[-1]
                 if file_extension not in self.allowed_extensions:
-                    self.logger.info(f"Skipping file with invalid extension: {filename}")
+                    self.logger.info(f"Omitiendo archivo con extensión inválida: {filename}")
                     continue
                 
-                # Get file content
+                # Obtener contenido del archivo
                 file_content = part.get_payload(decode=True)
                 
-                # Check file size
+                # Verificar tamaño del archivo
                 if len(file_content) > self.max_file_size:
-                    self.logger.warning(f"File too large, skipping: {filename}")
+                    self.logger.warning(f"Archivo demasiado grande, omitiendo: {filename}")
                     continue
                 
-                # Save file to temporary directory
+                # Guardar archivo en directorio temporal
                 try:
                     temp_dir = tempfile.gettempdir()
                     file_path = os.path.join(temp_dir, f"email_{filename}")
@@ -184,47 +184,47 @@ class EmailHandler:
                         f.write(file_content)
                     
                     saved_files.append(file_path)
-                    self.logger.info(f"Saved attachment: {file_path}")
+                    self.logger.info(f"Adjunto guardado: {file_path}")
                     
                 except Exception as e:
-                    self.logger.error(f"Error saving attachment {filename}: {e}")
+                    self.logger.error(f"Error guardando adjunto {filename}: {e}")
         
         return saved_files
     
     def cleanup_temp_files(self, file_paths: List[str]):
         """
-        Clean up temporary files.
+        Limpia archivos temporales.
         
         Args:
-            file_paths: List of file paths to delete
+            file_paths: Lista de rutas de archivos a eliminar
         """
         for file_path in file_paths:
             try:
                 if os.path.exists(file_path):
                     os.remove(file_path)
-                    self.logger.info(f"Cleaned up temporary file: {file_path}")
+                    self.logger.info(f"Archivo temporal limpiado: {file_path}")
             except Exception as e:
-                self.logger.warning(f"Could not delete temporary file {file_path}: {e}")
+                self.logger.warning(f"No se pudo eliminar archivo temporal {file_path}: {e}")
 
 
 def check_email_trigger() -> List[str]:
     """
-    Main function to check for email triggers.
+    Función principal para verificar triggers de email.
     
     Returns:
-        List of file paths to process
+        Lista de rutas de archivos a procesar
     """
     handler = EmailHandler()
     
     try:
-        # Check for new emails
+        # Verificar nuevos emails
         email_files = handler.check_for_new_emails()
         
-        # Extract just the file paths
+        # Extraer solo las rutas de archivos
         file_paths = [filename for _, filename in email_files]
         
         return file_paths
         
     except Exception as e:
-        logging.error(f"Error in email trigger check: {e}")
+        logging.error(f"Error en verificación de trigger de email: {e}")
         return [] 

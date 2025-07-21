@@ -77,7 +77,6 @@ def main():
         logger.info("UPDATE SUMMARY:")
         logger.info(f"  Files processed: {update_results.get('processed_files', 0)}")
         logger.info(f"  Products processed: {update_results.get('processed_products', 0)}")
-        logger.info(f"  Price updates: {update_results.get('price_updates', 0)}")
         logger.info(f"  Stock updates: {update_results.get('stock_updates', 0)}")
         logger.info(f"  Errors: {len(update_results.get('errors', []))}")
         
@@ -180,7 +179,6 @@ def test_connections():
         test_results = {
             'processed_files': 0,
             'processed_products': 0,
-            'price_updates': 0,
             'stock_updates': 0,
             'errors': ['This is a connection test']
         }
