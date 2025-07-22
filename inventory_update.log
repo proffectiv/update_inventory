@@ -1701,3 +1701,32 @@
 2025-07-21 17:54:43,547 - __main__ - INFO - ✅ Email SMTP (notifications): SUCCESS
 2025-07-21 17:54:43,547 - __main__ - INFO - ========================================
 2025-07-21 17:54:43,547 - __main__ - INFO - CONNECTION TESTS COMPLETED
+2025-07-22 16:12:25,090 - __main__ - INFO - TESTING CONNECTIONS
+2025-07-22 16:12:25,090 - __main__ - INFO - ========================================
+2025-07-22 16:12:25,390 - holded_api - INFO - Holded API connection successful
+2025-07-22 16:12:25,390 - __main__ - INFO - ✅ Holded API connection: SUCCESS
+2025-07-22 16:12:25,698 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-07-22 16:12:25,701 - dropbox - INFO - Request to users/get_current_account
+2025-07-22 16:12:26,567 - dropbox - INFO - Request to users/get_current_account
+2025-07-22 16:12:27,287 - dropbox_handler - INFO - Connected to Dropbox account: info@proffectiv.com
+2025-07-22 16:12:27,287 - __main__ - INFO - ✅ Dropbox connection: SUCCESS
+2025-07-22 16:12:27,288 - email_notifier - INFO - Conectando al servidor SMTP: smtp.strato.com:465
+2025-07-22 16:12:27,935 - email_notifier - INFO - Email enviado exitosamente a cabagu35@gmail.com
+2025-07-22 16:12:27,974 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
+2025-07-22 16:12:27,975 - __main__ - INFO - ✅ Email SMTP (notifications): SUCCESS
+2025-07-22 16:12:27,975 - __main__ - INFO - ========================================
+2025-07-22 16:12:27,975 - __main__ - INFO - CONNECTION TESTS COMPLETED
+2025-07-22 16:13:17,401 - __main__ - INFO - ============================================================
+2025-07-22 16:13:17,401 - __main__ - INFO - STARTING INVENTORY UPDATE AUTOMATION
+2025-07-22 16:13:17,401 - __main__ - INFO - ============================================================
+2025-07-22 16:13:17,401 - __main__ - INFO - Step 1: Checking for Dropbox file updates...
+2025-07-22 16:13:17,401 - dropbox - INFO - Request to users/get_current_account
+2025-07-22 16:13:18,133 - dropbox - INFO - Request to users/get_current_account
+2025-07-22 16:13:18,953 - dropbox_handler - INFO - Connected to Dropbox account: info@proffectiv.com
+2025-07-22 16:13:18,953 - dropbox - INFO - Request to users/get_current_account
+2025-07-22 16:13:19,716 - dropbox_handler - INFO - Checking Dropbox folder: /STOCK-UPDATE
+2025-07-22 16:13:19,717 - dropbox - INFO - Request to files/list_folder
+2025-07-22 16:13:20,337 - dropbox_handler - INFO - Found 1 stock files, most recent: stock_Stocklist_CONWAY.xlsx
+2025-07-22 16:13:20,338 - dropbox_handler - INFO - Most recent stock file unchanged: stock_Stocklist_CONWAY.xlsx
+2025-07-22 16:13:20,338 - dropbox_handler - INFO - Downloaded 0 stock file(s)
+2025-07-22 16:13:20,340 - __main__ - INFO - No Dropbox file updates found. Automation completed.
