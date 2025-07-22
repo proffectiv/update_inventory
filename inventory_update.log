@@ -1888,3 +1888,52 @@
 2025-07-22 17:14:51,176 - __main__ - INFO - ✅ Email SMTP (notifications): SUCCESS
 2025-07-22 17:14:51,177 - __main__ - INFO - ========================================
 2025-07-22 17:14:51,177 - __main__ - INFO - CONNECTION TESTS COMPLETED
+2025-07-22 15:17:01,243 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-07-22 15:17:01,446 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-07-22 15:17:01,448 - dropbox - INFO - Request to users/get_current_account
+2025-07-22 15:17:02,116 - dropbox - INFO - Request to users/get_current_account
+2025-07-22 15:17:02,787 - dropbox_handler - INFO - Connected to Dropbox account: info@proffectiv.com
+2025-07-22 15:17:02,787 - dropbox - INFO - Request to users/get_current_account
+2025-07-22 15:17:03,452 - dropbox_handler - INFO - Checking Dropbox folder: /STOCK-UPDATE
+2025-07-22 15:17:03,452 - dropbox - INFO - Request to files/list_folder
+2025-07-22 15:17:03,814 - dropbox_handler - INFO - Found 2 stock files, most recent: stock_test_file_v5.xlsx
+2025-07-22 15:17:03,814 - dropbox_handler - INFO - Processing most recent stock file: stock_test_file_v5.xlsx
+2025-07-22 15:17:03,814 - dropbox_handler - INFO - Downloading file: stock_test_file_v5.xlsx
+2025-07-22 15:17:03,815 - dropbox - INFO - Request to files/download
+2025-07-22 15:17:04,457 - dropbox_handler - INFO - Downloaded file to: /tmp/dropbox_stock_test_file_v5.xlsx
+2025-07-22 15:17:04,457 - dropbox_handler - INFO - Downloaded 1 stock file(s)
+2025-07-22 15:17:04,459 - __main__ - INFO - Found 1 files from Dropbox
+2025-07-22 15:17:04,460 - inventory_updater - INFO - Retrieving products from Holded...
+2025-07-22 15:17:04,638 - holded_api - INFO - Holded API connection successful
+2025-07-22 15:17:04,638 - holded_api - INFO - Fetching products page 1
+2025-07-22 15:17:05,343 - holded_api - INFO - Fetching products page 2
+2025-07-22 15:17:05,473 - holded_api - INFO - Retrieved 210 products from Holded
+2025-07-22 15:17:05,477 - inventory_updater - INFO - Created SKU lookup with 884 total SKUs:
+2025-07-22 15:17:05,477 - inventory_updater - INFO -   - Main product SKUs: 208
+2025-07-22 15:17:05,477 - inventory_updater - INFO -   - Variant SKUs: 678
+2025-07-22 15:17:05,477 - inventory_updater - INFO -   - Skipped products without valid SKU: 0
+2025-07-22 15:17:05,477 - inventory_updater - INFO - Sample Holded SKUs: ['202390020', '202320030', '202320010', '202320020', '202310010']
+2025-07-22 15:17:05,477 - inventory_updater - INFO -   - 202390020: MAIN product 'Sensor de cadencia C3'
+2025-07-22 15:17:05,477 - inventory_updater - INFO -   - 202320030: MAIN product 'Ciclocomputador GPS G1'
+2025-07-22 15:17:05,477 - inventory_updater - INFO -   - 202320010: MAIN product 'Ciclocomputador GPS M1'
+2025-07-22 15:17:05,477 - inventory_updater - INFO - Loaded 884 products from Holded
+2025-07-22 15:17:05,477 - inventory_updater - INFO - Processing file: /tmp/dropbox_stock_test_file_v5.xlsx
+2025-07-22 15:17:05,822 - file_processor - INFO - Successfully read Excel file
+2025-07-22 15:17:05,823 - file_processor - INFO - Column mappings - SKU: item, Price: evp, Offer: oferta, Stock: stock qty
+2025-07-22 15:17:05,824 - file_processor - INFO - Extracted 4 valid products from file
+2025-07-22 15:17:05,824 - file_processor - INFO - Processed 4 products from file: dropbox_stock_test_file_v5.xlsx
+2025-07-22 15:17:05,824 - file_processor - INFO - Validated 4 products out of 4
+2025-07-22 15:17:05,824 - inventory_updater - INFO - Found 4 products in file
+2025-07-22 15:17:05,824 - inventory_updater - INFO - Updating stock for VARIANT 686fa97ea6f71849fb0b69d1 (Talla: S, Color: Negro Mate, Medida de la Rueda: 29, Tipo de Bici: MTB, Forma del Cuadro: Rígida): 2 -> 3
+2025-07-22 15:17:05,824 - holded_api - INFO - Updating VARIANT stock 686fa97ea6f71849fb0b69d1: 2 -> 3 (difference: +1)
+2025-07-22 15:17:06,264 - holded_api - INFO - Successfully updated stock for variant 686fa97ea6f71849fb0b69d1
+2025-07-22 15:17:06,264 - inventory_updater - INFO - Updating stock for VARIANT 686fa97ea6f71849fb0b69d2 (Talla: M, Color: Negro Mate, Medida de la Rueda: 29, Tipo de Bici: MTB, Forma del Cuadro: Rígida): 3 -> 2
+2025-07-22 15:17:06,264 - holded_api - INFO - Updating VARIANT stock 686fa97ea6f71849fb0b69d2: 3 -> 2 (difference: -1)
+2025-07-22 15:17:06,589 - holded_api - INFO - Successfully updated stock for variant 686fa97ea6f71849fb0b69d2
+2025-07-22 15:17:06,589 - inventory_updater - INFO - Updating stock for VARIANT 686fa97ea6f71849fb0b69d3 (Talla: L, Color: Negro Mate, Medida de la Rueda: 29, Tipo de Bici: MTB, Forma del Cuadro: Rígida): 1 -> 10
+2025-07-22 15:17:06,589 - holded_api - INFO - Updating VARIANT stock 686fa97ea6f71849fb0b69d3: 1 -> 10 (difference: +9)
+2025-07-22 15:17:06,892 - holded_api - INFO - Successfully updated stock for variant 686fa97ea6f71849fb0b69d3
+2025-07-22 15:17:06,895 - email_notifier - INFO - Conectando al servidor SMTP: smtp.strato.com:465
+2025-07-22 15:17:08,376 - email_notifier - INFO - Email enviado exitosamente a cabagu35@gmail.com
+2025-07-22 15:17:08,477 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
+2025-07-22 15:17:08,477 - __main__ - INFO - Cleaned up temporary file: /tmp/dropbox_stock_test_file_v5.xlsx
