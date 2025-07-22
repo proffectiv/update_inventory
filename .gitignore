@@ -205,5 +205,7 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-#sensible files
+# Sensitive files and logs
 test_file.csv
+*.log
+dropbox_state.json

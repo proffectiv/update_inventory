@@ -140,7 +140,7 @@ class EmailNotifier:
                 text = msg.as_string()
                 server.sendmail(self.username, [to_email], text)
                 
-                self.logger.info(f"Email enviado exitosamente a {to_email}")
+                self.logger.info(f"Email enviado exitosamente")
                 return True
                 
         except smtplib.SMTPAuthenticationError as e:

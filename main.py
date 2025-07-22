@@ -17,18 +17,12 @@ import traceback
 from dropbox_handler import check_dropbox_trigger
 from inventory_updater import update_inventory_from_files
 from email_notifier import send_update_notification, send_error_notification
+from log_sanitizer import setup_sanitized_logging
 
 
 def setup_logging():
-    """Set up logging configuration."""
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.StreamHandler(sys.stdout),
-            logging.FileHandler('inventory_update.log')
-        ]
-    )
+    """Set up logging configuration with sanitization."""
+    setup_sanitized_logging()
 
 
 def main():
