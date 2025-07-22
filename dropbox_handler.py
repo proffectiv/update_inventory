@@ -34,8 +34,6 @@ class DropboxHandler:
         
         # File to store last check timestamps
         self.state_file = 'dropbox_state.json'
-        # File to store access token
-        self.token_file = 'dropbox_token.json'
         
         # Set up logging
         logging.basicConfig(level=logging.INFO)
@@ -62,29 +60,19 @@ class DropboxHandler:
     
     def _get_access_token(self) -> Optional[str]:
         """
-        Get a valid access token, refreshing if necessary.
+        Get a valid access token by refreshing the refresh token.
+        Always refreshes - no token caching to avoid storing sensitive data.
         
         Returns:
             Valid access token or None if refresh fails
         """
         try:
-            # Check if we have a stored token
-            if os.path.exists(self.token_file):
-                with open(self.token_file, 'r') as f:
-                    token_data = json.load(f)
-                    stored_token = token_data.get('access_token')
-                    expires_at = token_data.get('expires_at', 0)
-                    
-                    # Check if token is still valid (with 5 minute buffer)
-                    if stored_token and datetime.now().timestamp() < (expires_at - 300):
-                        return stored_token
-            
-            # Token expired or doesn't exist, refresh it
+            # Always refresh token (no persistent storage of sensitive tokens)
             return self._refresh_access_token()
             
         except Exception as e:
             self.logger.error(f"Error getting access token: {e}")
-            return self._refresh_access_token()
+            return None
     
     def _refresh_access_token(self) -> Optional[str]:
         """
@@ -115,12 +103,7 @@ class DropboxHandler:
             expires_in = token_data.get('expires_in', 14400)  # Default 4 hours
             expires_at = datetime.now().timestamp() + expires_in
             
-            # Save token for future use
-            with open(self.token_file, 'w') as f:
-                json.dump({
-                    'access_token': access_token,
-                    'expires_at': expires_at
-                }, f)
+            # No token storage - always refresh for security
             
             self.logger.info("Successfully refreshed Dropbox access token")
             return access_token
