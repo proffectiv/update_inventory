@@ -241,26 +241,23 @@ class InventoryUpdater:
             if not main_sku and not variants_found:
                 skipped_products += 1
         
-        # Enhanced logging
-        main_product_skus = sum(1 for v in lookup.values() if not v.get('_is_variant', True))
-        
-        self.logger.info(f"Created SKU lookup with {len(lookup)} total SKUs:")
-        self.logger.info(f"  - Main product SKUs: {main_product_skus}")
-        self.logger.info(f"  - Variant SKUs: {variant_skus_found}")
+        # Enhanced logging - now only variants should be in lookup
+        self.logger.info(f"Created SKU lookup with {len(lookup)} variant SKUs:")
+        self.logger.info(f"  - Variant SKUs found: {variant_skus_found}")
         self.logger.info(f"  - Skipped products without valid SKU: {skipped_products}")
         
         # Log some sample SKUs for debugging
         if lookup:
             sample_skus = list(lookup.keys())[:5]
-            self.logger.info(f"Sample Holded SKUs: {sample_skus}")
+            self.logger.info(f"Sample variant SKUs: {sample_skus}")
             
-            # Show breakdown of main vs variant SKUs in sample
+            # Show variant details
             for sku in sample_skus[:3]:
                 product_data = lookup[sku]
                 if product_data.get('_is_variant'):
                     self.logger.info(f"  - {sku}: VARIANT of '{product_data.get('name', 'Unknown')}'")
                 else:
-                    self.logger.info(f"  - {sku}: MAIN product '{product_data.get('name', 'Unknown')}'")
+                    self.logger.warning(f"  - {sku}: UNEXPECTED MAIN product in variant lookup!")
         
         return lookup
     
@@ -343,24 +340,15 @@ class InventoryUpdater:
                 )
                 
             else:
-                # For main products, use main product ID
-                update_id = holded_product.get('id')
-                if not update_id:
-                    self.logger.error("Product ID not found in Holded product")
-                    return False
-                
-                self.logger.info(f"Updating stock for MAIN PRODUCT {update_id}: {current_stock} -> {new_stock}")
-                
-                # Update the stock - standard main product update
-                success = self.holded_api.update_product_stock(
-                    product_id=str(update_id),
-                    new_stock=new_stock,
-                    current_stock=current_stock
-                )
+                # SKIP main products entirely - they should never be updated
+                sku = holded_product.get('sku', 'Unknown')
+                product_name = holded_product.get('name', 'Unknown')
+                self.logger.warning(f"Skipping main product update - main products should not be in stock list: {product_name} (SKU: {sku})")
+                return False
             
             if success:
-                # Use appropriate ID for tracking
-                tracking_id = variant_id if is_variant else update_id
+                # Use variant ID for tracking (only variants should reach this point)
+                tracking_id = variant_id
                 
                 update_info = {
                     'product_id': tracking_id,
@@ -404,6 +392,296 @@ class InventoryUpdater:
         }
 
 
+class RobustInventoryUpdater:
+    """Enhanced inventory updater with Conway category filtering logic."""
+    
+    def __init__(self):
+        """Initialize robust inventory updater."""
+        logging.basicConfig(level=logging.INFO)
+        self.logger = logging.getLogger(__name__)
+        
+        self.holded_api = HoldedAPI()
+        
+        # Track updates for reporting
+        self.stock_updates = []
+        self.stock_resets = []  # SKUs set to 0
+        self.errors = []
+    
+    def process_robust_inventory_update(self, file_paths: List[str]) -> Dict[str, Any]:
+        """
+        Process inventory updates with robust Conway category logic.
+        
+        Implements three scenarios:
+        1. Variant SKU in Holded (Conway) but not in stock list: Set stock to 0
+        2. Variant SKU in both Holded and stock list: Update if different
+        3. Variant SKU in stock list but not in Holded: Skip (log for info)
+        
+        Args:
+            file_paths: List of file paths to process
+            
+        Returns:
+            Dictionary containing update results and statistics
+        """
+        results = {
+            'processed_files': 0,
+            'processed_products': 0,
+            'stock_updates': 0,
+            'stock_resets': 0,
+            'skipped_not_in_holded': 0,
+            'errors': [],
+            'details': []
+        }
+        
+        try:
+            # Step 1: Get Conway category variant SKUs from Holded
+            self.logger.info("Retrieving Conway category variant SKUs from Holded...")
+            conway_skus = self.holded_api.get_conway_variant_skus()
+            
+            if not conway_skus:
+                error_msg = "Failed to retrieve Conway category products from Holded"
+                self.logger.error(error_msg)
+                results['errors'].append(error_msg)
+                return results
+            
+            self.logger.info(f"Found {len(conway_skus)} Conway variant SKUs in Holded")
+            
+            # Step 2: Process stock list files to get file SKUs
+            file_skus = {}
+            for file_path in file_paths:
+                try:
+                    file_result = self._process_stock_file(file_path)
+                    file_skus.update(file_result)
+                    results['processed_files'] += 1
+                except Exception as e:
+                    error_msg = f"Error processing file {file_path}: {e}"
+                    self.logger.error(error_msg)
+                    results['errors'].append(error_msg)
+            
+            self.logger.info(f"Found {len(file_skus)} products in stock files")
+            
+            # Step 3: Apply the three filtering scenarios
+            scenario_results = self._apply_filtering_scenarios(conway_skus, file_skus)
+            
+            # Update results with scenario outcomes
+            results['processed_products'] = len(file_skus)
+            results['stock_updates'] = scenario_results['stock_updates']
+            results['stock_resets'] = scenario_results['stock_resets']
+            results['skipped_not_in_holded'] = scenario_results['skipped_not_in_holded']
+            results['errors'].extend(scenario_results['errors'])
+            results['details'] = scenario_results['details']
+            
+            # Add summary for email notification (combine updates and resets)
+            all_stock_changes = self.stock_updates + self.stock_resets
+            results['summary'] = {
+                'stock_updates': all_stock_changes,
+                'total_stock_updates': len(all_stock_changes),
+                'errors': self.errors
+            }
+            
+            return results
+            
+        except Exception as e:
+            error_msg = f"Error in robust inventory update process: {e}"
+            self.logger.error(error_msg)
+            results['errors'].append(error_msg)
+            return results
+    
+    def _process_stock_file(self, file_path: str) -> Dict[str, Dict[str, Any]]:
+        """
+        Process a stock file to extract SKU and stock information.
+        
+        Args:
+            file_path: Path to the stock file
+            
+        Returns:
+            Dictionary mapping SKUs to stock data
+        """
+        self.logger.info(f"Processing stock file: {file_path}")
+        file_products = process_inventory_file(file_path)
+        
+        if not file_products:
+            self.logger.warning(f"No products found in file: {file_path}")
+            return {}
+        
+        file_skus = {}
+        for product in file_products:
+            if 'sku' in product:
+                sku = str(product['sku']).strip()
+                file_skus[sku] = product
+        
+        self.logger.info(f"Extracted {len(file_skus)} SKUs from file")
+        return file_skus
+    
+    def _apply_filtering_scenarios(self, conway_skus: Dict[str, Dict[str, Any]], 
+                                 file_skus: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        Apply the three filtering scenarios for Conway products.
+        
+        Args:
+            conway_skus: Conway variant SKUs from Holded
+            file_skus: SKUs from stock files
+            
+        Returns:
+            Dictionary with scenario results
+        """
+        scenario_results = {
+            'stock_updates': 0,
+            'stock_resets': 0,
+            'skipped_not_in_holded': 0,
+            'errors': [],
+            'details': []
+        }
+        
+        # Scenario 1: Conway SKUs not in stock list -> set to 0
+        self.logger.info("Scenario 1: Conway SKUs not in stock list - setting to 0")
+        for sku, holded_product in conway_skus.items():
+            if sku not in file_skus:
+                try:
+                    current_stock = self._get_current_stock(holded_product)
+                    if current_stock is None:
+                        continue
+                    
+                    if current_stock > 0:  # Only update if current stock is not already 0
+                        success = self._update_product_stock(holded_product, 0, current_stock)
+                        if success:
+                            scenario_results['stock_resets'] += 1
+                            self.logger.info(f"Reset stock to 0 for Conway SKU: {sku} (was {current_stock})")
+                            
+                            # Track the reset for email notification
+                            reset_info = {
+                                'sku': sku,
+                                'product_name': holded_product.get('name', 'Unknown'),
+                                'old_stock': current_stock,
+                                'new_stock': 0,
+                                'is_variant': holded_product.get('_is_variant', False),
+                                'action': 'reset'
+                            }
+                            self.stock_resets.append(reset_info)
+                        else:
+                            scenario_results['errors'].append(f"Failed to reset stock for SKU: {sku}")
+                    else:
+                        self.logger.debug(f"Conway SKU {sku} already has 0 stock")
+                        
+                except Exception as e:
+                    error_msg = f"Error resetting stock for Conway SKU {sku}: {e}"
+                    self.logger.error(error_msg)
+                    scenario_results['errors'].append(error_msg)
+        
+        # Scenario 2: SKUs in both Conway and stock list -> update if different
+        self.logger.info("Scenario 2: SKUs in both Conway and stock list - checking for updates")
+        for sku, file_product in file_skus.items():
+            if sku in conway_skus:
+                try:
+                    holded_product = conway_skus[sku]
+                    new_stock = int(file_product.get('stock', 0))
+                    current_stock = self._get_current_stock(holded_product)
+                    
+                    if current_stock is None:
+                        continue
+                    
+                    if current_stock != new_stock:
+                        success = self._update_product_stock(holded_product, new_stock, current_stock)
+                        if success:
+                            scenario_results['stock_updates'] += 1
+                            self.logger.info(f"Updated stock for SKU {sku}: {current_stock} -> {new_stock}")
+                            
+                            # Track the update for email notification
+                            update_info = {
+                                'sku': sku,
+                                'product_name': holded_product.get('name', 'Unknown'),
+                                'old_stock': current_stock,
+                                'new_stock': new_stock,
+                                'is_variant': holded_product.get('_is_variant', False),
+                                'action': 'update'
+                            }
+                            self.stock_updates.append(update_info)
+                        else:
+                            scenario_results['errors'].append(f"Failed to update stock for SKU: {sku}")
+                    else:
+                        self.logger.debug(f"No stock change needed for SKU {sku}")
+                        
+                except Exception as e:
+                    error_msg = f"Error updating stock for SKU {sku}: {e}"
+                    self.logger.error(error_msg)
+                    scenario_results['errors'].append(error_msg)
+        
+        # Scenario 3: SKUs in stock list but not in Conway -> skip and log
+        self.logger.info("Scenario 3: SKUs in stock list but not in Conway - skipping")
+        for sku in file_skus.keys():
+            if sku not in conway_skus:
+                scenario_results['skipped_not_in_holded'] += 1
+                self.logger.info(f"Skipped non-Conway SKU: {sku}")
+        
+        # Log summary of scenarios
+        self.logger.info("SCENARIO SUMMARY:")
+        self.logger.info(f"  Conway SKUs reset to 0: {scenario_results['stock_resets']}")
+        self.logger.info(f"  Stock updates applied: {scenario_results['stock_updates']}")
+        self.logger.info(f"  Non-Conway SKUs skipped: {scenario_results['skipped_not_in_holded']}")
+        self.logger.info(f"  Errors encountered: {len(scenario_results['errors'])}")
+        
+        return scenario_results
+    
+    def _get_current_stock(self, holded_product: Dict[str, Any]) -> Optional[int]:
+        """
+        Get current stock from Holded product data.
+        
+        Args:
+            holded_product: Product data from Holded
+            
+        Returns:
+            Current stock as integer or None if not found
+        """
+        is_variant = holded_product.get('_is_variant', False)
+        
+        if is_variant:
+            variant_data = holded_product.get('_variant_data', {})
+            for stock_field in ['stock', 'quantity', 'inventory', 'units']:
+                if stock_field in variant_data and variant_data[stock_field] is not None:
+                    return int(variant_data[stock_field])
+        
+        # Fallback to main product stock
+        for stock_field in ['stock', 'quantity', 'inventory', 'units']:
+            if stock_field in holded_product and holded_product[stock_field] is not None:
+                return int(holded_product[stock_field])
+        
+        return None
+    
+    def _update_product_stock(self, holded_product: Dict[str, Any], new_stock: int, current_stock: int) -> bool:
+        """
+        Update product stock using the appropriate method.
+        This should ONLY be called for variants, never main products.
+        
+        Args:
+            holded_product: Product data from Holded (must be a variant)
+            new_stock: Target stock level
+            current_stock: Current stock level
+            
+        Returns:
+            True if update successful
+        """
+        is_variant = holded_product.get('_is_variant', False)
+        
+        if not is_variant:
+            self.logger.error("Attempted to update main product stock - this should never happen!")
+            self.logger.error(f"Product data: {holded_product.get('name', 'Unknown')} - SKU: {holded_product.get('sku', 'Unknown')}")
+            return False
+        
+        # This is a variant - proceed with update
+        main_product_id = holded_product.get('_main_product_id')
+        variant_id = holded_product.get('_variant_id')
+        
+        if not main_product_id or not variant_id:
+            self.logger.error("Missing main product ID or variant ID for variant update")
+            return False
+        
+        return self.holded_api.update_product_stock(
+            product_id=str(main_product_id),
+            new_stock=new_stock,
+            current_stock=current_stock,
+            variant_id=str(variant_id)
+        )
+
+
 def update_inventory_from_files(file_paths: List[str]) -> Dict[str, Any]:
     """
     Main function to update inventory from files.
@@ -432,6 +710,37 @@ def update_inventory_from_files(file_paths: List[str]) -> Dict[str, Any]:
             'processed_files': 0,
             'processed_products': 0,
             'stock_updates': 0,
+            'errors': [str(e)],
+            'details': []
+        }
+
+
+def update_inventory_robust(file_paths: List[str]) -> Dict[str, Any]:
+    """
+    Main function to update inventory using the robust Conway category logic.
+    
+    Args:
+        file_paths: List of file paths to process
+        
+    Returns:
+        Dictionary containing update results
+    """
+    updater = RobustInventoryUpdater()
+    
+    try:
+        # Process the inventory updates with robust logic
+        results = updater.process_robust_inventory_update(file_paths)
+        
+        return results
+        
+    except Exception as e:
+        logging.error(f"Error in robust inventory update: {e}")
+        return {
+            'processed_files': 0,
+            'processed_products': 0,
+            'stock_updates': 0,
+            'stock_resets': 0,
+            'skipped_not_in_holded': 0,
             'errors': [str(e)],
             'details': []
         } 

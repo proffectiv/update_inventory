@@ -164,12 +164,17 @@ class EmailNotifier:
             Cadena del asunto del email
         """
         stock_updates = update_results.get('stock_updates', 0)
+        stock_resets = update_results.get('stock_resets', 0)
         errors = len(update_results.get('errors', []))
+        total_changes = stock_updates + stock_resets
         
         if errors > 0:
             return f"⚠️ Actualización de Inventario Completada con {errors} Errores"
-        elif stock_updates > 0:
-            return f"✅ Actualización de Inventario Exitosa - {stock_updates} Actualizaciones de Stock"
+        elif total_changes > 0:
+            if stock_resets > 0:
+                return f"✅ Inventario Conway Actualizado - {stock_updates} Actualizaciones de Stock, {stock_resets} Resets"
+            else:
+                return f"✅ Inventario Conway Actualizado - {stock_updates} Actualizaciones de Stock"
         else:
             return "ℹ️ Actualización de Inventario Completada - No se Requieren Cambios"
     
@@ -183,7 +188,7 @@ class EmailNotifier:
         Returns:
             Cadena del cuerpo del email en HTML
         """
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
         
         html = f"""
         <html>
@@ -203,16 +208,17 @@ class EmailNotifier:
         </head>
         <body>
             <div class="header">
-                <h2>📦 Actualización de Inventario</h2>
+                <h2>Actualización de Inventario</h2>
                 <p><strong>Tiempo de Ejecución:</strong> {timestamp}</p>
             </div>
             
             <div class="summary">
-                <h3>📊 Resumen</h3>
+                <h3>Resumen</h3>
                 <ul>
                     <li><strong>Archivos Procesados:</strong> {update_results.get('processed_files', 0)}</li>
                     <li><strong>Productos Procesados:</strong> {update_results.get('processed_products', 0)}</li>
                     <li><strong>Actualizaciones de Stock:</strong> <span class="success">{update_results.get('stock_updates', 0)}</span></li>
+                    <li><strong>Stock Resets (Producto agotado):</strong> <span class="warning">{update_results.get('stock_resets', 0)}</span></li>
                     <li><strong>Errores:</strong> <span class="error">{len(update_results.get('errors', []))}</span></li>
                 </ul>
             </div>
@@ -224,33 +230,39 @@ class EmailNotifier:
         if 'summary' in update_results and update_results['summary'].get('stock_updates'):
             html += """
             <div class="details">
-                <h3>📦 Actualizaciones de Stock</h3>
+                <h3>Cambios de Stock:</h3>
                 <table>
                     <tr>
                         <th>SKU</th>
+                        <th>Producto</th>
                         <th>Stock Anterior</th>
                         <th>Stock Nuevo</th>
-                        <th>Cambio</th>
+                        <th>Acción</th>
                     </tr>
             """
             
-            for update in update_results['summary']['stock_updates'][:10]:  # Limit to first 10
+            for update in update_results['summary']['stock_updates'][:15]:  # Limit to first 15
                 old_stock = update.get('old_stock', 0)
                 new_stock = update.get('new_stock', 0)
-                change = new_stock - old_stock
-                change_str = f"+{change}" if change > 0 else str(change)
+                action = update.get('action', 'update')
+                product_name = update.get('product_name', 'N/A')
+                
+                # Style based on action
+                action_class = 'warning' if action == 'reset' else 'success'
+                action_text = 'Reset a 0' if action == 'reset' else 'Actualización'
                 
                 html += f"""
                     <tr>
                         <td>{update.get('sku', 'N/A')}</td>
+                        <td>{product_name}</td>
                         <td>{old_stock}</td>
                         <td>{new_stock}</td>
-                        <td>{change_str}</td>
+                        <td><span class="{action_class}">{action_text}</span></td>
                     </tr>
                 """
             
-            if len(update_results['summary']['stock_updates']) > 10:
-                html += f"<tr><td colspan='4'>... y {len(update_results['summary']['stock_updates']) - 10} más</td></tr>"
+            if len(update_results['summary']['stock_updates']) > 15:
+                html += f"<tr><td colspan='5'>... y {len(update_results['summary']['stock_updates']) - 15} más</td></tr>"
             
             html += "</table></div>"
         
@@ -302,6 +314,8 @@ RESUMEN
 Archivos Procesados: {update_results.get('processed_files', 0)}
 Productos Procesados: {update_results.get('processed_products', 0)}
 Actualizaciones de Stock: {update_results.get('stock_updates', 0)}
+Stock Resets (Conway SKUs no en archivos): {update_results.get('stock_resets', 0)}
+SKUs Omitidos (no Conway): {update_results.get('skipped_not_in_holded', 0)}
 Errores: {len(update_results.get('errors', []))}
 """
         
@@ -309,17 +323,21 @@ Errores: {len(update_results.get('errors', []))}
         
         # Agregar actualizaciones de stock si las hay
         if 'summary' in update_results and update_results['summary'].get('stock_updates'):
-            text += f"\n\nACTUALIZACIONES DE STOCK ({len(update_results['summary']['stock_updates'])})\n"
-            text += "=" * 50 + "\n"
+            text += f"\n\nCAMBIOS DE STOCK - VARIANTES ({len(update_results['summary']['stock_updates'])})\n"
+            text += "=" * 60 + "\n"
             
-            for update in update_results['summary']['stock_updates'][:5]:
+            for update in update_results['summary']['stock_updates'][:8]:
                 old_stock = update.get('old_stock', 0)
                 new_stock = update.get('new_stock', 0)
-                change = new_stock - old_stock
-                text += f"SKU: {update.get('sku', 'N/A')} | {old_stock} -> {new_stock} ({change:+d})\n"
+                action = update.get('action', 'update')
+                product_name = update.get('product_name', 'N/A')[:30]  # Limit name length
+                action_text = 'RESET' if action == 'reset' else 'UPDATE'
+                
+                text += f"SKU: {update.get('sku', 'N/A')} | {product_name}\n"
+                text += f"     {old_stock} -> {new_stock} [{action_text}]\n\n"
             
-            if len(update_results['summary']['stock_updates']) > 5:
-                text += f"... y {len(update_results['summary']['stock_updates']) - 5} más\n"
+            if len(update_results['summary']['stock_updates']) > 8:
+                text += f"... y {len(update_results['summary']['stock_updates']) - 8} más\n"
         
         # Agregar errores si los hay
         if update_results.get('errors'):

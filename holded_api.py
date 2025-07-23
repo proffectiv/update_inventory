@@ -25,6 +25,7 @@ class HoldedAPI:
         self.api_key = config.holded_api_key
         self.base_url = config.holded_base_url.rstrip('/')
         self.warehouse_id = config.holded_warehouse_id
+        self.conway_category_id = config.holded_conway_category_id
         
         # Set up logging
         logging.basicConfig(level=logging.INFO)
@@ -98,6 +99,154 @@ class HoldedAPI:
             self.logger.error(f"Error retrieving products from Holded: {e}")
             return None
     
+    def get_conway_category_products(self) -> Optional[List[Dict[str, Any]]]:
+        """
+        Retrieve all products from the Conway category.
+        
+        Returns:
+            List of Conway category products or None if failed
+        """
+        try:
+            all_products = []
+            page = 1
+            per_page = 100
+            
+            while True:
+                self.logger.info(f"Fetching Conway category products page {page}")
+                
+                url = f"{self.base_url}/products"
+                params = {
+                    'page': page,
+                    'per_page': per_page,
+                    'categoryId': self.conway_category_id
+                }
+                
+                response = self.session.get(url, params=params)
+                
+                if response.status_code != 200:
+                    self.logger.error(f"API request failed: {response.status_code} - {response.text}")
+                    return None
+                
+                data = response.json()
+                
+                if 'products' in data:
+                    products = data['products']
+                elif isinstance(data, list):
+                    products = data
+                else:
+                    products = [data]
+                
+                if not products:
+                    break
+                
+                # Filter products to ensure they belong to Conway category
+                conway_products = []
+                for product in products:
+                    if self._is_conway_product(product):
+                        conway_products.append(product)
+                
+                all_products.extend(conway_products)
+                
+                if len(products) < per_page:
+                    break
+                
+                page += 1
+            
+            self.logger.info(f"Retrieved {len(all_products)} Conway category products")
+            return all_products
+            
+        except Exception as e:
+            self.logger.error(f"Error retrieving Conway category products: {e}")
+            return None
+    
+    def _is_conway_product(self, product: Dict[str, Any]) -> bool:
+        """
+        Check if a product belongs to the Conway category.
+        
+        Args:
+            product: Product dictionary from Holded API
+            
+        Returns:
+            True if product is in Conway category
+        """
+        # Check categoryId field
+        if product.get('categoryId') == self.conway_category_id:
+            return True
+        
+        # Check if categoryId is in a nested structure
+        if 'category' in product and isinstance(product['category'], dict):
+            if product['category'].get('id') == self.conway_category_id:
+                return True
+        
+        # Check categories array if it exists
+        if 'categories' in product and isinstance(product['categories'], list):
+            for category in product['categories']:
+                if isinstance(category, dict) and category.get('id') == self.conway_category_id:
+                    return True
+                elif str(category) == self.conway_category_id:
+                    return True
+        
+        return False
+    
+    def get_conway_variant_skus(self) -> Dict[str, Dict[str, Any]]:
+        """
+        Get all variant SKUs from Conway category products.
+        
+        Returns:
+            Dictionary mapping variant SKUs to product data
+        """
+        try:
+            conway_products = self.get_conway_category_products()
+            if not conway_products:
+                self.logger.error("Failed to retrieve Conway category products")
+                return {}
+            
+            variant_skus = {}
+            
+            for product in conway_products:
+                # Get main product SKU
+                main_sku = None
+                for sku_field in ['sku', 'code', 'reference', 'item_code', 'product_code', 'ref']:
+                    if sku_field in product and product[sku_field]:
+                        main_sku = str(product[sku_field]).strip()
+                        break
+                
+                # Skip main product SKUs - we only want variants
+                # Main products should never be in the stock list
+                if main_sku:
+                    self.logger.debug(f"Skipping main product SKU (not adding to variant lookup): {main_sku}")
+                
+                # Get variant SKUs
+                if 'variants' in product and isinstance(product['variants'], list):
+                    for variant in product['variants']:
+                        if isinstance(variant, dict):
+                            variant_sku = None
+                            for sku_field in ['sku', 'code', 'reference', 'item_code', 'ref']:
+                                if sku_field in variant and variant[sku_field]:
+                                    variant_sku = str(variant[sku_field]).strip()
+                                    break
+                            
+                            if variant_sku:
+                                variant_skus[variant_sku] = {
+                                    **product,
+                                    'price': variant.get('price', product.get('price')),
+                                    'cost': variant.get('cost', product.get('cost')),
+                                    'stock': variant.get('stock', product.get('stock')),
+                                    '_is_variant': True,
+                                    '_variant_id': variant.get('id'),
+                                    '_variant_data': variant,
+                                    '_main_product_id': product.get('id'),
+                                    '_variant_sku': variant_sku,
+                                    '_is_conway': True
+                                }
+            
+            self.logger.info(f"Found {len(variant_skus)} Conway variant SKUs")
+            return variant_skus
+            
+        except Exception as e:
+            self.logger.error(f"Error getting Conway variant SKUs: {e}")
+            return {}
+
     def get_product_by_sku(self, sku: str) -> Optional[Dict[str, Any]]:
         """
         Get a specific product by SKU.

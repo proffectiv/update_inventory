@@ -15,7 +15,7 @@ from typing import List, Dict, Any
 import traceback
 
 from dropbox_handler import check_dropbox_trigger
-from inventory_updater import update_inventory_from_files
+from inventory_updater import update_inventory_robust
 from email_notifier import send_update_notification, send_error_notification
 from log_sanitizer import setup_sanitized_logging
 
@@ -62,16 +62,18 @@ def main():
         for file_path in files_to_process:
             logger.info(f"  - {file_path}")
         
-        # Step 2: Process inventory updates
-        logger.info("Step 2: Processing inventory updates...")
+        # Step 2: Process inventory updates with robust Conway category logic
+        logger.info("Step 2: Processing inventory updates with robust Conway category logic...")
         
-        update_results = update_inventory_from_files(files_to_process)
+        update_results = update_inventory_robust(files_to_process)
         
         # Log summary
         logger.info("UPDATE SUMMARY:")
         logger.info(f"  Files processed: {update_results.get('processed_files', 0)}")
         logger.info(f"  Products processed: {update_results.get('processed_products', 0)}")
         logger.info(f"  Stock updates: {update_results.get('stock_updates', 0)}")
+        logger.info(f"  Stock resets (Conway SKUs not in files): {update_results.get('stock_resets', 0)}")
+        logger.info(f"  SKUs skipped (not Conway): {update_results.get('skipped_not_in_holded', 0)}")
         logger.info(f"  Errors: {len(update_results.get('errors', []))}")
         
         # Step 3: Send notification email
@@ -198,7 +200,7 @@ def run_dropbox_only():
         dropbox_files = check_dropbox_trigger()
         if dropbox_files:
             logger.info(f"Found {len(dropbox_files)} files from Dropbox")
-            update_results = update_inventory_from_files(dropbox_files)
+            update_results = update_inventory_robust(dropbox_files)
             send_update_notification(update_results)
             cleanup_temp_files(dropbox_files)
         else:
@@ -220,7 +222,7 @@ def process_local_file(file_path: str):
     logger.info(f"PROCESSING LOCAL FILE: {file_path}")
     
     try:
-        update_results = update_inventory_from_files([file_path])
+        update_results = update_inventory_robust([file_path])
         send_update_notification(update_results)
         logger.info("Local file processing completed")
     except Exception as e:

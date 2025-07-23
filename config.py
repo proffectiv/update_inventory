@@ -50,7 +50,7 @@ class Config:
         required_vars = [
             'SMTP_HOST', 'SMTP_PORT', 'SMTP_USERNAME', 'SMTP_PASSWORD',
             'DROPBOX_APP_KEY', 'DROPBOX_APP_SECRET', 'DROPBOX_REFRESH_TOKEN', 
-            'HOLDED_API_KEY', 'HOLDED_WAREHOUSE_ID', 'NOTIFICATION_EMAIL'
+            'HOLDED_API_KEY', 'HOLDED_WAREHOUSE_ID', 'NOTIFICATION_EMAIL', 'HOLDED_CONWAY_CATEGORY_ID'
         ]
         
         missing_vars = [var for var in required_vars if not os.getenv(var)]
@@ -103,6 +103,10 @@ class Config:
     @property
     def holded_warehouse_id(self) -> str:
         return os.getenv('HOLDED_WAREHOUSE_ID')
+    
+    @property
+    def holded_conway_category_id(self) -> str:
+        return os.getenv('HOLDED_CONWAY_CATEGORY_ID', '')
     
     # Notification Configuration
     @property

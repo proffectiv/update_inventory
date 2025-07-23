@@ -56,6 +56,9 @@ class SensitiveDataSanitizer:
             'sample_skus': re.compile(r'Sample\s+Holded\s+SKUs:\s+\[[^\]]+\]', re.IGNORECASE),
             'sku_product_info': re.compile(r'-\s+\d+:\s+MAIN\s+product\s+[\'"][^\'"]+[\'"]', re.IGNORECASE),
             'numeric_skus': re.compile(r'\b\d{9,}\b'),
+            # Conway-specific patterns
+            'conway_items_found': re.compile(r'Found\s+\d+\s+Conway\s+items\s+not\s+in\s+stocklist\s+to\s+set\s+to\s+0\s+stock', re.IGNORECASE),
+            'conway_item_set_zero': re.compile(r'Set\s+Conway\s+item\s+\d+\s+stock\s+to\s+0\s+\(was\s+\d+\)', re.IGNORECASE),
         }
         
         self.replacements: Dict[str, str] = {
@@ -97,6 +100,9 @@ class SensitiveDataSanitizer:
             'sample_skus': 'Sample Holded SKUs: [SAMPLE_SKUS_REDACTED]',
             'sku_product_info': '- [SKU_REDACTED]: MAIN product \"[PRODUCT_NAME_REDACTED]\"',
             'numeric_skus': '[SKU_REDACTED]',
+            # Conway-specific replacements
+            'conway_items_found': 'Found [COUNT_REDACTED] Conway items not in stocklist to set to 0 stock',
+            'conway_item_set_zero': 'Set Conway item [SKU_REDACTED] stock to 0 (was [STOCK_COUNT_REDACTED])',
         }
     
     def sanitize(self, message: str) -> str:
