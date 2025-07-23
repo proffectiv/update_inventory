@@ -33,8 +33,11 @@ class SensitiveDataSanitizer:
             'temp_file_paths': re.compile(r'/var/folders/[^\s]+', re.IGNORECASE),
             'stock_counts': re.compile(r'Found\s+\d+\s+stock\s+files', re.IGNORECASE),
             'download_counts': re.compile(r'Downloaded\s+\d+\s+stock\s+file\(s\)', re.IGNORECASE),
-            'recent_files': re.compile(r'most\s+recent:\s+[\w\-_.]+\.(?:xlsx?|csv|xls)', re.IGNORECASE),
-            'unchanged_files': re.compile(r'Most\s+recent\s+stock\s+file\s+unchanged:\s+[\w\-_.]+\.(?:xlsx?|csv|xls)', re.IGNORECASE),
+            'recent_files': re.compile(r'most\s+recent:\s+[\w\-_.()]+\.(?:xlsx?|csv|xls)', re.IGNORECASE),
+            'unchanged_files': re.compile(r'Most\s+recent\s+stock\s+file\s+unchanged:\s+[\w\-_.()]+\.(?:xlsx?|csv|xls)', re.IGNORECASE),
+            'processing_stock_file': re.compile(r'Processing\s+most\s+recent\s+stock\s+file:\s+[\w\-_.()]+\.(?:xlsx?|csv|xls)', re.IGNORECASE),
+            'downloading_file': re.compile(r'Downloading\s+file:\s+[\w\-_.()]+\.(?:xlsx?|csv|xls)', re.IGNORECASE),
+            'products_from_file_with_name': re.compile(r'products\s+from\s+file:\s+[\w\-_.()]+\.(?:xlsx?|csv|xls)', re.IGNORECASE),
             'dropbox_folders': re.compile(r'Checking\s+Dropbox\s+folder:\s+[^\s]+', re.IGNORECASE),
             'smtp_servers': re.compile(r'smtp\.[^\s:,]+', re.IGNORECASE),
             'smtp_connection': re.compile(r'Conectando\s+al\s+servidor\s+SMTP:\s+[^\s]+', re.IGNORECASE),
@@ -59,6 +62,16 @@ class SensitiveDataSanitizer:
             # Conway-specific patterns
             'conway_items_found': re.compile(r'Found\s+\d+\s+Conway\s+items\s+not\s+in\s+stocklist\s+to\s+set\s+to\s+0\s+stock', re.IGNORECASE),
             'conway_item_set_zero': re.compile(r'Set\s+Conway\s+item\s+\d+\s+stock\s+to\s+0\s+\(was\s+\d+\)', re.IGNORECASE),
+            'conway_variant_count': re.compile(r'Found\s+\d+\s+Conway\s+variant\s+SKUs', re.IGNORECASE),
+            'conway_category_products': re.compile(r'Retrieved\s+\d+\s+Conway\s+category\s+products', re.IGNORECASE),
+            'variant_stock_update': re.compile(r'Updating\s+VARIANT\s+stock\s+[a-f0-9]{24}:', re.IGNORECASE),
+            'variant_successfully_updated': re.compile(r'Successfully\s+updated\s+stock\s+for\s+variant\s+[a-f0-9]{24}', re.IGNORECASE),
+            'updated_stock_sku': re.compile(r'Updated\s+stock\s+for\s+SKU\s+\d+:', re.IGNORECASE),
+            'reset_stock_sku': re.compile(r'Reset\s+stock\s+to\s+0\s+for\s+Conway\s+SKU:\s+\d+', re.IGNORECASE),
+            'scenario_summary_counts': re.compile(r'Conway\s+SKUs\s+reset\s+to\s+0:\s+\d+', re.IGNORECASE),
+            'stock_updates_applied': re.compile(r'Stock\s+updates\s+applied:\s+\d+', re.IGNORECASE),
+            'non_conway_skipped': re.compile(r'Non-Conway\s+SKUs\s+skipped:\s+\d+', re.IGNORECASE),
+            'extracted_skus': re.compile(r'Extracted\s+\d+\s+SKUs\s+from\s+file', re.IGNORECASE),
         }
         
         self.replacements: Dict[str, str] = {
@@ -79,6 +92,9 @@ class SensitiveDataSanitizer:
             'download_counts': 'Downloaded [COUNT_REDACTED] stock file(s)',
             'recent_files': 'most recent: [FILENAME_REDACTED]',
             'unchanged_files': 'Most recent stock file unchanged: [FILENAME_REDACTED]',
+            'processing_stock_file': 'Processing most recent stock file: [FILENAME_REDACTED]',
+            'downloading_file': 'Downloading file: [FILENAME_REDACTED]',
+            'products_from_file_with_name': 'products from file: [FILENAME_REDACTED]',
             'dropbox_folders': 'Checking Dropbox folder: [FOLDER_PATH_REDACTED]',
             'smtp_servers': '[SMTP_SERVER_REDACTED]',
             'smtp_connection': 'Conectando al servidor SMTP: [SMTP_SERVER_REDACTED]',
@@ -103,6 +119,16 @@ class SensitiveDataSanitizer:
             # Conway-specific replacements
             'conway_items_found': 'Found [COUNT_REDACTED] Conway items not in stocklist to set to 0 stock',
             'conway_item_set_zero': 'Set Conway item [SKU_REDACTED] stock to 0 (was [STOCK_COUNT_REDACTED])',
+            'conway_variant_count': 'Found [COUNT_REDACTED] Conway variant SKUs',
+            'conway_category_products': 'Retrieved [COUNT_REDACTED] Conway category products',
+            'variant_stock_update': 'Updating VARIANT stock [VARIANT_ID_REDACTED]:',
+            'variant_successfully_updated': 'Successfully updated stock for variant [VARIANT_ID_REDACTED]',
+            'updated_stock_sku': 'Updated stock for SKU [SKU_REDACTED]:',
+            'reset_stock_sku': 'Reset stock to 0 for Conway SKU: [SKU_REDACTED]',
+            'scenario_summary_counts': 'Conway SKUs reset to 0: [COUNT_REDACTED]',
+            'stock_updates_applied': 'Stock updates applied: [COUNT_REDACTED]',
+            'non_conway_skipped': 'Non-Conway SKUs skipped: [COUNT_REDACTED]',
+            'extracted_skus': 'Extracted [COUNT_REDACTED] SKUs from file',
         }
     
     def sanitize(self, message: str) -> str:
