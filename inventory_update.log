@@ -1,0 +1,49 @@
+2025-07-23 08:59:21,264 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-07-23 08:59:21,565 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-07-23 08:59:21,566 - dropbox - INFO - Request to users/get_current_account
+2025-07-23 08:59:22,233 - dropbox - INFO - Request to users/get_current_account
+2025-07-23 08:59:22,878 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-07-23 08:59:22,879 - dropbox - INFO - Request to users/get_current_account
+2025-07-23 08:59:23,484 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-07-23 08:59:23,484 - dropbox - INFO - Request to files/list_folder
+2025-07-23 08:59:23,857 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: [FILENAME_REDACTED]
+2025-07-23 08:59:23,857 - dropbox_handler - INFO - Processing most recent stock file: [FILENAME_REDACTED]
+2025-07-23 08:59:23,858 - dropbox_handler - INFO - Downloading file: [FILENAME_REDACTED]
+2025-07-23 08:59:23,858 - dropbox - INFO - Request to files/download
+2025-07-23 08:59:24,590 - dropbox_handler - INFO - Downloaded file to: /tmp/[FILENAME_REDACTED]
+2025-07-23 08:59:24,590 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-07-23 08:59:24,592 - __main__ - INFO - Found 1 files from Dropbox
+2025-07-23 08:59:24,593 - inventory_updater - INFO - Retrieving products from Holded...
+2025-07-23 08:59:24,876 - holded_api - INFO - Holded API connection successful
+2025-07-23 08:59:24,877 - holded_api - INFO - Fetching products page 1
+2025-07-23 08:59:25,684 - holded_api - INFO - Fetching products page 2
+2025-07-23 08:59:25,847 - holded_api - INFO - Retrieved [COUNT_REDACTED] products from Holded
+2025-07-23 08:59:25,851 - inventory_updater - INFO - Created SKU lookup with [COUNT_REDACTED] total SKUs:
+2025-07-23 08:59:25,851 - inventory_updater - INFO -   - Main product SKUs: [COUNT_REDACTED]
+2025-07-23 08:59:25,851 - inventory_updater - INFO -   - Variant SKUs: [COUNT_REDACTED]
+2025-07-23 08:59:25,852 - inventory_updater - INFO -   - Skipped products without valid SKU: [COUNT_REDACTED]
+2025-07-23 08:59:25,852 - inventory_updater - INFO - Sample Holded SKUs: [SAMPLE_SKUS_REDACTED]
+2025-07-23 08:59:25,852 - inventory_updater - INFO -   - [SKU_REDACTED]: MAIN product "[PRODUCT_NAME_REDACTED]"
+2025-07-23 08:59:25,852 - inventory_updater - INFO -   - [SKU_REDACTED]: MAIN product "[PRODUCT_NAME_REDACTED]"
+2025-07-23 08:59:25,853 - inventory_updater - INFO -   - [SKU_REDACTED]: MAIN product "[PRODUCT_NAME_REDACTED]"
+2025-07-23 08:59:25,853 - inventory_updater - INFO - Loaded [COUNT_REDACTED] products from Holded
+2025-07-23 08:59:25,853 - inventory_updater - INFO - Processing file: [FILE_PATH_REDACTED]
+2025-07-23 08:59:25,968 - file_processor - INFO - Successfully read Excel file
+2025-07-23 08:59:25,968 - file_processor - INFO - Column mappings - [COLUMN_MAPPING_REDACTED]: item, Price: evp, Offer: None, Stock: stock qty
+2025-07-23 08:59:25,969 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file
+2025-07-23 08:59:25,969 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file: [FILENAME_REDACTED]
+2025-07-23 08:59:25,970 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products out of 4
+2025-07-23 08:59:25,970 - inventory_updater - INFO - [PRODUCT_COUNT_REDACTED] products in file
+2025-07-23 08:59:25,970 - inventory_updater - INFO - Updating stock for VARIANT [VARIANT_ID_REDACTED] ([PRODUCT_DETAILS_REDACTED]): [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-07-23 08:59:25,971 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-07-23 08:59:26,592 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-07-23 08:59:26,592 - inventory_updater - INFO - Updating stock for VARIANT [VARIANT_ID_REDACTED] ([PRODUCT_DETAILS_REDACTED]): [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-07-23 08:59:26,593 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-07-23 08:59:27,055 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-07-23 08:59:27,056 - inventory_updater - INFO - Updating stock for VARIANT [VARIANT_ID_REDACTED] ([PRODUCT_DETAILS_REDACTED]): [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-07-23 08:59:27,056 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-07-23 08:59:27,442 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-07-23 08:59:27,445 - email_notifier - INFO - Conectando al servidor SMTP: [SMTP_SERVER_REDACTED]
+2025-07-23 08:59:28,994 - email_notifier - INFO - Email enviado exitosamente
+2025-07-23 08:59:29,136 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
+2025-07-23 08:59:29,137 - __main__ - INFO - Cleaned up temporary file: /tmp/[FILENAME_REDACTED]
