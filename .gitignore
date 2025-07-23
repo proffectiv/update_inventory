@@ -207,5 +207,4 @@ __marimo__/
 
 # Sensitive files and logs
 test_file.csv
-*.log
-dropbox_state.json
+.claude/

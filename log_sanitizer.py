@@ -27,6 +27,35 @@ class SensitiveDataSanitizer:
             'phone': re.compile(r'\b(?:\+?1[-.]?)?\(?([0-9]{3})\)?[-.]?([0-9]{3})[-.]?([0-9]{4})\b'),
             'credit_card': re.compile(r'\b(?:\d{4}[-\s]?){3}\d{4}\b'),
             'social_security': re.compile(r'\b\d{3}-\d{2}-\d{4}\b'),
+            # Inventory-specific patterns
+            'file_names': re.compile(r'\b[\w\-_]+\.(?:xlsx?|csv|xls)\b', re.IGNORECASE),
+            'folder_paths': re.compile(r'/[A-Z\-_]+(?:/[^\s]*)?'),
+            'temp_file_paths': re.compile(r'/var/folders/[^\s]+', re.IGNORECASE),
+            'stock_counts': re.compile(r'Found\s+\d+\s+stock\s+files', re.IGNORECASE),
+            'download_counts': re.compile(r'Downloaded\s+\d+\s+stock\s+file\(s\)', re.IGNORECASE),
+            'recent_files': re.compile(r'most\s+recent:\s+[\w\-_.]+\.(?:xlsx?|csv|xls)', re.IGNORECASE),
+            'unchanged_files': re.compile(r'Most\s+recent\s+stock\s+file\s+unchanged:\s+[\w\-_.]+\.(?:xlsx?|csv|xls)', re.IGNORECASE),
+            'dropbox_folders': re.compile(r'Checking\s+Dropbox\s+folder:\s+[^\s]+', re.IGNORECASE),
+            'smtp_servers': re.compile(r'smtp\.[^\s:,]+', re.IGNORECASE),
+            'smtp_connection': re.compile(r'Conectando\s+al\s+servidor\s+SMTP:\s+[^\s]+', re.IGNORECASE),
+            # Product processing patterns
+            'product_counts': re.compile(r'(?:Extracted|Found|Processed|Validated)\s+\d+\s+(?:valid\s+)?products?', re.IGNORECASE),
+            'column_mappings': re.compile(r'Column\s+mappings\s+-\s+[^:]+:', re.IGNORECASE),
+            'variant_ids': re.compile(r'\b[a-f0-9]{24}\b'),
+            'product_details': re.compile(r'\([^)]*(?:Talla|Color|Medida|Tipo|Forma)[^)]*\)', re.IGNORECASE),
+            'stock_updates': re.compile(r':\s*\d+\s*->\s*\d+', re.IGNORECASE),
+            'stock_difference': re.compile(r'\(difference:\s*[+-]\d+\)', re.IGNORECASE),
+            'processing_file': re.compile(r'Processing\s+file:\s+[^\s]+', re.IGNORECASE),
+            # Holded product data patterns
+            'retrieved_products': re.compile(r'Retrieved\s+\d+\s+products\s+from\s+Holded', re.IGNORECASE),
+            'sku_lookup_counts': re.compile(r'Created\s+SKU\s+lookup\s+with\s+\d+\s+total\s+SKUs', re.IGNORECASE),
+            'main_product_skus': re.compile(r'Main\s+product\s+SKUs:\s+\d+', re.IGNORECASE),
+            'variant_skus': re.compile(r'Variant\s+SKUs:\s+\d+', re.IGNORECASE),
+            'skipped_products': re.compile(r'Skipped\s+products\s+without\s+valid\s+SKU:\s+\d+', re.IGNORECASE),
+            'loaded_products': re.compile(r'Loaded\s+\d+\s+products\s+from\s+Holded', re.IGNORECASE),
+            'sample_skus': re.compile(r'Sample\s+Holded\s+SKUs:\s+\[[^\]]+\]', re.IGNORECASE),
+            'sku_product_info': re.compile(r'-\s+\d+:\s+MAIN\s+product\s+[\'"][^\'"]+[\'"]', re.IGNORECASE),
+            'numeric_skus': re.compile(r'\b\d{9,}\b'),
         }
         
         self.replacements: Dict[str, str] = {
@@ -39,6 +68,35 @@ class SensitiveDataSanitizer:
             'phone': '[PHONE_REDACTED]',
             'credit_card': '[CARD_REDACTED]',
             'social_security': '[SSN_REDACTED]',
+            # Inventory-specific replacements
+            'file_names': '[FILENAME_REDACTED]',
+            'folder_paths': '[FOLDER_PATH_REDACTED]',
+            'temp_file_paths': '[TEMP_FILE_PATH_REDACTED]',
+            'stock_counts': 'Found [COUNT_REDACTED] stock files',
+            'download_counts': 'Downloaded [COUNT_REDACTED] stock file(s)',
+            'recent_files': 'most recent: [FILENAME_REDACTED]',
+            'unchanged_files': 'Most recent stock file unchanged: [FILENAME_REDACTED]',
+            'dropbox_folders': 'Checking Dropbox folder: [FOLDER_PATH_REDACTED]',
+            'smtp_servers': '[SMTP_SERVER_REDACTED]',
+            'smtp_connection': 'Conectando al servidor SMTP: [SMTP_SERVER_REDACTED]',
+            # Product processing replacements
+            'product_counts': '[PRODUCT_COUNT_REDACTED] products',
+            'column_mappings': 'Column mappings - [COLUMN_MAPPING_REDACTED]:',
+            'variant_ids': '[VARIANT_ID_REDACTED]',
+            'product_details': '([PRODUCT_DETAILS_REDACTED])',
+            'stock_updates': ': [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]',
+            'stock_difference': '(difference: [STOCK_DIFF_REDACTED])',
+            'processing_file': 'Processing file: [FILE_PATH_REDACTED]',
+            # Holded product data replacements
+            'retrieved_products': 'Retrieved [COUNT_REDACTED] products from Holded',
+            'sku_lookup_counts': 'Created SKU lookup with [COUNT_REDACTED] total SKUs',
+            'main_product_skus': 'Main product SKUs: [COUNT_REDACTED]',
+            'variant_skus': 'Variant SKUs: [COUNT_REDACTED]',
+            'skipped_products': 'Skipped products without valid SKU: [COUNT_REDACTED]',
+            'loaded_products': 'Loaded [COUNT_REDACTED] products from Holded',
+            'sample_skus': 'Sample Holded SKUs: [SAMPLE_SKUS_REDACTED]',
+            'sku_product_info': '- [SKU_REDACTED]: MAIN product \"[PRODUCT_NAME_REDACTED]\"',
+            'numeric_skus': '[SKU_REDACTED]',
         }
     
     def sanitize(self, message: str) -> str:

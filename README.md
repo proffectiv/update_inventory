@@ -7,8 +7,8 @@ A simple, modular Python automation that synchronizes inventory data between Dro
 - **Dropbox Monitoring**: Watches Dropbox folder for new/updated inventory files
 - **Smart Comparison**: Compares SKUs and detects price/stock differences
 - **Automatic Updates**: Updates prices and stock in Holded via API
-- **Offer Detection**: Adds "oferta" tag when prices are reduced
-- **Email Notifications**: Sends detailed reports via Strato SMTP
+- **Offer Detection**: Adds discount tags when prices are reduced
+- **Email Notifications**: Sends detailed reports via SMTP
 - **Webhook Triggers**: Activated by cron-job.org for reliable scheduling
 - **Simple Setup**: No email parsing complexity - external tools handle email downloads
 
@@ -45,20 +45,20 @@ update_inventory/
 Create a `.env` file in the project root:
 
 ```bash
-# Email Configuration (Strato SMTP - for notifications only, using SSL)
-SMTP_HOST=smtp.strato.de
+# Email Configuration (SMTP - for notifications only, using SSL)
+SMTP_HOST=your-smtp-server.com
 SMTP_PORT=465
 SMTP_USERNAME=your-email@yourdomain.com
 SMTP_PASSWORD=your-email-password
 
 # Dropbox Configuration
 DROPBOX_ACCESS_TOKEN=your-dropbox-access-token
-DROPBOX_FOLDER_PATH=/inventory-updates
+DROPBOX_FOLDER_PATH=/your-folder-path
 
 # Holded API Configuration
 HOLDED_API_KEY=your-holded-api-key
-HOLDED_BASE_URL=https://api.holded.com
-HOLDED_WAREHOUSE_ID=your-holded-warehouse-id
+HOLDED_BASE_URL=https://api.holded.com/api
+HOLDED_WAREHOUSE_ID=your-warehouse-id
 
 # Notification Email
 NOTIFICATION_EMAIL=admin@yourdomain.com
@@ -145,33 +145,33 @@ Your inventory files (CSV/Excel) should contain columns for:
 - **Price**: Product price (optional)
 - **Stock**: Stock quantity (optional)
 
-### Conway-Specific CSV Format
+### CSV Format Examples
 
-The system is optimized for Conway inventory files with these columns:
+The system supports various CSV formats with flexible column mapping:
 
-- **Item**: Product SKU/reference (maps to SKU)
-- **EVP**: Regular price (maps to Price)
-- **OFERTA**: Offer/special price (takes priority over EVP)
-- **Stock qty**: Stock quantity (maps to Stock)
+- **Item/SKU**: Product identifier (maps to SKU)
+- **Price**: Regular price (maps to Price)
+- **Offer Price**: Special/promotional price (takes priority over regular price)
+- **Stock**: Stock quantity (maps to Stock)
 
-**Special Stock Handling**: Stock values like ">10" are automatically converted to 10.
+**Special Stock Handling**: Stock values like ">10" are automatically converted to numeric values.
 
 ### Supported Column Names
 
 The system auto-detects columns using these variations:
 
-- **SKU**: `sku`, `codigo`, `code`, `product_code`, `item_code`, `ref`, `item`
-- **Price**: `price`, `precio`, `cost`, `coste`, `amount`, `importe`, `evp`
-- **Offer**: `oferta`, `offer`, `special_price`, `promo_price`
-- **Stock**: `stock`, `quantity`, `cantidad`, `units`, `unidades`, `inventory`, `stock qty`
+- **SKU**: `sku`, `code`, `product_code`, `item_code`, `ref`, `item`, `identifier`
+- **Price**: `price`, `cost`, `amount`, `regular_price`, `base_price`
+- **Offer**: `offer`, `special_price`, `promo_price`, `discount_price`
+- **Stock**: `stock`, `quantity`, `units`, `inventory`, `available`, `qty`
 
 ### Example CSV
 
 ```csv
 SKU,Price,Stock
-ABC123,29.99,100
-DEF456,15.50,50
-GHI789,8.75,200
+[PRODUCT_SKU_1],[PRICE_1],[STOCK_1]
+[PRODUCT_SKU_2],[PRICE_2],[STOCK_2]
+[PRODUCT_SKU_3],[PRICE_3],[STOCK_3]
 ```
 
 ## 🔄 How It Works
@@ -200,7 +200,7 @@ GHI789,8.75,200
 
 5. **Updates**:
 
-   - Generates price update requests (adds "oferta" tag if price is lower)
+   - Generates price update requests (adds discount tags if price is lower)
    - Generates stock update requests
    - Performs PUT requests to Holded API
 
@@ -216,7 +216,7 @@ The system uses the correct Holded API endpoints and data structures:
 
 - **Price Updates**: `PUT /api/invoicing/v1/products/{productId}`
   - Uses `{"kind": "variants", "subtotal": price}` structure for both main products and variants
-  - Adds "oferta" tag for discounted prices
+  - Adds discount tags for reduced prices
 - **Stock Updates**: `PUT /api/invoicing/v1/products/{productId}/stock`
   - Uses warehouse-based structure: `{"stock": {"warehouseId": {"variantId": stock_difference}}}`
   - Calculates stock difference (target - current) instead of absolute values
@@ -226,7 +226,7 @@ The system uses the correct Holded API endpoints and data structures:
 
 Products are matched between CSV and Holded using multiple SKU field variations:
 
-- `sku`, `code`, `reference`, `item_code`, `product_code`, `ref`, `item`, `codigo`
+- `sku`, `code`, `reference`, `item_code`, `product_code`, `ref`, `item`, `identifier`
 
 The system creates a lookup table for efficient matching and logs detailed information for debugging.
 
@@ -255,7 +255,7 @@ MAX_FILE_SIZE_MB=10
 Set the monitored Dropbox folder:
 
 ```bash
-DROPBOX_FOLDER_PATH=/inventory-updates
+DROPBOX_FOLDER_PATH=/your-folder-path
 ```
 
 ### Webhook Schedule
@@ -298,12 +298,21 @@ Configure cron-job.org schedule (examples):
 - GitHub Actions: Download logs from Actions tab
 - cron-job.org: Check execution history in dashboard
 
-## 🔒 Security Notes
+## 🔒 Security and Privacy Features
 
+### Data Protection
+- **Sensitive Data Filtering**: All logs automatically redact sensitive information
+- **Secure File Handling**: Files are processed in memory and cleaned up automatically
+- **Credential Protection**: API keys, tokens, and passwords are never logged
+- **Temporary Storage**: Downloaded files are removed after processing
+
+### Security Best Practices
 - Never commit `.env` file to version control
 - Use GitHub repository secrets for sensitive data
 - Regularly rotate API keys and passwords
 - Limit Dropbox access token permissions to specific folder
+- Enable two-factor authentication on all accounts
+- Use restricted API keys with minimal permissions
 
 ## 💡 External Email Processing Options
 

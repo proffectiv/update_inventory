@@ -12,7 +12,7 @@ Required environment variables (create a .env file):
 - DROPBOX_APP_KEY=your-dropbox-app-key
 - DROPBOX_APP_SECRET=your-dropbox-app-secret
 - DROPBOX_REFRESH_TOKEN=your-dropbox-refresh-token
-- DROPBOX_FOLDER_PATH=/STOCK-UPDATES
+- DROPBOX_FOLDER_PATH=/your-folder-path
 - HOLDED_API_KEY=your-holded-api-key
 - HOLDED_BASE_URL=https://api.holded.com/api/invoicing/v1
 - HOLDED_WAREHOUSE_ID=your-warehouse-id
@@ -89,7 +89,7 @@ class Config:
     
     @property
     def dropbox_folder_path(self) -> str:
-        return os.getenv('DROPBOX_FOLDER_PATH', '/STOCK-UPDATE')
+        return os.getenv('DROPBOX_FOLDER_PATH')
     
     # Holded API Configuration
     @property
