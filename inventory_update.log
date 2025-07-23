@@ -81,3 +81,56 @@
 2025-07-23 17:37:13,765 - dropbox_handler - INFO - Most recent stock file unchanged: [FILENAME_REDACTED]
 2025-07-23 17:37:13,765 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
 2025-07-23 17:37:13,767 - __main__ - INFO - No Dropbox files found
+2025-07-23 17:39:49,770 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-07-23 17:39:50,042 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-07-23 17:39:50,044 - dropbox - INFO - Request to users/get_current_account
+2025-07-23 17:39:50,724 - dropbox - INFO - Request to users/get_current_account
+2025-07-23 17:39:51,344 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-07-23 17:39:51,344 - dropbox - INFO - Request to users/get_current_account
+2025-07-23 17:39:51,944 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-07-23 17:39:51,944 - dropbox - INFO - Request to files/list_folder
+2025-07-23 17:39:52,360 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: [FILENAME_REDACTED]
+2025-07-23 17:39:52,360 - dropbox_handler - INFO - Processing most recent stock file: [FILENAME_REDACTED]
+2025-07-23 17:39:52,361 - dropbox_handler - INFO - Downloading file: [FILENAME_REDACTED]
+2025-07-23 17:39:52,361 - dropbox - INFO - Request to files/download
+2025-07-23 17:39:53,099 - dropbox_handler - INFO - Downloaded file to: /tmp/dropbox_stock_test_file_v2_(6).xlsx
+2025-07-23 17:39:53,099 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-07-23 17:39:53,101 - __main__ - INFO - Found 1 files from Dropbox
+2025-07-23 17:39:53,102 - inventory_updater - INFO - Retrieving Conway category variant SKUs from Holded...
+2025-07-23 17:39:53,102 - holded_api - INFO - Fetching Conway category products page 1
+2025-07-23 17:39:53,860 - holded_api - INFO - Fetching Conway category products page 2
+2025-07-23 17:39:53,988 - holded_api - INFO - Retrieved [COUNT_REDACTED] Conway category products
+2025-07-23 17:39:53,989 - holded_api - INFO - Found [COUNT_REDACTED] Conway variant SKUs
+2025-07-23 17:39:53,989 - inventory_updater - INFO - Found [COUNT_REDACTED] Conway variant SKUs in Holded
+2025-07-23 17:39:53,989 - inventory_updater - INFO - Processing stock file: /tmp/dropbox_stock_test_file_v2_(6).xlsx
+2025-07-23 17:39:54,175 - file_processor - INFO - Successfully read Excel file
+2025-07-23 17:39:54,176 - file_processor - INFO - Column mappings - [COLUMN_MAPPING_REDACTED]: item, Price: evp, Offer: None, Stock: stock qty
+2025-07-23 17:39:54,176 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file
+2025-07-23 17:39:54,177 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file: [FILENAME_REDACTED]
+2025-07-23 17:39:54,177 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products out of 3
+2025-07-23 17:39:54,177 - inventory_updater - INFO - Extracted [COUNT_REDACTED] SKUs from file
+2025-07-23 17:39:54,178 - inventory_updater - INFO - [PRODUCT_COUNT_REDACTED] products in stock files
+2025-07-23 17:39:54,178 - inventory_updater - INFO - Scenario 1: Conway SKUs not in stock list - setting to 0
+2025-07-23 17:39:54,178 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-07-23 17:39:54,491 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-07-23 17:39:54,491 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 5)
+2025-07-23 17:39:54,491 - inventory_updater - INFO - Scenario 2: SKUs in both Conway and stock list - checking for updates
+2025-07-23 17:39:54,492 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-07-23 17:39:55,067 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-07-23 17:39:55,068 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-07-23 17:39:55,068 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-07-23 17:39:55,389 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-07-23 17:39:55,390 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-07-23 17:39:55,390 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-07-23 17:39:55,688 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-07-23 17:39:55,689 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-07-23 17:39:55,689 - inventory_updater - INFO - Scenario 3: SKUs in stock list but not in Conway - skipping
+2025-07-23 17:39:55,689 - inventory_updater - INFO - SCENARIO SUMMARY:
+2025-07-23 17:39:55,690 - inventory_updater - INFO -   Conway SKUs reset to 0: [COUNT_REDACTED]
+2025-07-23 17:39:55,690 - inventory_updater - INFO -   Stock updates applied: [COUNT_REDACTED]
+2025-07-23 17:39:55,690 - inventory_updater - INFO -   Non-Conway SKUs skipped: [COUNT_REDACTED]
+2025-07-23 17:39:55,690 - inventory_updater - INFO -   Errors encountered: 0
+2025-07-23 17:39:55,692 - email_notifier - INFO - Conectando al servidor SMTP: [SMTP_SERVER_REDACTED]
+2025-07-23 17:39:56,899 - email_notifier - INFO - Email enviado exitosamente
+2025-07-23 17:39:57,002 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
+2025-07-23 17:39:57,002 - __main__ - INFO - Cleaned up temporary file: /tmp/dropbox_stock_test_file_v2_(6).xlsx
