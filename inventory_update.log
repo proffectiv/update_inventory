@@ -242,3 +242,15 @@
 2025-08-01 10:30:30,324 - dropbox_handler - INFO - Most recent stock file unchanged: [FILENAME_REDACTED]
 2025-08-01 10:30:30,324 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
 2025-08-01 10:30:30,325 - __main__ - INFO - No Dropbox files found
+2025-08-02 10:30:28,755 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-08-02 10:30:29,038 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-02 10:30:29,040 - dropbox - INFO - Request to users/get_current_account
+2025-08-02 10:30:29,663 - dropbox - INFO - Request to users/get_current_account
+2025-08-02 10:30:30,204 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-08-02 10:30:30,205 - dropbox - INFO - Request to users/get_current_account
+2025-08-02 10:30:30,785 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-08-02 10:30:30,786 - dropbox - INFO - Request to files/list_folder
+2025-08-02 10:30:31,291 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: [FILENAME_REDACTED]
+2025-08-02 10:30:31,292 - dropbox_handler - INFO - Most recent stock file unchanged: [FILENAME_REDACTED]
+2025-08-02 10:30:31,292 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-08-02 10:30:31,293 - __main__ - INFO - No Dropbox files found
