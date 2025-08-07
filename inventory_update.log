@@ -509,3 +509,208 @@
 2025-08-06 10:30:59,657 - email_notifier - INFO - Email enviado exitosamente
 2025-08-06 10:30:59,766 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
 2025-08-06 10:30:59,767 - __main__ - INFO - Cleaned up temporary file: /tmp/[FILENAME_REDACTED]
+2025-08-07 10:30:31,913 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-08-07 10:30:32,195 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-07 10:30:32,196 - dropbox - INFO - Request to users/get_current_account
+2025-08-07 10:30:32,850 - dropbox - INFO - Request to users/get_current_account
+2025-08-07 10:30:33,548 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-08-07 10:30:33,548 - dropbox - INFO - Request to users/get_current_account
+2025-08-07 10:30:34,193 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-08-07 10:30:34,194 - dropbox - INFO - Request to files/list_folder
+2025-08-07 10:30:34,703 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: stock_Stocklist_CONWAY (1).xlsx
+2025-08-07 10:30:34,704 - dropbox_handler - INFO - Processing most recent stock file: stock_Stocklist_CONWAY (1).xlsx
+2025-08-07 10:30:34,704 - dropbox_handler - INFO - Downloading file: stock_Stocklist_CONWAY (1).xlsx
+2025-08-07 10:30:34,705 - dropbox - INFO - Request to files/download
+2025-08-07 10:30:35,501 - dropbox_handler - INFO - Downloaded file to: /tmp/dropbox_stock_Stocklist_CONWAY (1).xlsx
+2025-08-07 10:30:35,502 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-08-07 10:30:35,504 - __main__ - INFO - Found 1 files from Dropbox
+2025-08-07 10:30:35,505 - inventory_updater - INFO - Retrieving Conway category variant SKUs from Holded...
+2025-08-07 10:30:35,505 - holded_api - INFO - Fetching Conway category products page 1
+2025-08-07 10:30:36,664 - holded_api - INFO - Fetching Conway category products page 2
+2025-08-07 10:30:36,839 - holded_api - INFO - Retrieved [COUNT_REDACTED] Conway category products
+2025-08-07 10:30:36,841 - holded_api - INFO - Found [COUNT_REDACTED] Conway variant SKUs
+2025-08-07 10:30:36,841 - inventory_updater - INFO - Found [COUNT_REDACTED] Conway variant SKUs in Holded
+2025-08-07 10:30:36,841 - inventory_updater - INFO - Processing stock file: /tmp/dropbox_stock_Stocklist_CONWAY (1).xlsx
+2025-08-07 10:30:37,077 - file_processor - INFO - Successfully read Excel file
+2025-08-07 10:30:37,078 - file_processor - INFO - Column mappings - [COLUMN_MAPPING_REDACTED]: item, Price: evp, Offer: None, Stock: stock qty
+2025-08-07 10:30:37,106 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file
+2025-08-07 10:30:37,106 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file: dropbox_stock_Stocklist_CONWAY (1).xlsx
+2025-08-07 10:30:37,107 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products out of 428
+2025-08-07 10:30:37,107 - inventory_updater - INFO - Extracted [COUNT_REDACTED] SKUs from file
+2025-08-07 10:30:37,107 - inventory_updater - INFO - [PRODUCT_COUNT_REDACTED] products in stock files
+2025-08-07 10:30:37,108 - inventory_updater - INFO - Scenario 1: Conway SKUs not in stock list - setting to 0
+2025-08-07 10:30:37,108 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:37,508 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:37,508 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 5)
+2025-08-07 10:30:37,509 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:37,984 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:37,984 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 2)
+2025-08-07 10:30:37,985 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:38,421 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:38,421 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 2)
+2025-08-07 10:30:38,422 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:38,838 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:38,838 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 1)
+2025-08-07 10:30:38,839 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:39,191 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:39,191 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 2)
+2025-08-07 10:30:39,192 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:39,561 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:39,562 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 1)
+2025-08-07 10:30:39,562 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:40,026 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:40,026 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 3)
+2025-08-07 10:30:40,027 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:40,433 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:40,434 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 1)
+2025-08-07 10:30:40,434 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:41,134 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:41,135 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 2)
+2025-08-07 10:30:41,135 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:41,516 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:41,517 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 1)
+2025-08-07 10:30:41,517 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:41,900 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:41,901 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 1)
+2025-08-07 10:30:41,901 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:42,291 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:42,291 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 1)
+2025-08-07 10:30:42,292 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:42,670 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:42,670 - inventory_updater - INFO - Reset stock to 0 for Conway SKU: [SKU_REDACTED] (was 5)
+2025-08-07 10:30:42,670 - inventory_updater - INFO - Scenario 2: SKUs in both Conway and stock list - checking for updates
+2025-08-07 10:30:42,671 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:43,033 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:43,034 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:43,034 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:43,391 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:43,392 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:43,392 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:44,008 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:44,008 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:44,009 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:44,363 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:44,364 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:44,364 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:44,728 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:44,728 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:44,729 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:45,131 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:45,132 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:45,132 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:45,622 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:45,622 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:45,623 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:45,999 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:45,999 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:45,999 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:46,403 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:46,403 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:46,404 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:46,797 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:46,798 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:46,798 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:47,170 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:47,170 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:47,170 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:47,531 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:47,531 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:47,532 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:47,940 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:47,940 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:47,941 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:48,308 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:48,308 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:48,309 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:48,722 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:48,723 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:48,723 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:49,102 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:49,102 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:49,102 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:49,495 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:49,496 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:49,496 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:49,869 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:49,870 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:49,870 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:50,280 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:50,280 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:50,281 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:50,681 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:50,681 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:50,682 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:51,059 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:51,059 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:51,060 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:51,454 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:51,454 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:51,454 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:51,837 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:51,838 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:51,838 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:52,190 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:52,190 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:52,190 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:52,574 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:52,575 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:52,575 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:52,958 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:52,958 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:52,959 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:53,347 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:53,347 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:53,348 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:53,720 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:53,721 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:53,721 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:54,082 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:54,083 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:54,083 - holded_api - INFO - Updating VARIANT stock [VARIANT_ID_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED] (difference: [STOCK_DIFF_REDACTED])
+2025-08-07 10:30:54,469 - holded_api - INFO - Successfully updated stock for variant [VARIANT_ID_REDACTED]
+2025-08-07 10:30:54,470 - inventory_updater - INFO - Updated stock for SKU [SKU_REDACTED]: [STOCK_FROM_REDACTED] -> [STOCK_TO_REDACTED]
+2025-08-07 10:30:54,470 - inventory_updater - INFO - Scenario 3: SKUs in stock list but not in Conway - skipping
+2025-08-07 10:30:54,470 - inventory_updater - INFO - Skipped non-Conway SKU: 2821932
+2025-08-07 10:30:54,471 - inventory_updater - INFO - Skipped non-Conway SKU: 2822047
+2025-08-07 10:30:54,471 - inventory_updater - INFO - Skipped non-Conway SKU: 2822278
+2025-08-07 10:30:54,471 - inventory_updater - INFO - Skipped non-Conway SKU: 2822740
+2025-08-07 10:30:54,472 - inventory_updater - INFO - Skipped non-Conway SKU: 2822757
+2025-08-07 10:30:54,472 - inventory_updater - INFO - Skipped non-Conway SKU: 2822765
+2025-08-07 10:30:54,472 - inventory_updater - INFO - Skipped non-Conway SKU: 2822773
+2025-08-07 10:30:54,472 - inventory_updater - INFO - Skipped non-Conway SKU: 2822880
+2025-08-07 10:30:54,473 - inventory_updater - INFO - Skipped non-Conway SKU: 2822898
+2025-08-07 10:30:54,473 - inventory_updater - INFO - Skipped non-Conway SKU: 2822922
+2025-08-07 10:30:54,473 - inventory_updater - INFO - Skipped non-Conway SKU: 2822781
+2025-08-07 10:30:54,474 - inventory_updater - INFO - Skipped non-Conway SKU: 2822799
+2025-08-07 10:30:54,474 - inventory_updater - INFO - Skipped non-Conway SKU: 2822807
+2025-08-07 10:30:54,474 - inventory_updater - INFO - Skipped non-Conway SKU: 2810473
+2025-08-07 10:30:54,474 - inventory_updater - INFO - Skipped non-Conway SKU: 2810474
+2025-08-07 10:30:54,475 - inventory_updater - INFO - Skipped non-Conway SKU: 2810475
+2025-08-07 10:30:54,475 - inventory_updater - INFO - Skipped non-Conway SKU: 2810477
+2025-08-07 10:30:54,475 - inventory_updater - INFO - Skipped non-Conway SKU: 2810478
+2025-08-07 10:30:54,476 - inventory_updater - INFO - Skipped non-Conway SKU: 2810479
+2025-08-07 10:30:54,476 - inventory_updater - INFO - Skipped non-Conway SKU: 2810480
+2025-08-07 10:30:54,476 - inventory_updater - INFO - Skipped non-Conway SKU: 2810496
+2025-08-07 10:30:54,476 - inventory_updater - INFO - Skipped non-Conway SKU: 2810497
+2025-08-07 10:30:54,477 - inventory_updater - INFO - Skipped non-Conway SKU: 2810504
+2025-08-07 10:30:54,477 - inventory_updater - INFO - Skipped non-Conway SKU: 2810506
+2025-08-07 10:30:54,477 - inventory_updater - INFO - Skipped non-Conway SKU: 2810507
+2025-08-07 10:30:54,478 - inventory_updater - INFO - Skipped non-Conway SKU: 2810366
+2025-08-07 10:30:54,478 - inventory_updater - INFO - Skipped non-Conway SKU: 2810369
+2025-08-07 10:30:54,478 - inventory_updater - INFO - Skipped non-Conway SKU: 2810572
+2025-08-07 10:30:54,478 - inventory_updater - INFO - Skipped non-Conway SKU: 2810573
+2025-08-07 10:30:54,479 - inventory_updater - INFO - Skipped non-Conway SKU: 2810575
+2025-08-07 10:30:54,479 - inventory_updater - INFO - Skipped non-Conway SKU: 2810998
+2025-08-07 10:30:54,479 - inventory_updater - INFO - Skipped non-Conway SKU: 2811000
+2025-08-07 10:30:54,480 - inventory_updater - INFO - Skipped non-Conway SKU: 2811001
+2025-08-07 10:30:54,480 - inventory_updater - INFO - Skipped non-Conway SKU: 2811002
+2025-08-07 10:30:54,480 - inventory_updater - INFO - Skipped non-Conway SKU: 2811003
+2025-08-07 10:30:54,480 - inventory_updater - INFO - SCENARIO SUMMARY:
+2025-08-07 10:30:54,481 - inventory_updater - INFO -   Conway SKUs reset to 0: [COUNT_REDACTED]
+2025-08-07 10:30:54,481 - inventory_updater - INFO -   Stock updates applied: [COUNT_REDACTED]
+2025-08-07 10:30:54,481 - inventory_updater - INFO -   Non-Conway SKUs skipped: [COUNT_REDACTED]
+2025-08-07 10:30:54,482 - inventory_updater - INFO -   Errors encountered: 0
+2025-08-07 10:30:54,484 - email_notifier - INFO - Conectando al servidor SMTP: [SMTP_SERVER_REDACTED]
+2025-08-07 10:30:55,898 - email_notifier - INFO - Email enviado exitosamente
+2025-08-07 10:30:56,026 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
+2025-08-07 10:30:56,027 - __main__ - INFO - Cleaned up temporary file: /tmp/dropbox_stock_Stocklist_CONWAY (1).xlsx
