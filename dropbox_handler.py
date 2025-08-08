@@ -334,7 +334,7 @@ class DropboxHandler:
         try:
             # Create temporary file path
             temp_dir = tempfile.gettempdir()
-            local_filename = f"dropbox_{file_metadata.name}"
+            local_filename = f"{file_metadata.name}"
             local_path = os.path.join(temp_dir, local_filename)
             
             # Download the file

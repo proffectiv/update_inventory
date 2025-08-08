@@ -30,6 +30,7 @@ class FileProcessor:
         # Common column name variations for auto-detection
         # Updated to include Conway-specific columns
         self.sku_columns = ['sku', 'codigo', 'code', 'product_code', 'item_code', 'ref', 'item']
+        self.name_columns = ['name', 'nombre', 'product_name', 'producto', 'title', 'titulo', 'description', 'descripcion', 'desc']
         self.price_columns = ['price', 'precio', 'cost', 'coste', 'amount', 'importe', 'evp']
         self.offer_columns = ['oferta', 'offer', 'special_price', 'promo_price']
         self.stock_columns = ['stock', 'quantity', 'cantidad', 'units', 'unidades', 'inventory', 'stock qty']
@@ -42,7 +43,7 @@ class FileProcessor:
             file_path: Path to the file to process
             
         Returns:
-            List of product dictionaries with SKU, price, and stock
+            List of product dictionaries with SKU, price, stock, and source file
         """
         if not os.path.exists(file_path):
             self.logger.error(f"File not found: {file_path}")
@@ -70,7 +71,7 @@ class FileProcessor:
                 return None
             
             # Process and standardize data
-            products = self._extract_product_data(df)
+            products = self._extract_product_data(df, file_path)
             
             self.logger.info(f"Processed {len(products)} products from file: {os.path.basename(file_path)}")
             return products
@@ -124,21 +125,23 @@ class FileProcessor:
             self.logger.error(f"Error reading Excel file: {e}")
             return None
     
-    def _extract_product_data(self, df: pd.DataFrame) -> List[Dict[str, Any]]:
+    def _extract_product_data(self, df: pd.DataFrame, file_path: str = None) -> List[Dict[str, Any]]:
         """
         Extract product data from DataFrame.
         
         Args:
             df: DataFrame containing product data
+            file_path: Original file path for source tracking
             
         Returns:
-            List of product dictionaries
+            List of product dictionaries with source file information
         """
         # Clean column names (remove spaces, convert to lowercase)
         df.columns = df.columns.str.strip().str.lower()
         
         # Auto-detect column mappings
         sku_col = self._find_column(df, self.sku_columns)
+        name_col = self._find_column(df, self.name_columns)
         price_col = self._find_column(df, self.price_columns)
         offer_col = self._find_column(df, self.offer_columns)
         stock_col = self._find_column(df, self.stock_columns)
@@ -147,7 +150,11 @@ class FileProcessor:
             self.logger.error("Could not find SKU column in file")
             return []
         
-        self.logger.info(f"Column mappings - SKU: {sku_col}, Price: {price_col}, Offer: {offer_col}, Stock: {stock_col}")
+        self.logger.info(f"Column mappings - SKU: {sku_col}, Name: {name_col}, Price: {price_col}, Offer: {offer_col}, Stock: {stock_col}")
+        self.logger.info(f"Available columns in file: {list(df.columns)}")
+        if not name_col:
+            self.logger.warning(f"Name column not found. Looking for: {self.name_columns}")
+            self.logger.warning(f"Available columns (lowercase): {[col.lower() for col in df.columns]}")
         
         products = []
         
@@ -162,7 +169,20 @@ class FileProcessor:
                 if sku.endswith('.0') and sku[:-2].isdigit():
                     sku = sku[:-2]
                 
-                product = {'sku': sku}
+                product = {
+                    'sku': sku,
+                    'source_file': file_path if file_path else 'Unknown'
+                }
+                
+                # Extract name/description (optional)
+                if name_col and pd.notna(row[name_col]):
+                    name_str = str(row[name_col]).strip()
+                    if name_str and name_str.lower() not in ['nan', 'none', '']:
+                        # Limit name length to prevent email issues
+                        product['name'] = name_str[:100]
+                        self.logger.debug(f"Extracted name for SKU {sku}: {name_str[:50]}...")
+                else:
+                    self.logger.debug(f"No name found for SKU {sku} - name_col: {name_col}")
                 
                 # Extract price - prioritize offer price if available
                 final_price = None
@@ -214,9 +234,11 @@ class FileProcessor:
                     except (ValueError, TypeError):
                         self.logger.warning(f"Invalid stock format for SKU {sku}: {row[stock_col]}")
                 
-                # Only add product if it has SKU and at least price or stock
-                if len(product) > 1:  # More than just SKU
+                # Only add product if it has SKU and at least price, stock, or name
+                if 'price' in product or 'stock' in product or 'name' in product:
                     products.append(product)
+                    if index < 3:  # Log first 3 products for debugging
+                        self.logger.debug(f"Product {index}: {product}")
                 
             except Exception as e:
                 self.logger.warning(f"Error processing row {index}: {e}")

@@ -165,11 +165,16 @@ class EmailNotifier:
         """
         stock_updates = update_results.get('stock_updates', 0)
         stock_resets = update_results.get('stock_resets', 0)
+        new_products = len(update_results.get('new_products_for_creation', []))
         errors = len(update_results.get('errors', []))
         total_changes = stock_updates + stock_resets
         
         if errors > 0:
             return f"⚠️ Actualización de Inventario Completada con {errors} Errores"
+        elif new_products > 0 and total_changes > 0:
+            return f"✅ Inventario Actualizado - {total_changes} Cambios, {new_products} Productos Nuevos para Crear"
+        elif new_products > 0:
+            return f"📋 Inventario Revisado - {new_products} Productos Nuevos Requieren Creación Manual"
         elif total_changes > 0:
             if stock_resets > 0:
                 return f"✅ Inventario Conway Actualizado - {stock_updates} Actualizaciones de Stock, {stock_resets} Resets"
@@ -219,6 +224,7 @@ class EmailNotifier:
                     <li><strong>Productos Procesados:</strong> {update_results.get('processed_products', 0)}</li>
                     <li><strong>Actualizaciones de Stock:</strong> <span class="success">{update_results.get('stock_updates', 0)}</span></li>
                     <li><strong>Stock Resets (Producto agotado):</strong> <span class="warning">{update_results.get('stock_resets', 0)}</span></li>
+                    <li><strong>Productos Nuevos (Creación Manual):</strong> <span style="color: #007bff; font-weight: bold;">{len(update_results.get('new_products_for_creation', []))}</span></li>
                     <li><strong>Errores:</strong> <span class="error">{len(update_results.get('errors', []))}</span></li>
                 </ul>
             </div>
@@ -228,43 +234,72 @@ class EmailNotifier:
         
         # Agregar detalles de actualizaciones de stock si los hay
         if 'summary' in update_results and update_results['summary'].get('stock_updates'):
-            html += """
-            <div class="details">
-                <h3>Cambios de Stock:</h3>
-                <table>
-                    <tr>
-                        <th>SKU</th>
-                        <th>Producto</th>
-                        <th>Stock Anterior</th>
-                        <th>Stock Nuevo</th>
-                        <th>Acción</th>
+            stock_updates = update_results['summary']['stock_updates']
+            html += f"""
+            <div class="details" style="margin-top: 30px;">
+                <h3 style="color: #28a745; border-bottom: 2px solid #28a745; padding-bottom: 5px;">
+                    Cambios de Stock Aplicados
+                </h3>
+                <p style="background-color: #d4edda; padding: 10px; border-radius: 5px; border-left: 4px solid #28a745;">
+                    Los siguientes productos tuvieron actualizaciones de stock aplicadas en el sistema Holded.
+                </p>
+                <table style="border-collapse: collapse; width: 100%; max-width: 1000px; margin: 10px 0;">
+                    <tr style="background-color: #28a745; color: black;">
+                        <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">SKU</th>
+                        <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Producto</th>
+                        <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">Stock Anterior</th>
+                        <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">Stock Nuevo</th>
+                        <th style="border: 1px solid #ddd; padding: 12px; text-align: center;">Acción</th>
                     </tr>
             """
             
-            for update in update_results['summary']['stock_updates'][:15]:  # Limit to first 15
+            # Show all stock updates
+            for i, update in enumerate(stock_updates):
+                # Alternate row colors for better readability
+                row_style = "background-color: #f9f9f9;" if i % 2 == 0 else "background-color: white;"
+                
                 old_stock = update.get('old_stock', 0)
                 new_stock = update.get('new_stock', 0)
                 action = update.get('action', 'update')
                 product_name = update.get('product_name', 'N/A')
                 
-                # Style based on action
-                action_class = 'warning' if action == 'reset' else 'success'
-                action_text = 'Reset a 0' if action == 'reset' else 'Actualización'
+                # Style based on action and stock values
+                if action == 'reset':
+                    action_text = 'Reset a 0'
+                    action_style = 'color: #dc3545; font-weight: bold;'  # Red for resets
+                    new_stock_style = 'color: #dc3545; font-weight: bold;'
+                else:
+                    action_text = 'Actualización'
+                    action_style = 'color: #28a745; font-weight: bold;'  # Green for updates
+                    new_stock_style = 'color: #28a745; font-weight: bold;' if new_stock > old_stock else 'color: #ffc107; font-weight: bold;'
+                
+                # Format product name (truncate if too long)
+                display_name = product_name[:30] + "..." if len(str(product_name)) > 30 else product_name
                 
                 html += f"""
-                    <tr>
-                        <td>{update.get('sku', 'N/A')}</td>
-                        <td>{product_name}</td>
-                        <td>{old_stock}</td>
-                        <td>{new_stock}</td>
-                        <td><span class="{action_class}">{action_text}</span></td>
+                    <tr style="{row_style}">
+                        <td style="border: 1px solid #ddd; padding: 8px; font-family: monospace; font-weight: bold;">{update.get('sku', 'N/A')}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;" title="{product_name}">{display_name}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: #6c757d;">{old_stock}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{new_stock}</td>
+                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center; {new_stock_style}">{action_text}</td>
                     </tr>
                 """
             
-            if len(update_results['summary']['stock_updates']) > 15:
-                html += f"<tr><td colspan='5'>... y {len(update_results['summary']['stock_updates']) - 15} más</td></tr>"
+            html += "</table>"
             
-            html += "</table></div>"
+            # Show total count
+            html += f"""
+            <p style="color: #28a745; font-weight: bold; margin-top: 10px;">
+                Total de actualizaciones de stock aplicadas: {len(stock_updates)}
+            </p>
+            """
+            
+        
+        # Agregar sección de productos nuevos si los hay
+        new_products = update_results.get('new_products_for_creation', [])
+        if new_products:
+            html += self._format_new_products_html(new_products)
         
         # Agregar errores si los hay
         if update_results.get('errors'):
@@ -316,6 +351,7 @@ Productos Procesados: {update_results.get('processed_products', 0)}
 Actualizaciones de Stock: {update_results.get('stock_updates', 0)}
 Stock Resets (Conway SKUs no en archivos): {update_results.get('stock_resets', 0)}
 SKUs Omitidos (no Conway): {update_results.get('skipped_not_in_holded', 0)}
+Productos Nuevos (Creación Manual): {len(update_results.get('new_products_for_creation', []))}
 Errores: {len(update_results.get('errors', []))}
 """
         
@@ -339,6 +375,11 @@ Errores: {len(update_results.get('errors', []))}
             if len(update_results['summary']['stock_updates']) > 8:
                 text += f"... y {len(update_results['summary']['stock_updates']) - 8} más\n"
         
+        # Agregar sección de productos nuevos si los hay
+        new_products = update_results.get('new_products_for_creation', [])
+        if new_products:
+            text += self._format_new_products_text(new_products)
+        
         # Agregar errores si los hay
         if update_results.get('errors'):
             text += f"\n\nERRORES ({len(update_results['errors'])})\n"
@@ -351,6 +392,172 @@ Errores: {len(update_results.get('errors', []))}
                 text += f"... y {len(update_results['errors']) - 3} errores más\n"
         
         text += "\n\nEsta es una notificación automática del Sistema de Actualización de Inventario.\n"
+        
+        return text
+    
+    def _format_new_products_html(self, new_products: List[Dict[str, Any]]) -> str:
+        """
+        Formatea la sección HTML para productos nuevos que requieren creación manual.
+        
+        Args:
+            new_products: Lista de productos nuevos encontrados en Excel pero no en Holded
+            
+        Returns:
+            Cadena HTML con la tabla de productos nuevos
+        """
+        if not new_products:
+            return ""
+        
+        self.logger.info(f"Formatting {len(new_products)} new products for HTML display")
+        if new_products:
+            self.logger.info(f"Sample product data: {new_products[0]}")
+            self.logger.info(f"First product name: '{new_products[0].get('name', 'NOT_FOUND')}'")
+            self.logger.info(f"First product source file: '{new_products[0].get('source_file', 'Unknown')}'")
+            source_file = new_products[0].get('source_file', 'Unknown')
+            if '/' in source_file:
+                source_file = source_file.split('/')[-1]
+        
+        html = f"""
+        <div class="details" style="margin-top: 30px;">
+            <h3 style="color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px;">
+                Productos Nuevos - Requieren Creación Manual en Holded
+            </h3>
+            <p style="background-color: #e7f3ff; padding: 10px; border-radius: 5px; border-left: 4px solid #007bff;">
+                Los siguientes productos se encontraron en los archivos de Excel pero no existen en Holded. 
+                Se requiere revisión manual para crear estos productos en el sistema.
+            </p>
+            <h3>Archivo: <span style="font-weight: normal;">{source_file}</span></h3>
+            <table style="border-collapse: collapse; width: 100%; max-width: 1000px; margin: 10px 0;">
+                <tr style="background-color: #007bff; color: black;">
+                    <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">SKU</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Nombre</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Stock</th>
+                    <th style="border: 1px solid #ddd; padding: 12px; text-align: left;">Precio</th>
+                </tr>
+        """
+        
+        # Show all products
+        display_products = new_products
+        
+        for i, product in enumerate(display_products):
+            # Alternate row colors for better readability
+            row_style = "background-color: #f9f9f9;" if i % 2 == 0 else "background-color: white;"
+            
+            # Format stock with highlighting for non-zero values
+            stock = product.get('stock', 0)
+            stock_style = "font-weight: bold; color: #28a745;" if stock > 0 else "color: #6c757d;"
+            
+            # Format price
+            price = product.get('price', 'N/A')
+            price_display = f"{price}€" if isinstance(price, (int, float)) else str(price)
+            
+            # Use product name if available, otherwise use SKU
+            name = product.get('name', '')
+            if i == 0:  # Only log for first product
+                self.logger.info(f"Processing product: SKU='{product.get('sku')}', name='{name}', has_name={bool(name and name.strip())}")
+            
+            if name and name.strip():
+                display_name = name[:40] + "..." if len(name) > 40 else name
+                if i == 0:
+                    self.logger.info(f"Using product name: '{display_name}'")
+            else:
+                display_name = f"Producto {product.get('sku', 'N/A')}"
+                if i == 0:
+                    self.logger.info(f"Using SKU fallback: '{display_name}'")
+            
+            # Get filename from full path
+            source_file = product.get('source_file', 'Unknown')
+            if '/' in source_file:
+                source_file = source_file.split('/')[-1]
+            
+            html += f"""
+                <tr style="{row_style}">
+                    <td style="border: 1px solid #ddd; padding: 8px; font-family: monospace; font-weight: bold;">{product.get('sku', 'N/A')}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">{display_name}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: center; color: black;">{stock}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">{price_display}</td>
+                </tr>
+            """
+        
+        html += "</table>"
+        
+        # Show total count
+        html += f"""
+        <p style="color: #007bff; font-weight: bold; margin-top: 10px;">
+            Total de productos nuevos encontrados: {len(new_products)}
+        </p>
+        """
+        
+        # Add action instructions
+        html += """
+        <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; padding: 15px; margin-top: 15px;">
+            <h4 style="color: #856404; margin-top: 0;">🔧 Acciones Requeridas:</h4>
+            <ul style="color: #856404; margin-bottom: 0;">
+                <li>Revisar cada producto para determinar si debe crearse en Holded</li>
+                <li>Para productos válidos, crear manualmente en Holded con la categoría Conway</li>
+                <li>Verificar que el SKU coincida exactamente con el archivo Excel</li>
+                <li>Configurar el stock inicial según se muestra en la tabla</li>
+            </ul>
+        </div>
+        </div>
+        """
+        
+        return html
+    
+    def _format_new_products_text(self, new_products: List[Dict[str, Any]]) -> str:
+        """
+        Formatea la sección de texto plano para productos nuevos.
+        
+        Args:
+            new_products: Lista de productos nuevos encontrados en Excel pero no en Holded
+            
+        Returns:
+            Cadena de texto plano con los productos nuevos
+        """
+        if not new_products:
+            return ""
+        
+        text = f"\n\nPRODUCTOS NUEVOS REQUIEREN CREACIÓN MANUAL ({len(new_products)})\n"
+        text += "=" * 70 + "\n"
+        text += "Los siguientes productos se encontraron en Excel pero NO existen en Holded:\n\n"
+        
+        # Display all products in text format
+        display_products = new_products
+        
+        for product in display_products:
+            # Use product name if available, otherwise use SKU  
+            name = product.get('name', '')
+            if product == display_products[0]:  # Only log for first product
+                self.logger.info(f"Text format - Processing product: SKU='{product.get('sku')}', name='{name}', has_name={bool(name and name.strip())}")
+            
+            if name and name.strip():
+                display_name = name[:35] + "..." if len(name) > 35 else name
+                if product == display_products[0]:
+                    self.logger.info(f"Text format - Using product name: '{display_name}'")
+            else:
+                display_name = f"Producto {product.get('sku', 'N/A')}"
+                if product == display_products[0]:
+                    self.logger.info(f"Text format - Using SKU fallback: '{display_name}'")
+            
+            price = product.get('price', 'N/A')
+            price_display = f"{price}€" if isinstance(price, (int, float)) else str(price)
+            
+            source_file = product.get('source_file', 'Unknown')
+            if '/' in source_file:
+                source_file = source_file.split('/')[-1]
+            
+            text += f"SKU: {product.get('sku', 'N/A')}\n"
+            text += f"     Nombre: {display_name}\n"
+            text += f"     Stock: {product.get('stock', 0)} | Precio: {price_display}\n"
+            text += f"     Oferta: {'Sí' if product.get('is_offer', False) else 'No'} | Archivo: {source_file}\n\n"
+        
+        text += f"Total de productos nuevos: {len(new_products)}\n\n"
+        
+        text += "ACCIONES REQUERIDAS:\n"
+        text += "- Revisar cada producto para validar si debe crearse en Holded\n"
+        text += "- Crear manualmente en Holded con categoría Conway\n"
+        text += "- Verificar coincidencia exacta del SKU\n"
+        text += "- Configurar stock inicial según se indica\n"
         
         return text
     

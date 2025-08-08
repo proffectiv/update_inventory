@@ -467,6 +467,7 @@ class RobustInventoryUpdater:
             results['stock_updates'] = scenario_results['stock_updates']
             results['stock_resets'] = scenario_results['stock_resets']
             results['skipped_not_in_holded'] = scenario_results['skipped_not_in_holded']
+            results['new_products_for_creation'] = scenario_results['new_products_for_creation']
             results['errors'].extend(scenario_results['errors'])
             results['details'] = scenario_results['details']
             
@@ -528,6 +529,7 @@ class RobustInventoryUpdater:
             'stock_updates': 0,
             'stock_resets': 0,
             'skipped_not_in_holded': 0,
+            'new_products_for_creation': [],
             'errors': [],
             'details': []
         }
@@ -605,18 +607,40 @@ class RobustInventoryUpdater:
                     self.logger.error(error_msg)
                     scenario_results['errors'].append(error_msg)
         
-        # Scenario 3: SKUs in stock list but not in Conway -> skip and log
-        self.logger.info("Scenario 3: SKUs in stock list but not in Conway - skipping")
-        for sku in file_skus.keys():
+        # Scenario 3: SKUs in stock list but not in Conway -> track for manual creation
+        self.logger.info("Scenario 3: SKUs in stock list but not in Conway - tracking for manual creation")
+        for sku, file_product in file_skus.items():
             if sku not in conway_skus:
-                scenario_results['skipped_not_in_holded'] += 1
-                self.logger.info(f"Skipped non-Conway SKU: {sku}")
+                try:
+                    scenario_results['skipped_not_in_holded'] += 1
+                    
+                    # Track product details for email notification using FileProcessor data
+                    new_product_info = {
+                        'sku': str(sku) if sku else 'N/A',
+                        'stock': int(file_product.get('stock', 0)) if file_product.get('stock', 0) is not None else 0,
+                        'price': file_product.get('price', 'N/A'),
+                        'name': file_product.get('name', ''),  # Include name from FileProcessor
+                        'is_offer': file_product.get('is_offer', False),  # Include offer flag
+                        'source_file': str(file_product.get('source_file', 'Unknown'))
+                    }
+                    
+                    # Debug logging to track data flow
+                    self.logger.debug(f"Creating new_product_info for SKU {sku}: name='{file_product.get('name', '')}', full_data={new_product_info}")
+                    scenario_results['new_products_for_creation'].append(new_product_info)
+                    
+                    self.logger.info(f"Tracked non-Conway SKU for manual creation: {sku} (Stock: {file_product.get('stock', 0)}, Name: '{file_product.get('name', 'N/A')}')")
+                    
+                except Exception as e:
+                    error_msg = f"Error tracking new product SKU {sku} for manual creation: {e}"
+                    self.logger.error(error_msg)
+                    scenario_results['errors'].append(error_msg)
         
         # Log summary of scenarios
         self.logger.info("SCENARIO SUMMARY:")
         self.logger.info(f"  Conway SKUs reset to 0: {scenario_results['stock_resets']}")
         self.logger.info(f"  Stock updates applied: {scenario_results['stock_updates']}")
         self.logger.info(f"  Non-Conway SKUs skipped: {scenario_results['skipped_not_in_holded']}")
+        self.logger.info(f"  New products tracked for creation: {len(scenario_results['new_products_for_creation'])}")
         self.logger.info(f"  Errors encountered: {len(scenario_results['errors'])}")
         
         return scenario_results
@@ -741,6 +765,7 @@ def update_inventory_robust(file_paths: List[str]) -> Dict[str, Any]:
             'stock_updates': 0,
             'stock_resets': 0,
             'skipped_not_in_holded': 0,
+            'new_products_for_creation': [],
             'errors': [str(e)],
             'details': []
         } 

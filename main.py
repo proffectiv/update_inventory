@@ -74,6 +74,7 @@ def main():
         logger.info(f"  Stock updates: {update_results.get('stock_updates', 0)}")
         logger.info(f"  Stock resets (Conway SKUs not in files): {update_results.get('stock_resets', 0)}")
         logger.info(f"  SKUs skipped (not Conway): {update_results.get('skipped_not_in_holded', 0)}")
+        logger.info(f"  New products for manual creation: {len(update_results.get('new_products_for_creation', []))}")
         logger.info(f"  Errors: {len(update_results.get('errors', []))}")
         
         # Step 3: Send notification email
@@ -176,6 +177,9 @@ def test_connections():
             'processed_files': 0,
             'processed_products': 0,
             'stock_updates': 0,
+            'stock_resets': 0,
+            'skipped_not_in_holded': 0,
+            'new_products_for_creation': [],
             'errors': ['This is a connection test']
         }
         if notifier.send_update_confirmation(test_results):
