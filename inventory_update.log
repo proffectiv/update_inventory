@@ -714,3 +714,15 @@
 2025-08-07 10:30:55,898 - email_notifier - INFO - Email enviado exitosamente
 2025-08-07 10:30:56,026 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
 2025-08-07 10:30:56,027 - __main__ - INFO - Cleaned up temporary file: /tmp/dropbox_stock_Stocklist_CONWAY (1).xlsx
+2025-08-08 10:30:26,994 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-08-08 10:30:27,342 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-08 10:30:27,343 - dropbox - INFO - Request to users/get_current_account
+2025-08-08 10:30:28,017 - dropbox - INFO - Request to users/get_current_account
+2025-08-08 10:30:28,600 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-08-08 10:30:28,600 - dropbox - INFO - Request to users/get_current_account
+2025-08-08 10:30:29,216 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-08-08 10:30:29,217 - dropbox - INFO - Request to files/list_folder
+2025-08-08 10:30:29,735 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: stock_Stocklist_CONWAY (1).xlsx
+2025-08-08 10:30:29,735 - dropbox_handler - INFO - Most recent stock file unchanged: stock_Stocklist_CONWAY (1).xlsx
+2025-08-08 10:30:29,736 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-08-08 10:30:29,737 - __main__ - INFO - No Dropbox files found
