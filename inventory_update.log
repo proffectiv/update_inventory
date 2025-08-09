@@ -5884,3 +5884,15 @@
 2025-08-09 12:09:24,070 - __main__ - INFO - ============================================================
 2025-08-09 12:09:24,070 - __main__ - INFO - INVENTORY UPDATE AUTOMATION COMPLETED
 2025-08-09 12:09:24,070 - __main__ - INFO - ============================================================
+2025-08-09 10:30:28,428 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-08-09 10:30:28,816 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-09 10:30:28,818 - dropbox - INFO - Request to users/get_current_account
+2025-08-09 10:30:29,476 - dropbox - INFO - Request to users/get_current_account
+2025-08-09 10:30:30,094 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-08-09 10:30:30,095 - dropbox - INFO - Request to users/get_current_account
+2025-08-09 10:30:30,692 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-08-09 10:30:30,692 - dropbox - INFO - Request to files/list_folder
+2025-08-09 10:30:31,090 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: stock_Stocklist_CONWAY (1).xlsx
+2025-08-09 10:30:31,091 - dropbox_handler - INFO - Most recent stock file unchanged: stock_Stocklist_CONWAY (1).xlsx
+2025-08-09 10:30:31,092 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-08-09 10:30:31,094 - __main__ - INFO - No Dropbox files found
