@@ -11,7 +11,10 @@ Este módulo maneja:
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from typing import Dict, Any, List
+from email.mime.base import MIMEBase
+from email import encoders
+import os
+from typing import Dict, Any, List, Optional
 import logging
 from datetime import datetime
 
@@ -33,12 +36,13 @@ class EmailNotifier:
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
     
-    def send_update_confirmation(self, update_results: Dict[str, Any]) -> bool:
+    def send_update_confirmation(self, update_results: Dict[str, Any], attachment_files: Optional[Dict[str, str]] = None) -> bool:
         """
         Envía confirmación por email de las actualizaciones de inventario.
         
         Args:
             update_results: Diccionario que contiene resultados y estadísticas de la actualización
+            attachment_files: Diccionario opcional con archivos adjuntos {'nombre': 'ruta_archivo'}
             
         Returns:
             True si el email se envió exitosamente, False en caso contrario
@@ -54,7 +58,8 @@ class EmailNotifier:
                 to_email=self.notification_email,
                 subject=subject,
                 body_html=body_html,
-                body_text=body_text
+                body_text=body_text,
+                attachment_files=attachment_files
             )
             
             if success:
@@ -103,7 +108,7 @@ class EmailNotifier:
             self.logger.error(f"Error enviando email de notificación de error: {e}")
             return False
     
-    def _send_email(self, to_email: str, subject: str, body_html: str, body_text: str) -> bool:
+    def _send_email(self, to_email: str, subject: str, body_html: str, body_text: str, attachment_files: Optional[Dict[str, str]] = None) -> bool:
         """
         Envía email vía SMTP de Strato.
         
@@ -112,23 +117,40 @@ class EmailNotifier:
             subject: Asunto del email
             body_html: Cuerpo del email en HTML
             body_text: Cuerpo del email en texto plano
+            attachment_files: Diccionario opcional con archivos adjuntos {'nombre': 'ruta_archivo'}
             
         Returns:
             True si es exitoso, False en caso contrario
         """
         try:
             # Crear mensaje
-            msg = MIMEMultipart('alternative')
+            msg = MIMEMultipart('mixed')  # Changed from 'alternative' to 'mixed' to support attachments
             msg['Subject'] = subject
             msg['From'] = self.username
             msg['To'] = to_email
             
-            # Agregar versiones en texto plano y HTML
+            # Create a MIMEMultipart for the body (text and HTML)
+            body = MIMEMultipart('alternative')
             part1 = MIMEText(body_text, 'plain', 'utf-8')
             part2 = MIMEText(body_html, 'html', 'utf-8')
+            body.attach(part1)
+            body.attach(part2)
             
-            msg.attach(part1)
-            msg.attach(part2)
+            # Attach the body to the main message
+            msg.attach(body)
+            
+            # Add attachments if provided
+            if attachment_files:
+                self.logger.info(f"Adding {len(attachment_files)} attachments to email")
+                for attachment_name, file_path in attachment_files.items():
+                    if file_path and os.path.exists(file_path):
+                        try:
+                            self._add_attachment(msg, file_path, attachment_name)
+                            self.logger.info(f"Added attachment: {attachment_name} ({file_path})")
+                        except Exception as e:
+                            self.logger.error(f"Failed to add attachment {attachment_name}: {e}")
+                    else:
+                        self.logger.warning(f"Attachment file not found: {file_path}")
             
             # Conectar al servidor SMTP y enviar email (usando SSL para puerto 465)
             self.logger.info(f"Conectando al servidor SMTP: {self.smtp_host}:{self.smtp_port}")
@@ -152,6 +174,38 @@ class EmailNotifier:
         except Exception as e:
             self.logger.error(f"Error enviando email: {e}")
             return False
+    
+    def _add_attachment(self, msg: MIMEMultipart, file_path: str, attachment_name: str):
+        """
+        Add a file attachment to the email message.
+        
+        Args:
+            msg: MIMEMultipart message to add attachment to
+            file_path: Path to the file to attach
+            attachment_name: Name to display for the attachment
+        """
+        try:
+            with open(file_path, "rb") as attachment:
+                # Create MIMEBase object
+                part = MIMEBase('application', 'octet-stream')
+                part.set_payload(attachment.read())
+            
+            # Encode the file in ASCII characters to send by email    
+            encoders.encode_base64(part)
+            
+            # Add header with the file name
+            filename = os.path.basename(file_path)
+            part.add_header(
+                'Content-Disposition',
+                f'attachment; filename= {filename}',
+            )
+            
+            # Attach the file to the message
+            msg.attach(part)
+            
+        except Exception as e:
+            self.logger.error(f"Error adding attachment {file_path}: {e}")
+            raise
     
     def _create_email_subject(self, update_results: Dict[str, Any]) -> str:
         """
@@ -316,6 +370,25 @@ class EmailNotifier:
                 html += f"<li>... y {len(update_results['errors']) - 5} errores más</li>"
             
             html += "</ul></div>"
+        
+        # Add attachment notice if new products exist
+        if new_products:
+            html += """
+            <div class="details" style="margin-top: 30px; background-color: #e7f3ff; border: 2px solid #007bff; border-radius: 8px; padding: 20px;">
+                <h3 style="color: #007bff; margin-top: 0;">📎 Archivos Adjuntos Incluidos</h3>
+                <p style="margin-bottom: 15px;">Este email incluye archivos adjuntos para facilitar la creación manual de productos:</p>
+                <ul style="margin: 0; padding-left: 20px;">
+                    <li><strong>Conway Products Import.csv</strong> - Archivo listo para importar a Holded con formato correcto</li>
+                    <li><strong>Product Images.zip</strong> - Imágenes de productos descargadas y comprimidas (si están disponibles)</li>
+                </ul>
+                <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; border-radius: 5px; padding: 10px; margin-top: 15px;">
+                    <p style="margin: 0; color: #0c5460; font-size: 14px;">
+                        💡 <strong>Instrucciones:</strong> Descargue los archivos adjuntos y utilícelos para importar los productos nuevos a Holded. 
+                        El archivo CSV contiene toda la información necesaria con el formato correcto para importación directa.
+                    </p>
+                </div>
+            </div>
+            """
         
         html += """
             <div class="footer">
@@ -607,12 +680,13 @@ Por favor revise los logs del sistema y reintente la operación si es necesario.
         return text
 
 
-def send_update_notification(update_results: Dict[str, Any]) -> bool:
+def send_update_notification(update_results: Dict[str, Any], attachment_files: Optional[Dict[str, str]] = None) -> bool:
     """
     Función principal para enviar email de notificación de actualización.
     
     Args:
         update_results: Diccionario que contiene resultados de la actualización
+        attachment_files: Diccionario opcional con archivos adjuntos {'nombre': 'ruta_archivo'}
         
     Returns:
         True si el email se envió exitosamente, False en caso contrario
@@ -621,7 +695,7 @@ def send_update_notification(update_results: Dict[str, Any]) -> bool:
     
     try:
         # Enviar email de confirmación
-        success = notifier.send_update_confirmation(update_results)
+        success = notifier.send_update_confirmation(update_results, attachment_files)
         
         return success
         

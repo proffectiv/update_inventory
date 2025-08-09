@@ -18,6 +18,7 @@ from dropbox_handler import check_dropbox_trigger
 from inventory_updater import update_inventory_robust
 from email_notifier import send_update_notification, send_error_notification
 from log_sanitizer import setup_sanitized_logging
+from new_products_processor import process_new_products_workflow, cleanup_new_products_files
 
 
 def setup_logging():
@@ -77,11 +78,43 @@ def main():
         logger.info(f"  New products for manual creation: {len(update_results.get('new_products_for_creation', []))}")
         logger.info(f"  Errors: {len(update_results.get('errors', []))}")
         
+        # Step 2.5: Process new products if any exist
+        new_products_data = update_results.get('new_products_for_creation', [])
+        attachment_files = None
+        
+        if new_products_data:
+            logger.info(f"Step 2.5: Processing {len(new_products_data)} new products for import files and images...")
+            
+            try:
+                new_products_result = process_new_products_workflow(new_products_data)
+                
+                if new_products_result:
+                    # Prepare attachment files for email
+                    attachment_files = {}
+                    
+                    if new_products_result.get('holded_import'):
+                        attachment_files['Conway Products Import.csv'] = new_products_result['holded_import']
+                        logger.info(f"Prepared Holded import file for email attachment: {new_products_result['holded_import']}")
+                    
+                    if new_products_result.get('images_zip'):
+                        attachment_files['Product Images.zip'] = new_products_result['images_zip']
+                        logger.info(f"Prepared images ZIP file for email attachment: {new_products_result['images_zip']}")
+                    
+                    logger.info(f"New products processing completed successfully with {len(attachment_files)} attachments")
+                else:
+                    logger.warning("New products processing failed or returned no results")
+                    
+            except Exception as e:
+                logger.error(f"Error processing new products: {e}")
+                logger.error(traceback.format_exc())
+        else:
+            logger.info("No new products to process - skipping new products workflow")
+        
         # Step 3: Send notification email
         logger.info("Step 3: Sending notification email...")
         
         try:
-            email_sent = send_update_notification(update_results)
+            email_sent = send_update_notification(update_results, attachment_files)
             if email_sent:
                 logger.info("Notification email sent successfully")
             else:
@@ -92,6 +125,14 @@ def main():
         # Step 4: Cleanup temporary files
         logger.info("Step 4: Cleaning up temporary files...")
         cleanup_temp_files(files_to_process)
+        
+        # Step 4.5: Cleanup new products files if any were created
+        if new_products_data and attachment_files:
+            logger.info("Step 4.5: Cleaning up new products temporary files...")
+            try:
+                cleanup_new_products_files(new_products_result if 'new_products_result' in locals() else None)
+            except Exception as e:
+                logger.warning(f"Error cleaning up new products files: {e}")
         
         logger.info("=" * 60)
         logger.info("INVENTORY UPDATE AUTOMATION COMPLETED")
@@ -205,8 +246,33 @@ def run_dropbox_only():
         if dropbox_files:
             logger.info(f"Found {len(dropbox_files)} files from Dropbox")
             update_results = update_inventory_robust(dropbox_files)
-            send_update_notification(update_results)
+            
+            # Process new products if any exist
+            new_products_data = update_results.get('new_products_for_creation', [])
+            attachment_files = None
+            
+            if new_products_data:
+                logger.info(f"Processing {len(new_products_data)} new products...")
+                try:
+                    new_products_result = process_new_products_workflow(new_products_data)
+                    if new_products_result:
+                        attachment_files = {}
+                        if new_products_result.get('holded_import'):
+                            attachment_files['Conway Products Import.csv'] = new_products_result['holded_import']
+                        if new_products_result.get('images_zip'):
+                            attachment_files['Product Images.zip'] = new_products_result['images_zip']
+                except Exception as e:
+                    logger.error(f"Error processing new products: {e}")
+            
+            send_update_notification(update_results, attachment_files)
             cleanup_temp_files(dropbox_files)
+            
+            # Cleanup new products files if any were created
+            if new_products_data and attachment_files:
+                try:
+                    cleanup_new_products_files(new_products_result if 'new_products_result' in locals() else None)
+                except Exception as e:
+                    logger.warning(f"Error cleaning up new products files: {e}")
         else:
             logger.info("No Dropbox files found")
     except Exception as e:
@@ -227,7 +293,33 @@ def process_local_file(file_path: str):
     
     try:
         update_results = update_inventory_robust([file_path])
-        send_update_notification(update_results)
+        
+        # Process new products if any exist
+        new_products_data = update_results.get('new_products_for_creation', [])
+        attachment_files = None
+        
+        if new_products_data:
+            logger.info(f"Processing {len(new_products_data)} new products...")
+            try:
+                new_products_result = process_new_products_workflow(new_products_data)
+                if new_products_result:
+                    attachment_files = {}
+                    if new_products_result.get('holded_import'):
+                        attachment_files['Conway Products Import.csv'] = new_products_result['holded_import']
+                    if new_products_result.get('images_zip'):
+                        attachment_files['Product Images.zip'] = new_products_result['images_zip']
+            except Exception as e:
+                logger.error(f"Error processing new products: {e}")
+        
+        send_update_notification(update_results, attachment_files)
+        
+        # Cleanup new products files if any were created
+        if new_products_data and attachment_files:
+            try:
+                cleanup_new_products_files(new_products_result if 'new_products_result' in locals() else None)
+            except Exception as e:
+                logger.warning(f"Error cleaning up new products files: {e}")
+        
         logger.info("Local file processing completed")
     except Exception as e:
         logger.error(f"Error processing local file: {e}")

@@ -1,0 +1,44 @@
+2025-08-09 11:26:25,414 - INFO - No new products to process
+2025-08-09 11:52:55,735 - INFO - Processing 2 new products
+2025-08-09 11:52:55,738 - INFO - Created temporary stock CSV with 2 products using real Conway data: /var/folders/68/0yd_zt_s6vz8t2g6d_tw0hb80000gn/T/temp_stock_conway_ww_opcad.csv
+2025-08-09 11:52:55,738 - INFO - Sample product data - SKU: 2879351, Size: S, Color: Negro Mate, WS: 29
+2025-08-09 11:52:55,739 - INFO - Saved stock file as: stock_Stocklist_CONWAY.csv
+2025-08-09 11:52:55,739 - INFO - Created minimal template file: Importar Productos.csv
+2025-08-09 11:52:55,739 - INFO - Running transform_products to generate Holded import file...
+2025-08-09 11:52:55,792 - INFO - Transform products completed successfully: conway_products_holded_import.csv
+2025-08-09 11:52:55,792 - INFO - Running download_product_images to download product images...
+2025-08-09 11:52:55,836 - INFO - Successfully loaded 4422 image URLs from Información_EAN_Conway_2025.csv
+2025-08-09 11:52:55,836 - INFO - Sample SKUs from info CSV: ['02879351', '02879369', '02879377', '02879385', '02892776']
+2025-08-09 11:52:55,836 - INFO - Initialized downloader with images directory: product_images
+2025-08-09 11:52:55,836 - INFO - Loaded 4422 image URLs from Información_EAN_Conway_2025.csv
+2025-08-09 11:52:55,836 - INFO - Starting image download process for all products
+2025-08-09 11:52:55,836 - INFO - Successfully loaded CSV with 2 products
+2025-08-09 11:52:55,836 - INFO - Sample SKUs from products CSV: ['2879351', '2879369']
+2025-08-09 11:52:55,836 - INFO - Processing product 1/2
+2025-08-09 11:52:55,836 - INFO - Processing product: Cairon 529 SE (SKU: 2879351, Color: Negro Mate, Frame: Hardtail, Size: S)
+2025-08-09 11:52:55,836 - INFO - Found image URL using padded SKU 02879351 for Cairon 529 SE
+2025-08-09 11:52:55,836 - INFO - Found image URL for Cairon 529 SE (SKU: 2879351): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tamczL3xtamczb3RtMm92OWR0MDV4cXZsZnp2OWR5d2x5YjI1ZnUwdmZtamF5bWY4eG5qcXlvYXwxNjY1NTh8NDE4NzU5fDQxOTAzMHx4bHxkaFBJTQ==
+2025-08-09 11:52:55,836 - INFO - Created/verified folder: product_images/Cairon 529 SE
+2025-08-09 11:52:56,463 - INFO - Downloaded image: product_images/Cairon 529 SE/2879351_Negro Mate_Hardtail.jpg
+2025-08-09 11:52:56,463 - INFO - Successfully processed image for Cairon 529 SE (Negro Mate, Hardtail)
+2025-08-09 11:52:57,464 - INFO - Processing product 2/2
+2025-08-09 11:52:57,465 - INFO - Processing product: Cairon 529 SE (SKU: 2879369, Color: Negro Mate, Frame: Hardtail, Size: M)
+2025-08-09 11:52:57,465 - INFO - Found image URL using padded SKU 02879369 for Cairon 529 SE
+2025-08-09 11:52:57,465 - INFO - Found image URL for Cairon 529 SE (SKU: 2879369): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tamczL3xtamczb3RtMm92OWR0MDV4cXZsZnp2OWR5d2x5YjI1ZnUwdmZtamF5bWY4eG5qcXlvYXwxNjY1NTh8NDE4NzYwfDQxOTAzMHx4bHxkaFBJTQ==
+2025-08-09 11:52:57,465 - INFO - Created/verified folder: product_images/Cairon 529 SE
+2025-08-09 11:52:57,796 - INFO - Image for color 'Negro Mate' and frame 'Hardtail' already exists: product_images/Cairon 529 SE/2879351_Negro Mate_Hardtail.jpg
+2025-08-09 11:52:57,796 - INFO - Successfully processed image for Cairon 529 SE (Negro Mate, Hardtail)
+2025-08-09 11:52:58,801 - INFO - No failed items to report
+2025-08-09 11:52:58,802 - INFO - Image download process completed!
+2025-08-09 11:52:58,802 - INFO - Total products processed: 2
+2025-08-09 11:52:58,802 - INFO - Successful downloads: 2
+2025-08-09 11:52:58,802 - INFO - Failed downloads: 0
+2025-08-09 11:52:58,802 - INFO - Items without images: 0
+2025-08-09 11:52:58,802 - INFO - No failed items to report!
+2025-08-09 11:52:58,805 - INFO - Creating ZIP archive with 11 images...
+2025-08-09 11:52:58,942 - INFO - ZIP archive created successfully: conway_product_images_20250809_115258.zip (5.64 MB)
+2025-08-09 11:52:58,942 - INFO - Images ZIP archive created: conway_product_images_20250809_115258.zip
+2025-08-09 11:52:58,942 - INFO - Image download completed successfully: conway_product_images_20250809_115258.zip
+2025-08-09 11:52:58,942 - INFO - New products processing completed successfully
+2025-08-09 11:52:58,942 - INFO -   - Holded import file: conway_products_holded_import.csv
+2025-08-09 11:52:58,942 - INFO -   - Images ZIP file: conway_product_images_20250809_115258.zip

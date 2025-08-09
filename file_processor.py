@@ -34,6 +34,10 @@ class FileProcessor:
         self.price_columns = ['price', 'precio', 'cost', 'coste', 'amount', 'importe', 'evp']
         self.offer_columns = ['oferta', 'offer', 'special_price', 'promo_price']
         self.stock_columns = ['stock', 'quantity', 'cantidad', 'units', 'unidades', 'inventory', 'stock qty']
+        # Conway-specific columns
+        self.size_columns = ['size', 'talla', 'taille']
+        self.color_columns = ['color', 'colour', 'couleur']
+        self.wheel_size_columns = ['ws', 'wheel size', 'wheel_size', 'medida rueda']
     
     def process_file(self, file_path: str) -> Optional[List[Dict[str, Any]]]:
         """
@@ -145,12 +149,17 @@ class FileProcessor:
         price_col = self._find_column(df, self.price_columns)
         offer_col = self._find_column(df, self.offer_columns)
         stock_col = self._find_column(df, self.stock_columns)
+        # Conway-specific columns
+        size_col = self._find_column(df, self.size_columns)
+        color_col = self._find_column(df, self.color_columns)
+        wheel_size_col = self._find_column(df, self.wheel_size_columns)
         
         if not sku_col:
             self.logger.error("Could not find SKU column in file")
             return []
         
         self.logger.info(f"Column mappings - SKU: {sku_col}, Name: {name_col}, Price: {price_col}, Offer: {offer_col}, Stock: {stock_col}")
+        self.logger.info(f"Conway columns - Size: {size_col}, Color: {color_col}, Wheel Size: {wheel_size_col}")
         self.logger.info(f"Available columns in file: {list(df.columns)}")
         if not name_col:
             self.logger.warning(f"Name column not found. Looking for: {self.name_columns}")
@@ -233,6 +242,22 @@ class FileProcessor:
                         product['stock'] = stock
                     except (ValueError, TypeError):
                         self.logger.warning(f"Invalid stock format for SKU {sku}: {row[stock_col]}")
+                
+                # Extract Conway-specific fields (optional)
+                if size_col and pd.notna(row[size_col]):
+                    size_str = str(row[size_col]).strip()
+                    if size_str and size_str.lower() not in ['nan', 'none', '']:
+                        product['size'] = size_str
+                
+                if color_col and pd.notna(row[color_col]):
+                    color_str = str(row[color_col]).strip()
+                    if color_str and color_str.lower() not in ['nan', 'none', '']:
+                        product['color'] = color_str
+                
+                if wheel_size_col and pd.notna(row[wheel_size_col]):
+                    ws_str = str(row[wheel_size_col]).strip()
+                    if ws_str and ws_str.lower() not in ['nan', 'none', '']:
+                        product['ws'] = ws_str
                 
                 # Only add product if it has SKU and at least price, stock, or name
                 if 'price' in product or 'stock' in product or 'name' in product:

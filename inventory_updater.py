@@ -621,7 +621,11 @@ class RobustInventoryUpdater:
                         'price': file_product.get('price', 'N/A'),
                         'name': file_product.get('name', ''),  # Include name from FileProcessor
                         'is_offer': file_product.get('is_offer', False),  # Include offer flag
-                        'source_file': str(file_product.get('source_file', 'Unknown'))
+                        'source_file': str(file_product.get('source_file', 'Unknown')),
+                        # Conway-specific fields
+                        'size': file_product.get('size', ''),
+                        'color': file_product.get('color', ''),
+                        'ws': file_product.get('ws', '')
                     }
                     
                     # Debug logging to track data flow
