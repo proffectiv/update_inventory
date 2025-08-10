@@ -5896,3 +5896,322 @@
 2025-08-09 10:30:31,091 - dropbox_handler - INFO - Most recent stock file unchanged: stock_Stocklist_CONWAY (1).xlsx
 2025-08-09 10:30:31,092 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
 2025-08-09 10:30:31,094 - __main__ - INFO - No Dropbox files found
+2025-08-10 10:30:32,004 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-08-10 10:30:32,297 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-10 10:30:32,299 - dropbox - INFO - Request to users/get_current_account
+2025-08-10 10:30:32,929 - dropbox - INFO - Request to users/get_current_account
+2025-08-10 10:30:33,477 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-08-10 10:30:33,477 - dropbox - INFO - Request to users/get_current_account
+2025-08-10 10:30:34,070 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-08-10 10:30:34,070 - dropbox - INFO - Request to files/list_folder
+2025-08-10 10:30:34,547 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: [FILENAME_REDACTED]
+2025-08-10 10:30:34,547 - dropbox_handler - INFO - Processing most recent stock file: [FILENAME_REDACTED]
+2025-08-10 10:30:34,548 - dropbox_handler - INFO - Downloading file: [FILENAME_REDACTED]
+2025-08-10 10:30:34,548 - dropbox - INFO - Request to files/download
+2025-08-10 10:30:35,243 - dropbox_handler - INFO - Downloaded file to: /tmp/stock_Stocklist_CONWAY_(1).xlsx
+2025-08-10 10:30:35,244 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-08-10 10:30:35,246 - __main__ - INFO - Found 1 files from Dropbox
+2025-08-10 10:30:35,246 - inventory_updater - INFO - Retrieving Conway category variant SKUs from Holded...
+2025-08-10 10:30:35,246 - holded_api - INFO - Fetching Conway category products page 1
+2025-08-10 10:30:36,573 - holded_api - INFO - Fetching Conway category products page 2
+2025-08-10 10:30:36,692 - holded_api - INFO - Retrieved [COUNT_REDACTED] Conway category products
+2025-08-10 10:30:36,693 - holded_api - INFO - Found [COUNT_REDACTED] Conway variant SKUs
+2025-08-10 10:30:36,693 - inventory_updater - INFO - Found [COUNT_REDACTED] Conway variant SKUs in Holded
+2025-08-10 10:30:36,694 - inventory_updater - INFO - Processing stock file: /tmp/stock_Stocklist_CONWAY_(1).xlsx
+2025-08-10 10:30:37,147 - file_processor - INFO - Successfully read Excel file
+2025-08-10 10:30:37,148 - file_processor - INFO - Column mappings - [COLUMN_MAPPING_REDACTED]: item, Name: name, Price: evp, Offer: None, Stock: stock qty
+2025-08-10 10:30:37,148 - file_processor - INFO - Conway columns - Size: size, Color: color, Wheel Size: ws
+2025-08-10 10:30:37,148 - file_processor - INFO - Available columns in file: ['my', 'item', 'name', 'form', 'ws', 'size', 'color', 'drive unit', 'family', 'evp', 'hek', 'sale price', 'stock qty', 'order']
+2025-08-10 10:30:37,187 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file
+2025-08-10 10:30:37,187 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file: [FILENAME_REDACTED]
+2025-08-10 10:30:37,188 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products out of 428
+2025-08-10 10:30:37,188 - inventory_updater - INFO - Extracted [COUNT_REDACTED] SKUs from file
+2025-08-10 10:30:37,188 - inventory_updater - INFO - [PRODUCT_COUNT_REDACTED] products in stock files
+2025-08-10 10:30:37,189 - inventory_updater - INFO - Scenario 1: Conway SKUs not in stock list - setting to 0
+2025-08-10 10:30:37,189 - inventory_updater - INFO - Scenario 2: SKUs in both Conway and stock list - checking for updates
+2025-08-10 10:30:37,190 - inventory_updater - INFO - Scenario 3: SKUs in stock list but not in Conway - tracking for manual creation
+2025-08-10 10:30:37,190 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822278 (Stock: 7, Name: 'RLC 6.9')
+2025-08-10 10:30:37,191 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822740 (Stock: 1, Name: 'WME 4.7')
+2025-08-10 10:30:37,191 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822757 (Stock: 10, Name: 'WME 4.7')
+2025-08-10 10:30:37,192 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822765 (Stock: 10, Name: 'WME 4.7')
+2025-08-10 10:30:37,192 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822773 (Stock: 5, Name: 'WME 4.7')
+2025-08-10 10:30:37,192 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822880 (Stock: 10, Name: 'WME 5.9')
+2025-08-10 10:30:37,193 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822898 (Stock: 8, Name: 'WME 5.9')
+2025-08-10 10:30:37,193 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822922 (Stock: 8, Name: 'WME 5.9')
+2025-08-10 10:30:37,194 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822781 (Stock: 3, Name: 'WME 6.7')
+2025-08-10 10:30:37,194 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822799 (Stock: 7, Name: 'WME 6.7')
+2025-08-10 10:30:37,194 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2822807 (Stock: 1, Name: 'WME 6.7')
+2025-08-10 10:30:37,195 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810473 (Stock: 10, Name: 'Razz 4.0')
+2025-08-10 10:30:37,195 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810474 (Stock: 9, Name: 'Razz 4.0')
+2025-08-10 10:30:37,195 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810475 (Stock: 5, Name: 'Razz 4.0')
+2025-08-10 10:30:37,196 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810477 (Stock: 10, Name: 'Razz 4.0')
+2025-08-10 10:30:37,196 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810478 (Stock: 10, Name: 'Razz 4.0')
+2025-08-10 10:30:37,197 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810479 (Stock: 10, Name: 'Razz 4.0')
+2025-08-10 10:30:37,197 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810480 (Stock: 8, Name: 'Razz 4.0')
+2025-08-10 10:30:37,197 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810496 (Stock: 9, Name: 'Razz 8.0')
+2025-08-10 10:30:37,198 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810497 (Stock: 10, Name: 'Razz 8.0')
+2025-08-10 10:30:37,198 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810504 (Stock: 10, Name: 'Razz 9.0')
+2025-08-10 10:30:37,198 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810506 (Stock: 10, Name: 'Razz 9.0')
+2025-08-10 10:30:37,199 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810507 (Stock: 3, Name: 'Razz 9.0')
+2025-08-10 10:30:37,199 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810366 (Stock: 10, Name: 'Cairon C FS 2.0')
+2025-08-10 10:30:37,200 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810369 (Stock: 2, Name: 'Cairon C FS 2.0')
+2025-08-10 10:30:37,200 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810572 (Stock: 7, Name: 'GRV 9.0 SE')
+2025-08-10 10:30:37,200 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810573 (Stock: 10, Name: 'GRV 9.0 SE')
+2025-08-10 10:30:37,201 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810575 (Stock: 10, Name: 'GRV 9.0 SE')
+2025-08-10 10:30:37,201 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2810998 (Stock: 10, Name: 'Cairon T 5.0')
+2025-08-10 10:30:37,202 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2811000 (Stock: 10, Name: 'Cairon T 5.0')
+2025-08-10 10:30:37,202 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2811001 (Stock: 10, Name: 'Cairon T 6.0')
+2025-08-10 10:30:37,202 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2811002 (Stock: 10, Name: 'Cairon T 6.0')
+2025-08-10 10:30:37,203 - inventory_updater - INFO - Tracked non-Conway SKU for manual creation: 2811003 (Stock: 10, Name: 'Cairon T 6.0')
+2025-08-10 10:30:37,203 - inventory_updater - INFO - SCENARIO SUMMARY:
+2025-08-10 10:30:37,203 - inventory_updater - INFO -   Conway SKUs reset to 0: [COUNT_REDACTED]
+2025-08-10 10:30:37,204 - inventory_updater - INFO -   Stock updates applied: [COUNT_REDACTED]
+2025-08-10 10:30:37,204 - inventory_updater - INFO -   Non-Conway SKUs skipped: [COUNT_REDACTED]
+2025-08-10 10:30:37,204 - inventory_updater - INFO -   New products tracked for creation: 33
+2025-08-10 10:30:37,205 - inventory_updater - INFO -   Errors encountered: 0
+2025-08-10 10:30:37,207 - __main__ - INFO - Processing 33 new products...
+2025-08-10 10:30:37,207 - new_products_processor - INFO - Processing 33 new products
+2025-08-10 10:30:37,209 - new_products_processor - INFO - Created temporary stock CSV with 33 products using real Conway data: /tmp/[FILENAME_REDACTED]
+2025-08-10 10:30:37,210 - new_products_processor - INFO - Sample product data - SKU: 2822278, Size: XL, Color: bronze metallic matt / black metallic, WS: 29
+2025-08-10 10:30:37,211 - new_products_processor - INFO - Saved stock file as: [FILENAME_REDACTED]
+2025-08-10 10:30:37,213 - new_products_processor - INFO - Created minimal template file: Importar [FILENAME_REDACTED]
+2025-08-10 10:30:37,213 - new_products_processor - INFO - Running transform_products to generate Holded import file...
+2025-08-10 10:30:37,342 - new_products_processor - INFO - Transform products completed successfully: [FILENAME_REDACTED]
+2025-08-10 10:30:37,342 - new_products_processor - INFO - Running download_product_images to download product images...
+2025-08-10 10:30:37,497 - download_product_images - INFO - Successfully loaded 4422 image URLs from [FILENAME_REDACTED]
+2025-08-10 10:30:37,497 - download_product_images - INFO - Sample SKUs from info CSV: ['02879351', '02879369', '02879377', '02879385', '02892776']
+2025-08-10 10:30:37,498 - download_product_images - INFO - Initialized downloader with images directory: product_images
+2025-08-10 10:30:37,498 - download_product_images - INFO - Loaded 4422 image URLs from [FILENAME_REDACTED]
+2025-08-10 10:30:37,498 - download_product_images - INFO - Starting image download process for all products
+2025-08-10 10:30:37,499 - download_product_images - INFO - Successfully loaded CSV with 28 products
+2025-08-10 10:30:37,499 - download_product_images - INFO - Sample SKUs from products CSV: ['2810366', '2810369', '2810572', '2810573', '2810575']
+2025-08-10 10:30:37,499 - download_product_images - INFO - Processing product 1/28
+2025-08-10 10:30:37,500 - download_product_images - INFO - Processing product: Cairon C FS 2.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:37,500 - download_product_images - INFO - Found image URL using padded SKU 02810366 for Cairon C FS 2.0
+2025-08-10 10:30:37,500 - download_product_images - INFO - Found image URL for Cairon C FS 2.0 (SKU: 2810366): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhem5qemZxMGZqdWs5b3gwbmZybG5mbWpiZmNudnpkaGpsemhybGNuamh8MzQ0NzgzfDQ4MzQyMXw1NjUwNjl8eGx8ZGhQSU0=
+2025-08-10 10:30:37,501 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon C FS 2.0
+2025-08-10 10:30:38,467 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]airon C FS 2.0/2810366_Rustrojo_Wave.jpg
+2025-08-10 10:30:38,467 - download_product_images - INFO - Successfully processed image for Cairon C FS 2.0 (Rustrojo, Wave)
+2025-08-10 10:30:39,469 - download_product_images - INFO - Processing product 2/28
+2025-08-10 10:30:39,469 - download_product_images - INFO - Processing product: Cairon C FS 2.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:39,470 - download_product_images - INFO - Found image URL using padded SKU 02810369 for Cairon C FS 2.0
+2025-08-10 10:30:39,470 - download_product_images - INFO - Found image URL for Cairon C FS 2.0 (SKU: 2810369): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhem56YmZxMGZqdWs5b3gwbmZybG5mbWpiZmJ3bHVkZzFoZGhyaWJnZmphMjFoZGhxfDM0NDc4NHw0ODM0MjR8NTMyNjA5fHhsfGRoUElN
+2025-08-10 10:30:39,471 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon C FS 2.0
+2025-08-10 10:30:39,893 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]airon C FS 2.0/2810369_Menta Mate_Wave.jpg
+2025-08-10 10:30:39,894 - download_product_images - INFO - Successfully processed image for Cairon C FS 2.0 (Menta Mate, Wave)
+2025-08-10 10:30:40,895 - download_product_images - INFO - Processing product 3/28
+2025-08-10 10:30:40,895 - download_product_images - INFO - Processing product: GRV 9.0 SE ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:40,896 - download_product_images - INFO - Found image URL using padded SKU 02810572 for GRV 9.0 SE
+2025-08-10 10:30:40,896 - download_product_images - INFO - Found image URL for GRV 9.0 SE (SKU: 2810572): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMW56bmZyMWp3eHpsZm1mOXRydjl5ZHhuMGNtdmtid2YwZGhybGNuamhid2YwZGF8MzQ3MDY3fDQ4NTc3N3w1OTUzNjV8eGx8ZGhQSU0=
+2025-08-10 10:30:40,897 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 9.0 SE
+2025-08-10 10:30:41,303 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED] 9.0 SE/2810572_Rustrojo Mate_Diamante.jpg
+2025-08-10 10:30:41,304 - download_product_images - INFO - Successfully processed image for GRV 9.0 SE (Rustrojo Mate, Diamante)
+2025-08-10 10:30:42,305 - download_product_images - INFO - Processing product 4/28
+2025-08-10 10:30:42,306 - download_product_images - INFO - Processing product: GRV 9.0 SE ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:42,306 - download_product_images - INFO - Found image URL using padded SKU 02810573 for GRV 9.0 SE
+2025-08-10 10:30:42,306 - download_product_images - INFO - Found image URL for GRV 9.0 SE (SKU: 2810573): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMW56bmZyMWp3eHpsZm1mOXRydjl5ZHhuMGNtdmtid2YwZGhybGNuamhid2YwZGF8MzQ3MDY3fDQ4NTc3OHw1OTUzNjV8eGx8ZGhQSU0=
+2025-08-10 10:30:42,307 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 9.0 SE
+2025-08-10 10:30:42,719 - download_product_images - INFO - Image for color 'Rustrojo Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED] 9.0 SE/2810572_Rustrojo Mate_Diamante.jpg
+2025-08-10 10:30:42,720 - download_product_images - INFO - Successfully processed image for GRV 9.0 SE (Rustrojo Mate, Diamante)
+2025-08-10 10:30:43,722 - download_product_images - INFO - Processing product 5/28
+2025-08-10 10:30:43,722 - download_product_images - INFO - Processing product: GRV 9.0 SE ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:43,722 - download_product_images - INFO - Found image URL using padded SKU 02810575 for GRV 9.0 SE
+2025-08-10 10:30:43,723 - download_product_images - INFO - Found image URL for GRV 9.0 SE (SKU: 2810575): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMW56bmZyMWp3eHpsZm1mOXRydjl5ZHhuMGNtdmtid2YwZGhybGNuamhid2YwZGF8MzQ3MDY3fDQ4NTc4MHw1OTUzNjV8eGx8ZGhQSU0=
+2025-08-10 10:30:43,723 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 9.0 SE
+2025-08-10 10:30:44,130 - download_product_images - INFO - Image for color 'Rustrojo Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED] 9.0 SE/2810572_Rustrojo Mate_Diamante.jpg
+2025-08-10 10:30:44,130 - download_product_images - INFO - Successfully processed image for GRV 9.0 SE (Rustrojo Mate, Diamante)
+2025-08-10 10:30:45,132 - download_product_images - INFO - Processing product 6/28
+2025-08-10 10:30:45,132 - download_product_images - INFO - Processing product: RLC 6.9 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:45,133 - download_product_images - INFO - Found image URL using padded SKU 02822278 for RLC 6.9
+2025-08-10 10:30:45,133 - download_product_images - INFO - Found image URL for RLC 6.9 (SKU: 2822278): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bWppeW0xemZxMDlvdjBmengxam1xMTgyeHpsZm1qYXltMTh5b2Rld29hfDMyMjM5M3w0NDYxMzh8NzA3MDM4fHhsfGRoUElN
+2025-08-10 10:30:45,134 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 6.9
+2025-08-10 10:30:45,550 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED] 6.9/2822278_Bronze Metálico Mate _ Negro Metálico_Hardtail.jpg
+2025-08-10 10:30:45,551 - download_product_images - INFO - Successfully processed image for RLC 6.9 (Bronze Metálico Mate / Negro Metálico, Hardtail)
+2025-08-10 10:30:46,552 - download_product_images - INFO - Processing product 7/28
+2025-08-10 10:30:46,553 - download_product_images - INFO - Processing product: Razz 4.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:46,553 - download_product_images - INFO - Found image URL using padded SKU 02810473 for Razz 4.0
+2025-08-10 10:30:46,554 - download_product_images - INFO - Found image URL for Razz 4.0 (SKU: 2810473): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG56bmZjbWY2ZWw4MG1mOXZiZ2wyencxaGRocmZ5bXhoeTJ0dHl4cjB4Mjl5eXc1bnp3MWhkaHF8MzQ0OTEyfDQ4NDc4MXw1NzA4MDZ8eGx8ZGhQSU0=
+2025-08-10 10:30:46,554 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 4.0
+2025-08-10 10:30:46,877 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]azz 4.0/2810473_Olive Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:30:46,877 - download_product_images - INFO - Successfully processed image for Razz 4.0 (Olive Mate / Negro Mate, Hardtail)
+2025-08-10 10:30:47,879 - download_product_images - INFO - Processing product 8/28
+2025-08-10 10:30:47,879 - download_product_images - INFO - Processing product: Razz 4.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:47,879 - download_product_images - INFO - Found image URL using padded SKU 02810474 for Razz 4.0
+2025-08-10 10:30:47,880 - download_product_images - INFO - Found image URL for Razz 4.0 (SKU: 2810474): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG56bmZjbWY2ZWw4MG1mOXZiZ2wyencxaGRocmZ5bXhoeTJ0dHl4cjB4Mjl5eXc1bnp3MWhkaHF8MzQ0OTEyfDQ4NDc4Mnw1NzA4MDZ8eGx8ZGhQSU0=
+2025-08-10 10:30:47,880 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 4.0
+2025-08-10 10:30:48,200 - download_product_images - INFO - Image for color 'Olive Mate / Negro Mate' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED]azz 4.0/2810473_Olive Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:30:48,201 - download_product_images - INFO - Successfully processed image for Razz 4.0 (Olive Mate / Negro Mate, Hardtail)
+2025-08-10 10:30:49,202 - download_product_images - INFO - Processing product 9/28
+2025-08-10 10:30:49,203 - download_product_images - INFO - Processing product: Razz 4.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:49,203 - download_product_images - INFO - Found image URL using padded SKU 02810475 for Razz 4.0
+2025-08-10 10:30:49,203 - download_product_images - INFO - Found image URL for Razz 4.0 (SKU: 2810475): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG56bmZjbWY2ZWw4MG1mOXZiZ2wyencxaGRocmZ5bXhoeTJ0dHl4cjB4Mjl5eXc1bnp3MWhkaHF8MzQ0OTEyfDQ4NDc4M3w1NzA4MDZ8eGx8ZGhQSU0=
+2025-08-10 10:30:49,204 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 4.0
+2025-08-10 10:30:49,803 - download_product_images - INFO - Image for color 'Olive Mate / Negro Mate' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED]azz 4.0/2810473_Olive Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:30:49,804 - download_product_images - INFO - Successfully processed image for Razz 4.0 (Olive Mate / Negro Mate, Hardtail)
+2025-08-10 10:30:50,806 - download_product_images - INFO - Processing product 10/28
+2025-08-10 10:30:50,806 - download_product_images - INFO - Processing product: Razz 4.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:50,806 - download_product_images - INFO - Found image URL using padded SKU 02810477 for Razz 4.0
+2025-08-10 10:30:50,807 - download_product_images - INFO - Found image URL for Razz 4.0 (SKU: 2810477): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG56aGZjbWY2ZWw4MG1mOXp6d2ZtYjJmdGJ3ZjBkZjlpYmdmamEyMWhkaHF8MzQ0OTEzfDQ4NDc4NXw1NTI4ODZ8eGx8ZGhQSU0=
+2025-08-10 10:30:50,807 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 4.0
+2025-08-10 10:30:51,507 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]azz 4.0/2810477_Seafoam Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:30:51,507 - download_product_images - INFO - Successfully processed image for Razz 4.0 (Seafoam Mate / Negro Mate, Hardtail)
+2025-08-10 10:30:52,509 - download_product_images - INFO - Processing product 11/28
+2025-08-10 10:30:52,509 - download_product_images - INFO - Processing product: Razz 4.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:52,510 - download_product_images - INFO - Found image URL using padded SKU 02810478 for Razz 4.0
+2025-08-10 10:30:52,510 - download_product_images - INFO - Found image URL for Razz 4.0 (SKU: 2810478): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG56aGZjbWY2ZWw4MG1mOXp6d2ZtYjJmdGJ3ZjBkZjlpYmdmamEyMWhkaHF8MzQ0OTEzfDQ4NDc4Nnw1NTI4ODZ8eGx8ZGhQSU0=
+2025-08-10 10:30:52,511 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 4.0
+2025-08-10 10:30:53,206 - download_product_images - INFO - Image for color 'Seafoam Mate / Negro Mate' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED]azz 4.0/2810477_Seafoam Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:30:53,207 - download_product_images - INFO - Successfully processed image for Razz 4.0 (Seafoam Mate / Negro Mate, Hardtail)
+2025-08-10 10:30:54,208 - download_product_images - INFO - Processing product 12/28
+2025-08-10 10:30:54,208 - download_product_images - INFO - Processing product: Razz 4.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:54,209 - download_product_images - INFO - Found image URL using padded SKU 02810479 for Razz 4.0
+2025-08-10 10:30:54,209 - download_product_images - INFO - Found image URL for Razz 4.0 (SKU: 2810479): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG56aGZjbWY2ZWw4MG1mOXp6d2ZtYjJmdGJ3ZjBkZjlpYmdmamEyMWhkaHF8MzQ0OTEzfDQ4NDc4N3w1NTI4ODZ8eGx8ZGhQSU0=
+2025-08-10 10:30:54,210 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 4.0
+2025-08-10 10:30:54,908 - download_product_images - INFO - Image for color 'Seafoam Mate / Negro Mate' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED]azz 4.0/2810477_Seafoam Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:30:54,909 - download_product_images - INFO - Successfully processed image for Razz 4.0 (Seafoam Mate / Negro Mate, Hardtail)
+2025-08-10 10:30:55,910 - download_product_images - INFO - Processing product 13/28
+2025-08-10 10:30:55,910 - download_product_images - INFO - Processing product: Razz 4.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:55,911 - download_product_images - INFO - Found image URL using padded SKU 02810480 for Razz 4.0
+2025-08-10 10:30:55,911 - download_product_images - INFO - Found image URL for Razz 4.0 (SKU: 2810480): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG56aGZjbWY2ZWw4MG1mOXp6d2ZtYjJmdGJ3ZjBkZjlpYmdmamEyMWhkaHF8MzQ0OTEzfDQ4NDc4OHw1NTI4ODZ8eGx8ZGhQSU0=
+2025-08-10 10:30:55,912 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 4.0
+2025-08-10 10:30:56,610 - download_product_images - INFO - Image for color 'Seafoam Mate / Negro Mate' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED]azz 4.0/2810477_Seafoam Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:30:56,610 - download_product_images - INFO - Successfully processed image for Razz 4.0 (Seafoam Mate / Negro Mate, Hardtail)
+2025-08-10 10:30:57,612 - download_product_images - INFO - Processing product 14/28
+2025-08-10 10:30:57,612 - download_product_images - INFO - Processing product: Razz 8.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:57,613 - download_product_images - INFO - Found image URL using padded SKU 02810496 for Razz 8.0
+2025-08-10 10:30:57,613 - download_product_images - INFO - Found image URL for Razz 8.0 (SKU: 2810496): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG90emZjbWY2ZWw4NG1mOWhibnJvY21mamF4cmxid2YwZGY5aWJnZmphMjFoZGhyZnoyOXN6ZzFsZGdmc2JnbGpid2YwZGF8MzQ0OTE3fDQ4NDgwNHw1Mzk4MDh8eGx8ZGhQSU0=
+2025-08-10 10:30:57,614 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 8.0
+2025-08-10 10:30:58,303 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]azz 8.0/2810496_Anthracite Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:30:58,304 - download_product_images - INFO - Successfully processed image for Razz 8.0 (Anthracite Mate / Negro Mate, Hardtail)
+2025-08-10 10:30:59,305 - download_product_images - INFO - Processing product 15/28
+2025-08-10 10:30:59,305 - download_product_images - INFO - Processing product: Razz 8.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:30:59,306 - download_product_images - INFO - Found image URL using padded SKU 02810497 for Razz 8.0
+2025-08-10 10:30:59,306 - download_product_images - INFO - Found image URL for Razz 8.0 (SKU: 2810497): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG90emZjbWY2ZWw4NG1mOWhibnJvY21mamF4cmxid2YwZGY5aWJnZmphMjFoZGhyZnoyOXN6ZzFsZGdmc2JnbGpid2YwZGF8MzQ0OTE3fDQ4NDgwNXw1Mzk4MDh8eGx8ZGhQSU0=
+2025-08-10 10:30:59,307 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 8.0
+2025-08-10 10:31:00,002 - download_product_images - INFO - Image for color 'Anthracite Mate / Negro Mate' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED]azz 8.0/2810496_Anthracite Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:31:00,003 - download_product_images - INFO - Successfully processed image for Razz 8.0 (Anthracite Mate / Negro Mate, Hardtail)
+2025-08-10 10:31:01,004 - download_product_images - INFO - Processing product 16/28
+2025-08-10 10:31:01,005 - download_product_images - INFO - Processing product: Razz 9.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:01,005 - download_product_images - INFO - Found image URL using padded SKU 02810504 for Razz 9.0
+2025-08-10 10:31:01,005 - download_product_images - INFO - Found image URL for Razz 9.0 (SKU: 2810504): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMW1kcmZjbWY2ZWw4NW1mOWt6eG5sY25ydHl4cjB4MmpzeXducmJ3ZjBkYXwzNDQ5MTl8NDg0ODEyfDU0MjkyNHx4bHxkaFBJTQ==
+2025-08-10 10:31:01,006 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 9.0
+2025-08-10 10:31:01,707 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]azz 9.0/2810504_Desert Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:31:01,708 - download_product_images - INFO - Successfully processed image for Razz 9.0 (Desert Mate / Negro Mate, Hardtail)
+2025-08-10 10:31:02,709 - download_product_images - INFO - Processing product 17/28
+2025-08-10 10:31:02,710 - download_product_images - INFO - Processing product: Razz 9.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:02,710 - download_product_images - INFO - Found image URL using padded SKU 02810506 for Razz 9.0
+2025-08-10 10:31:02,710 - download_product_images - INFO - Found image URL for Razz 9.0 (SKU: 2810506): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMW1kcmZjbWY2ZWw4NW1mOWt6eG5sY25ydHl4cjB4MmpzeXducmJ3ZjBkYXwzNDQ5MTl8NDg0ODEzfDU0MjkyNHx4bHxkaFBJTQ==
+2025-08-10 10:31:02,711 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 9.0
+2025-08-10 10:31:03,421 - download_product_images - INFO - Image for color 'Desert Mate / Negro Mate' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED]azz 9.0/2810504_Desert Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:31:03,422 - download_product_images - INFO - Successfully processed image for Razz 9.0 (Desert Mate / Negro Mate, Hardtail)
+2025-08-10 10:31:04,423 - download_product_images - INFO - Processing product 18/28
+2025-08-10 10:31:04,424 - download_product_images - INFO - Processing product: Razz 9.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:04,424 - download_product_images - INFO - Found image URL using padded SKU 02810507 for Razz 9.0
+2025-08-10 10:31:04,424 - download_product_images - INFO - Found image URL for Razz 9.0 (SKU: 2810507): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMW1kcmZjbWY2ZWw4NW1mOWt6eG5sY25ydHl4cjB4MmpzeXducmJ3ZjBkYXwzNDQ5MTl8NDg0ODE0fDU0MjkyNHx4bHxkaFBJTQ==
+2025-08-10 10:31:04,425 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]azz 9.0
+2025-08-10 10:31:05,126 - download_product_images - INFO - Image for color 'Desert Mate / Negro Mate' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED]azz 9.0/2810504_Desert Mate _ Negro Mate_Hardtail.jpg
+2025-08-10 10:31:05,126 - download_product_images - INFO - Successfully processed image for Razz 9.0 (Desert Mate / Negro Mate, Hardtail)
+2025-08-10 10:31:06,128 - download_product_images - INFO - Processing product 19/28
+2025-08-10 10:31:06,129 - download_product_images - INFO - Processing product: WME 4.7 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:06,129 - download_product_images - INFO - Found image URL using padded SKU 02822740 for WME 4.7
+2025-08-10 10:31:06,129 - download_product_images - INFO - Found image URL for WME 4.7 (SKU: 2822740): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3RpMW1kbmZxMDlvdjBmengxZG5ydjgweHpkZm1qYXltbDh5bmRpMG1nfDMwMTk3MXw0NDYxNzh8NjI0NTQ4fHhsfGRoUElN
+2025-08-10 10:31:06,130 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 4.7
+2025-08-10 10:31:06,827 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED] 4.7/2822740_Turquesa Degradado _ Rojo_Hardtail.jpg
+2025-08-10 10:31:06,827 - download_product_images - INFO - Successfully processed image for WME 4.7 (Turquesa Degradado / Rojo, Hardtail)
+2025-08-10 10:31:07,829 - download_product_images - INFO - Processing product 20/28
+2025-08-10 10:31:07,829 - download_product_images - INFO - Processing product: WME 4.7 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:07,830 - download_product_images - INFO - Found image URL using padded SKU 02822757 for WME 4.7
+2025-08-10 10:31:07,830 - download_product_images - INFO - Found image URL for WME 4.7 (SKU: 2822757): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3RpMW1kbmZxMDlvdjBmengxZG5ydjgweHpkZm1qYXltbDh5bmRpMG1nfDMwMTk3MXw0NDYxNzl8NjI0NTQ4fHhsfGRoUElN
+2025-08-10 10:31:07,831 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 4.7
+2025-08-10 10:31:08,521 - download_product_images - INFO - Image for color 'Turquesa Degradado / Rojo' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED] 4.7/2822740_Turquesa Degradado _ Rojo_Hardtail.jpg
+2025-08-10 10:31:08,522 - download_product_images - INFO - Successfully processed image for WME 4.7 (Turquesa Degradado / Rojo, Hardtail)
+2025-08-10 10:31:09,523 - download_product_images - INFO - Processing product 21/28
+2025-08-10 10:31:09,524 - download_product_images - INFO - Processing product: WME 4.7 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:09,524 - download_product_images - INFO - Found image URL using padded SKU 02822765 for WME 4.7
+2025-08-10 10:31:09,525 - download_product_images - INFO - Found image URL for WME 4.7 (SKU: 2822765): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3RpMW1kbmZxMDlvdjBmengxZG5ydjgweHpkZm1qYXltbDh5bmRpMG1nfDMwMTk3MXw0NDYxODB8NjI0NTQ4fHhsfGRoUElN
+2025-08-10 10:31:09,525 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 4.7
+2025-08-10 10:31:10,220 - download_product_images - INFO - Image for color 'Turquesa Degradado / Rojo' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED] 4.7/2822740_Turquesa Degradado _ Rojo_Hardtail.jpg
+2025-08-10 10:31:10,221 - download_product_images - INFO - Successfully processed image for WME 4.7 (Turquesa Degradado / Rojo, Hardtail)
+2025-08-10 10:31:11,222 - download_product_images - INFO - Processing product 22/28
+2025-08-10 10:31:11,223 - download_product_images - INFO - Processing product: WME 4.7 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:11,223 - download_product_images - INFO - Found image URL using padded SKU 02822773 for WME 4.7
+2025-08-10 10:31:11,224 - download_product_images - INFO - Found image URL for WME 4.7 (SKU: 2822773): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3RpMW1kbmZxMDlvdjBmengxZG5ydjgweHpkZm1qYXltbDh5bmRpMG1nfDMwMTk3MXw0NDYxODF8NjI0NTQ4fHhsfGRoUElN
+2025-08-10 10:31:11,224 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 4.7
+2025-08-10 10:31:11,933 - download_product_images - INFO - Image for color 'Turquesa Degradado / Rojo' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED] 4.7/2822740_Turquesa Degradado _ Rojo_Hardtail.jpg
+2025-08-10 10:31:11,934 - download_product_images - INFO - Successfully processed image for WME 4.7 (Turquesa Degradado / Rojo, Hardtail)
+2025-08-10 10:31:12,935 - download_product_images - INFO - Processing product 23/28
+2025-08-10 10:31:12,936 - download_product_images - INFO - Processing product: WME 5.9 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:12,936 - download_product_images - INFO - Found image URL using padded SKU 02822880 for WME 5.9
+2025-08-10 10:31:12,937 - download_product_images - INFO - Found image URL for WME 5.9 (SKU: 2822880): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3RpMm1qaGZxMDlvdjBmengxZG5ydjgxb3Y4eW1kaXl8MTkyNjM3fDQ0NjE4NHw0MTE2Njd8eGx8ZGhQSU0=
+2025-08-10 10:31:12,937 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 5.9
+2025-08-10 10:31:13,445 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED] 5.9/2822880_Graphite Degradado _ Acid Metálico_Hardtail.jpg
+2025-08-10 10:31:13,446 - download_product_images - INFO - Successfully processed image for WME 5.9 (Graphite Degradado / Acid Metálico, Hardtail)
+2025-08-10 10:31:14,447 - download_product_images - INFO - Processing product 24/28
+2025-08-10 10:31:14,448 - download_product_images - INFO - Processing product: WME 5.9 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:14,448 - download_product_images - INFO - Found image URL using padded SKU 02822898 for WME 5.9
+2025-08-10 10:31:14,449 - download_product_images - INFO - Found image URL for WME 5.9 (SKU: 2822898): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3RpMm1qaGZxMDlvdjBmengxZG5ydjgxb3Y4eW1kaXl8MTkyNjM3fDQ0NjE4NXw0MTE2Njd8eGx8ZGhQSU0=
+2025-08-10 10:31:14,449 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 5.9
+2025-08-10 10:31:14,958 - download_product_images - INFO - Image for color 'Graphite Degradado / Acid Metálico' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED] 5.9/2822880_Graphite Degradado _ Acid Metálico_Hardtail.jpg
+2025-08-10 10:31:14,958 - download_product_images - INFO - Successfully processed image for WME 5.9 (Graphite Degradado / Acid Metálico, Hardtail)
+2025-08-10 10:31:15,960 - download_product_images - INFO - Processing product 25/28
+2025-08-10 10:31:15,960 - download_product_images - INFO - Processing product: WME 5.9 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:15,961 - download_product_images - INFO - Found image URL using padded SKU 02822922 for WME 5.9
+2025-08-10 10:31:15,961 - download_product_images - INFO - Found image URL for WME 5.9 (SKU: 2822922): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3RpMm5qbGZxMDlvdjBmengxZG5ydjgxb3Y4eW1kaXl8MTkyNjM4fDQ0NjE4OHwzMzgxMDV8eGx8ZGhQSU0=
+2025-08-10 10:31:15,962 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 5.9
+2025-08-10 10:31:16,465 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED] 5.9/2822922_Turquesa Degradado _ Rojo_Hardtail.jpg
+2025-08-10 10:31:16,466 - download_product_images - INFO - Successfully processed image for WME 5.9 (Turquesa Degradado / Rojo, Hardtail)
+2025-08-10 10:31:17,467 - download_product_images - INFO - Processing product 26/28
+2025-08-10 10:31:17,468 - download_product_images - INFO - Processing product: WME 6.7 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:17,468 - download_product_images - INFO - Found image URL using padded SKU 02822781 for WME 6.7
+2025-08-10 10:31:17,469 - download_product_images - INFO - Found image URL for WME 6.7 (SKU: 2822781): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3RpMW5kdmZxMDlvdjBmengxZG5ydjgyeHpkZm1qYXltbDh5bXpjNG5xfDI5ODY4MXw0NDYxOTB8NjEwODA1fHhsfGRoUElN
+2025-08-10 10:31:17,469 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 6.7
+2025-08-10 10:31:18,078 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED] 6.7/2822781_Flip Flop _ Chrome_Hardtail.jpg
+2025-08-10 10:31:18,078 - download_product_images - INFO - Successfully processed image for WME 6.7 (Flip Flop / Chrome, Hardtail)
+2025-08-10 10:31:19,080 - download_product_images - INFO - Processing product 27/28
+2025-08-10 10:31:19,080 - download_product_images - INFO - Processing product: WME 6.7 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:19,081 - download_product_images - INFO - Found image URL using padded SKU 02822799 for WME 6.7
+2025-08-10 10:31:19,081 - download_product_images - INFO - Found image URL for WME 6.7 (SKU: 2822799): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3RpMW5kdmZxMDlvdjBmengxZG5ydjgyeHpkZm1qYXltbDh5bXpjNG5xfDI5ODY4MXw0NDYxOTF8NjEwODA1fHhsfGRoUElN
+2025-08-10 10:31:19,082 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 6.7
+2025-08-10 10:31:19,685 - download_product_images - INFO - Image for color 'Flip Flop / Chrome' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED] 6.7/2822781_Flip Flop _ Chrome_Hardtail.jpg
+2025-08-10 10:31:19,686 - download_product_images - INFO - Successfully processed image for WME 6.7 (Flip Flop / Chrome, Hardtail)
+2025-08-10 10:31:20,687 - download_product_images - INFO - Processing product 28/28
+2025-08-10 10:31:20,688 - download_product_images - INFO - Processing product: WME 6.7 ([PRODUCT_DETAILS_REDACTED])
+2025-08-10 10:31:20,688 - download_product_images - INFO - Found image URL using padded SKU 02822807 for WME 6.7
+2025-08-10 10:31:20,688 - download_product_images - INFO - Found image URL for WME 6.7 (SKU: 2822807): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3RpMW5kdmZxMDlvdjBmengxZG5ydjgyeHpkZm1qYXltbDh5bXpjNG5xfDI5ODY4MXw0NDYxOTJ8NjEwODA1fHhsfGRoUElN
+2025-08-10 10:31:20,689 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED] 6.7
+2025-08-10 10:31:21,192 - download_product_images - INFO - Image for color 'Flip Flop / Chrome' and frame 'Hardtail' already exists: product_images[FOLDER_PATH_REDACTED] 6.7/2822781_Flip Flop _ Chrome_Hardtail.jpg
+2025-08-10 10:31:21,193 - download_product_images - INFO - Successfully processed image for WME 6.7 (Flip Flop / Chrome, Hardtail)
+2025-08-10 10:31:22,194 - download_product_images - INFO - No failed items to report
+2025-08-10 10:31:22,195 - download_product_images - INFO - Image download process completed!
+2025-08-10 10:31:22,195 - download_product_images - INFO - Total products processed: 28
+2025-08-10 10:31:22,196 - download_product_images - INFO - Successful downloads: 28
+2025-08-10 10:31:22,196 - download_product_images - INFO - Failed downloads: 0
+2025-08-10 10:31:22,196 - download_product_images - INFO - Items without images: 0
+2025-08-10 10:31:22,196 - download_product_images - INFO - No failed items to report!
+2025-08-10 10:31:22,197 - download_product_images - INFO - Creating ZIP archive with 13 images...
+2025-08-10 10:31:22,386 - download_product_images - INFO - ZIP archive created successfully: conway_product_images_20250810_103122.zip (6.54 MB)
+2025-08-10 10:31:22,386 - download_product_images - INFO - Images ZIP archive created: conway_product_images_20250810_103122.zip
+2025-08-10 10:31:22,387 - new_products_processor - INFO - Image download completed successfully: conway_product_images_20250810_103122.zip
+2025-08-10 10:31:22,387 - new_products_processor - INFO - New products processing completed successfully
+2025-08-10 10:31:22,388 - new_products_processor - INFO -   - Holded import file: [FILENAME_REDACTED]
+2025-08-10 10:31:22,388 - new_products_processor - INFO -   - Images ZIP file: conway_product_images_20250810_103122.zip
+2025-08-10 10:31:22,388 - email_notifier - INFO - Formatting 33 new products for HTML display
+2025-08-10 10:31:22,389 - email_notifier - INFO - Sample product data: {'sku': '2822278', 'stock': 7, 'price': 2499.95, 'name': 'RLC 6.9', 'is_offer': False, 'source_file': '/tmp/stock_Stocklist_CONWAY_(1).xlsx', 'size': 'XL', 'color': 'bronze metallic matt / black metallic', 'ws': '29.0'}
+2025-08-10 10:31:22,389 - email_notifier - INFO - First product name: 'RLC 6.9'
+2025-08-10 10:31:22,390 - email_notifier - INFO - First product source file: '/tmp/stock_Stocklist_CONWAY_(1).xlsx'
+2025-08-10 10:31:22,390 - email_notifier - INFO - Processing product: SKU='2822278', name='RLC 6.9', has_name=True
+2025-08-10 10:31:22,390 - email_notifier - INFO - Using product name: 'RLC 6.9'
+2025-08-10 10:31:22,391 - email_notifier - INFO - Text format - Processing product: SKU='2822278', name='RLC 6.9', has_name=True
+2025-08-10 10:31:22,391 - email_notifier - INFO - Text format - Using product name: 'RLC 6.9'
+2025-08-10 10:31:22,392 - email_notifier - INFO - Adding 2 attachments to email
+2025-08-10 10:31:22,393 - email_notifier - INFO - Added attachment: Conway Products [FILENAME_REDACTED] ([FILENAME_REDACTED])
+2025-08-10 10:31:22,518 - email_notifier - INFO - Added attachment: Product Images.zip (conway_product_images_20250810_103122.zip)
+2025-08-10 10:31:22,518 - email_notifier - INFO - Conectando al servidor SMTP: [SMTP_SERVER_REDACTED]
+2025-08-10 10:31:26,475 - email_notifier - INFO - Email enviado exitosamente
+2025-08-10 10:31:26,578 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
+2025-08-10 10:31:26,579 - __main__ - INFO - Cleaned up temporary file: /tmp/stock_Stocklist_CONWAY_(1).xlsx
+2025-08-10 10:31:26,579 - new_products_processor - INFO - Cleaned up: [FILENAME_REDACTED]
+2025-08-10 10:31:26,581 - new_products_processor - INFO - Cleaned up: conway_product_images_20250810_103122.zip
+2025-08-10 10:31:26,581 - new_products_processor - INFO - Cleaned up: [FILENAME_REDACTED]
+2025-08-10 10:31:26,581 - new_products_processor - INFO - Cleaned up: Importar [FILENAME_REDACTED]
+2025-08-10 10:31:26,581 - new_products_processor - INFO - New products cleanup completed: 4 files/directories removed
