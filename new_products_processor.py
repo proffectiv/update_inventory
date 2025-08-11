@@ -90,7 +90,19 @@ class NewProductsProcessor:
                 self.logger.error("Failed to generate Holded import file")
                 return None
                 
-            # Step 5: Run download_product_images.py to get product images
+            # Step 5: AUTOMATIC DELETION - Delete existing products that need consolidation
+            deletion_results = {}
+            if self.products_for_deletion:
+                self.logger.info(f"Step 5: Executing automatic deletion of {len(self.products_for_deletion)} products...")
+                deletion_results = self.execute_automatic_product_deletions()
+                
+                if deletion_results['failed_deletions'] > 0:
+                    self.logger.warning(f"Some deletions failed ({deletion_results['failed_deletions']}/{deletion_results['total_scheduled']})")
+                    self.logger.warning("Proceeding with import - manual deletion may be required for failed items")
+            else:
+                self.logger.info("Step 5: No products scheduled for deletion")
+            
+            # Step 6: Run download_product_images.py to get product images
             images_zip_file = self._run_download_images(holded_import_file)
             # Note: images_zip_file can be None if no images found, this is acceptable
             
@@ -102,6 +114,7 @@ class NewProductsProcessor:
                 'completely_new_products': completely_new_products,
                 'new_variants_of_existing_products': new_variants,
                 'products_for_deletion': self.products_for_deletion,
+                'deletion_results': deletion_results,
                 'data_integrity_issues': self.data_integrity_issues,
                 'processing_metadata': processing_metadata
             }
@@ -463,6 +476,82 @@ class NewProductsProcessor:
             self.logger.error(f"Error in transform products with integrity check: {e}")
             return None, processing_metadata
 
+    def execute_automatic_product_deletions(self) -> Dict[str, Any]:
+        """
+        Automatically delete products scheduled for deletion from Holded.
+        
+        Returns:
+            Dictionary with deletion results and statistics
+        """
+        deletion_results = {
+            'total_scheduled': len(self.products_for_deletion),
+            'successful_deletions': 0,
+            'failed_deletions': 0,
+            'deletion_details': [],
+            'errors': []
+        }
+        
+        if not self.products_for_deletion:
+            self.logger.info("No products scheduled for deletion")
+            return deletion_results
+        
+        self.logger.info(f"Starting automatic deletion of {len(self.products_for_deletion)} products...")
+        
+        for product_info in self.products_for_deletion:
+            product_id = product_info.get('product_id')
+            product_name = product_info.get('product_name', 'Unknown')
+            variants_count = product_info.get('existing_variants_count', 0)
+            
+            try:
+                self.logger.info(f"Deleting product: {product_name} (ID: {product_id}) with {variants_count} variants...")
+                
+                # Execute deletion using Holded API
+                success = self.holded_api.delete_product_with_variants(product_id)
+                
+                if success:
+                    deletion_results['successful_deletions'] += 1
+                    deletion_results['deletion_details'].append({
+                        'product_id': product_id,
+                        'product_name': product_name,
+                        'variants_count': variants_count,
+                        'status': 'success'
+                    })
+                    self.logger.info(f"✅ Successfully deleted {product_name} ({product_id})")
+                else:
+                    deletion_results['failed_deletions'] += 1
+                    error_msg = f"Failed to delete {product_name} ({product_id})"
+                    deletion_results['errors'].append(error_msg)
+                    deletion_results['deletion_details'].append({
+                        'product_id': product_id,
+                        'product_name': product_name,
+                        'variants_count': variants_count,
+                        'status': 'failed'
+                    })
+                    self.logger.error(f"❌ {error_msg}")
+                    
+            except Exception as e:
+                deletion_results['failed_deletions'] += 1
+                error_msg = f"Exception deleting {product_name} ({product_id}): {e}"
+                deletion_results['errors'].append(error_msg)
+                deletion_results['deletion_details'].append({
+                    'product_id': product_id,
+                    'product_name': product_name,
+                    'variants_count': variants_count,
+                    'status': 'error',
+                    'error': str(e)
+                })
+                self.logger.error(f"💥 {error_msg}")
+        
+        # Log summary
+        success_rate = (deletion_results['successful_deletions'] / deletion_results['total_scheduled'] * 100) if deletion_results['total_scheduled'] > 0 else 0
+        self.logger.info(f"Automatic deletion completed:")
+        self.logger.info(f"  - Total scheduled: {deletion_results['total_scheduled']}")
+        self.logger.info(f"  - Successful: {deletion_results['successful_deletions']}")
+        self.logger.info(f"  - Failed: {deletion_results['failed_deletions']}")
+        self.logger.info(f"  - Success rate: {success_rate:.1f}%")
+        
+        return deletion_results
+
     def cleanup_temp_files(self):
         """Clean up all temporary files created during processing."""
         cleanup_count = 0
@@ -535,6 +624,7 @@ def cleanup_new_products_files(file_paths: Dict[str, str]):
         'stock_Stocklist_CONWAY.csv',
         'conway_products_holded_import.csv',
         'Importar Productos.csv'
+        'product_images'
     ]
     
     for file_path in common_temp_files:

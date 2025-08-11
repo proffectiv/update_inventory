@@ -42,3 +42,21 @@
 2025-08-09 11:52:58,942 - INFO - New products processing completed successfully
 2025-08-09 11:52:58,942 - INFO -   - Holded import file: conway_products_holded_import.csv
 2025-08-09 11:52:58,942 - INFO -   - Images ZIP file: conway_product_images_20250809_115258.zip
+2025-08-11 09:57:13,257 - INFO - Starting automatic deletion of 3 products...
+2025-08-11 09:57:13,257 - INFO - Deleting product: RLC 6.9 (ID: 688245dd428a4aa2c1014fd4) with 2 variants...
+2025-08-11 09:57:13,257 - INFO - MOCK: Deleting product 688245dd428a4aa2c1014fd4
+2025-08-11 09:57:13,257 - INFO - MOCK: Successfully deleted 688245dd428a4aa2c1014fd4
+2025-08-11 09:57:13,257 - INFO - ✅ Successfully deleted RLC 6.9 (688245dd428a4aa2c1014fd4)
+2025-08-11 09:57:13,257 - INFO - Deleting product: WME 5.9 (ID: 688245e24be6a641ac03aa1f) with 10 variants...
+2025-08-11 09:57:13,257 - INFO - MOCK: Deleting product 688245e24be6a641ac03aa1f
+2025-08-11 09:57:13,257 - INFO - MOCK: Successfully deleted 688245e24be6a641ac03aa1f
+2025-08-11 09:57:13,257 - INFO - ✅ Successfully deleted WME 5.9 (688245e24be6a641ac03aa1f)
+2025-08-11 09:57:13,257 - INFO - Deleting product: Razz 4.0 (ID: 688245df428a4aa2c1015020) with 1 variants...
+2025-08-11 09:57:13,257 - INFO - MOCK: Deleting product 688245df428a4aa2c1015020
+2025-08-11 09:57:13,257 - ERROR - MOCK: Failed to delete 688245df428a4aa2c1015020
+2025-08-11 09:57:13,257 - ERROR - ❌ Failed to delete Razz 4.0 (688245df428a4aa2c1015020)
+2025-08-11 09:57:13,257 - INFO - Automatic deletion completed:
+2025-08-11 09:57:13,257 - INFO -   - Total scheduled: 3
+2025-08-11 09:57:13,257 - INFO -   - Successful: 2
+2025-08-11 09:57:13,258 - INFO -   - Failed: 1
+2025-08-11 09:57:13,258 - INFO -   - Success rate: 66.7%

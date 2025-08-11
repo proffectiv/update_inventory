@@ -107,6 +107,8 @@ def main():
                         update_results['new_variants_of_existing_products'] = new_products_result['new_variants_of_existing_products']
                     if new_products_result.get('products_for_deletion'):
                         update_results['products_for_deletion'] = new_products_result['products_for_deletion']
+                    if new_products_result.get('deletion_results'):
+                        update_results['deletion_results'] = new_products_result['deletion_results']
                     if new_products_result.get('data_integrity_issues'):
                         update_results['data_integrity_issues'] = new_products_result['data_integrity_issues']
                     if new_products_result.get('processing_metadata'):

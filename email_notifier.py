@@ -228,14 +228,14 @@ class EmailNotifier:
         elif new_products > 0 and total_changes > 0:
             return f"✅ Inventario Actualizado - {total_changes} Cambios, {new_products} Productos Nuevos para Crear"
         elif new_products > 0:
-            return f"📋 Inventario Revisado - {new_products} Productos Nuevos Requieren Creación Manual"
+            return f"✅ Inventario Revisado - {new_products} Productos Nuevos Requieren Creación Manual"
         elif total_changes > 0:
             if stock_resets > 0:
                 return f"✅ Inventario Conway Actualizado - {stock_updates} Actualizaciones de Stock, {stock_resets} Resets"
             else:
                 return f"✅ Inventario Conway Actualizado - {stock_updates} Actualizaciones de Stock"
         else:
-            return "ℹ️ Actualización de Inventario Completada - No se Requieren Cambios"
+            return "✅ Actualización de Inventario Completada - No se Requieren Cambios"
     
     def _create_email_body_html(self, update_results: Dict[str, Any]) -> str:
         """
@@ -355,6 +355,9 @@ class EmailNotifier:
         
         # Add Variant Consolidation Section
         html += self._create_variant_consolidation_section(update_results)
+        
+        # Add Automatic Deletion Results Section
+        html += self._create_automatic_deletion_results_section(update_results)
         
         # Add Data Integrity Section
         html += self._create_data_integrity_section(update_results)
@@ -823,6 +826,103 @@ Por favor revise los logs del sistema y reintente la operación si es necesario.
             </table>
         </div>
         """
+        
+        return html
+    
+    def _create_automatic_deletion_results_section(self, update_results: Dict[str, Any]) -> str:
+        """Create automatic deletion results section."""
+        deletion_results = update_results.get('deletion_results', {})
+        
+        if not deletion_results or deletion_results.get('total_scheduled', 0) == 0:
+            return ""
+        
+        total_scheduled = deletion_results.get('total_scheduled', 0)
+        successful = deletion_results.get('successful_deletions', 0)
+        failed = deletion_results.get('failed_deletions', 0)
+        deletion_details = deletion_results.get('deletion_details', [])
+        success_rate = (successful / total_scheduled * 100) if total_scheduled > 0 else 0
+        
+        # Choose color based on success rate
+        if success_rate == 100:
+            color = "#28a745"  # Green for 100% success
+            emoji = "✅"
+            status_text = "Eliminación Automática Completada"
+        elif success_rate >= 75:
+            color = "#ffc107"  # Yellow for 75-99% success
+            emoji = "⚠️"
+            status_text = "Eliminación Automática Parcialmente Exitosa"
+        else:
+            color = "#dc3545"  # Red for <75% success
+            emoji = "❌"
+            status_text = "Eliminación Automática con Errores"
+        
+        html = f"""
+        <div class="details" style="margin-top: 30px;">
+            <h3 style="color: {color}; border-bottom: 2px solid {color}; padding-bottom: 5px;">
+                {emoji} {status_text} ({successful}/{total_scheduled})
+            </h3>
+            <p style="background-color: {'#d4edda' if success_rate == 100 else '#fff3cd' if success_rate >= 75 else '#f8d7da'}; 
+                      padding: 10px; border-radius: 5px; border-left: 4px solid {color};">
+                {'Los productos existentes fueron eliminados automáticamente de Holded para permitir la consolidación de variantes.' if success_rate == 100 else
+                 f'Se eliminaron automáticamente {successful} de {total_scheduled} productos. {failed} productos requieren eliminación manual.' if success_rate >= 75 else
+                 f'La eliminación automática falló para {failed} de {total_scheduled} productos. Se requiere intervención manual.'}
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto ID</th>
+                        <th>Nombre del Producto</th>
+                        <th>Variantes Eliminadas</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+        """
+        
+        for detail in deletion_details:  # Show all deletion results
+            product_id = detail.get('product_id', 'N/A')
+            product_name = detail.get('product_name', 'N/A')
+            variants_count = detail.get('variants_count', 0)
+            status = detail.get('status', 'unknown')
+            
+            if status == 'success':
+                status_display = '<span style="color: #28a745; font-weight: bold;">✅ Eliminado</span>'
+            elif status == 'failed':
+                status_display = '<span style="color: #dc3545; font-weight: bold;">❌ Falló</span>'
+            else:
+                status_display = '<span style="color: #6c757d; font-weight: bold;">💥 Error</span>'
+            
+            html += f"""
+                    <tr>
+                        <td>{product_id[:20]}...</td>
+                        <td>{product_name[:30]}...</td>
+                        <td>{variants_count}</td>
+                        <td>{status_display}</td>
+                    </tr>
+            """
+        
+        # Add summary row
+        html += f"""
+                    <tr style="background-color: #f8f9fa; border-top: 2px solid #dee2e6;">
+                        <td colspan="4" style="text-align: center; font-weight: bold; padding: 12px;">
+                            Tasa de Éxito: {success_rate:.1f}% ({successful}/{total_scheduled})
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        """
+        
+        # Add action needed message if there were failures
+        if failed > 0:
+            html += f"""
+            <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; padding: 10px; margin-top: 10px;">
+                <p style="margin: 0; color: #721c24; font-size: 14px;">
+                    <strong>⚠️ Acción Requerida:</strong> {failed} productos no pudieron ser eliminados automáticamente. 
+                    Elimine manualmente estos productos de Holded antes de importar el archivo CSV para evitar conflictos de SKU.
+                </p>
+            </div>
+            """
         
         return html
     
