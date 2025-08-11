@@ -434,6 +434,119 @@ class HoldedAPI:
             }
         
         return json.dumps(stock_data, indent=2)
+    
+    def get_all_variants_by_product_name(self, product_name: str) -> List[Dict[str, Any]]:
+        """
+        Get all variants of a product by its name from Conway category products.
+        
+        Args:
+            product_name: Name of the product to search for
+            
+        Returns:
+            List of variant dictionaries (empty list if none found)
+        """
+        try:
+            # Get Conway variant SKUs which includes all variants
+            conway_skus = self.get_conway_variant_skus()
+            
+            if not conway_skus:
+                self.logger.warning("No Conway category products found")
+                return []
+            
+            # Normalize the search product name
+            normalized_search_name = product_name.strip().lower()
+            matching_variants = []
+            
+            # Find all variants that match the product name
+            for sku, holded_product in conway_skus.items():
+                existing_name = holded_product.get('name', '').strip().lower()
+                
+                if existing_name == normalized_search_name:
+                    # Add additional useful information
+                    variant_info = {
+                        **holded_product,
+                        '_search_matched': True,
+                        '_variant_sku': sku
+                    }
+                    matching_variants.append(variant_info)
+            
+            self.logger.info(f"Found {len(matching_variants)} existing variants for product '{product_name}'")
+            
+            # Log variant details for debugging
+            for variant in matching_variants:
+                variant_details = []
+                if '_variant_data' in variant and 'categoryFields' in variant['_variant_data']:
+                    for field in variant['_variant_data']['categoryFields']:
+                        if 'name' in field and 'field' in field:
+                            variant_details.append(f"{field['name']}: {field['field']}")
+                
+                self.logger.debug(f"  - Variant SKU: {variant.get('_variant_sku', 'Unknown')} ({', '.join(variant_details)})")
+            
+            return matching_variants
+            
+        except Exception as e:
+            self.logger.error(f"Error retrieving variants for product '{product_name}': {e}")
+            return []
+    
+    def delete_product_with_variants(self, product_id: str) -> bool:
+        """
+        Delete a product and all its variants from Holded.
+        
+        Args:
+            product_id: Main product ID to delete
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            url = f"{self.base_url}/products/{product_id}"
+            
+            self.logger.info(f"Deleting product {product_id} and all its variants...")
+            
+            response = self.session.delete(url)
+            
+            if response.status_code in [200, 204]:
+                self.logger.info(f"Successfully deleted product {product_id}")
+                return True
+            else:
+                self.logger.error(f"Failed to delete product {product_id}: {response.status_code} - {response.text}")
+                return False
+                
+        except Exception as e:
+            self.logger.error(f"Error deleting product {product_id}: {e}")
+            return False
+    
+    def get_main_product_id_by_variant_sku(self, variant_sku: str) -> Optional[str]:
+        """
+        Get the main product ID for a given variant SKU.
+        
+        Args:
+            variant_sku: The variant SKU to lookup
+            
+        Returns:
+            Main product ID or None if not found
+        """
+        try:
+            # Get Conway variant SKUs
+            conway_skus = self.get_conway_variant_skus()
+            
+            if variant_sku in conway_skus:
+                variant_data = conway_skus[variant_sku]
+                main_product_id = variant_data.get('_main_product_id')
+                
+                if main_product_id:
+                    self.logger.debug(f"Found main product ID {main_product_id} for variant SKU {variant_sku}")
+                    return str(main_product_id)
+                else:
+                    self.logger.warning(f"No main product ID found for variant SKU {variant_sku}")
+                    return None
+            else:
+                self.logger.warning(f"Variant SKU {variant_sku} not found in Conway products")
+                return None
+                
+        except Exception as e:
+            self.logger.error(f"Error getting main product ID for variant SKU {variant_sku}: {e}")
+            return None
 
 
 def get_holded_products() -> Optional[List[Dict[str, Any]]]:

@@ -283,7 +283,7 @@ def get_first_sku_for_product(stock_df: pd.DataFrame, product_name: str) -> str:
     return str(first_variant['Item'])
 
 def main():
-    """Main transformation function."""
+    """Main transformation function with enhanced processing metadata."""
     
     # Load the CSV files
     print("Loading CSV files...")
@@ -297,7 +297,16 @@ def main():
     # Create output dataframe
     output_data = []
     
-    print("Processing products...")
+    # Enhanced processing tracking
+    processing_metadata = {
+        'input_products': len(stock_df),
+        'output_products': 0,
+        'failed_lookups': [],
+        'processed_products': 0,
+        'success_rate': 0.0
+    }
+    
+    print(f"Processing {len(stock_df)} products...")
     
     # Group stock items by product name to handle variants
     grouped_stock = stock_df.groupby('Name')
@@ -310,11 +319,20 @@ def main():
         
         # Process each variant
         for _, stock_row in product_variants.iterrows():
+            processing_metadata['processed_products'] += 1
+            
             # Find matching info row by Item number
             info_row = info_df[info_df['Artikelnummer'] == stock_row['Item']]
             
             if len(info_row) == 0:
                 print(f"Warning: No info found for item {stock_row['Item']}")
+                # Track failed lookup
+                failed_product = {
+                    'sku': str(stock_row['Item']),
+                    'name': str(stock_row['Name']),
+                    'reason': f'No matching Artikelnummer found in {len(info_df)} EAN info records'
+                }
+                processing_metadata['failed_lookups'].append(failed_product)
                 continue
                 
             info_row = info_row.iloc[0]
@@ -368,16 +386,165 @@ def main():
     # Create final dataframe with exact template structure
     output_df = pd.DataFrame(output_data, columns=template_columns)
     
-    # Data processed successfully
+    # Update processing metadata
+    processing_metadata['output_products'] = len(output_df)
+    if processing_metadata['input_products'] > 0:
+        processing_metadata['success_rate'] = (processing_metadata['output_products'] / processing_metadata['input_products']) * 100
     
     # Save to CSV with proper escaping for multiline descriptions
     output_filename = 'conway_products_holded_import.csv'
     output_df.to_csv(output_filename, index=False, quoting=1)  # Quote all fields
     
     print(f"Transformation complete! Output saved to: {output_filename}")
-    print(f"Total products processed: {len(output_df)}")
+    print(f"Total products processed: {len(output_df)} of {processing_metadata['input_products']} input products ({processing_metadata['success_rate']:.1f}% success rate)")
     
+    if processing_metadata['failed_lookups']:
+        print(f"Warning: {len(processing_metadata['failed_lookups'])} products failed EAN lookup and were skipped")
+        for failed in processing_metadata['failed_lookups'][:3]:  # Show first 3 failures
+            print(f"  - SKU {failed['sku']}: {failed['name']} - {failed['reason']}")
+        if len(processing_metadata['failed_lookups']) > 3:
+            print(f"  ... and {len(processing_metadata['failed_lookups']) - 3} more failures")
+    
+    # For backward compatibility, still return the dataframe as primary return value
+    # The metadata will be available for enhanced workflows
     return output_df
+
+# Global variable to store the last processing metadata
+_last_processing_metadata = {}
+
+def main_with_metadata():
+    """Enhanced main function that returns both dataframe and metadata."""
+    global _last_processing_metadata
+    
+    # Load the CSV files
+    print("Loading CSV files...")
+    stock_df = pd.read_csv('stock_Stocklist_CONWAY.csv')
+    info_df = pd.read_csv('Información_EAN_Conway_2025.csv')
+    template_df = pd.read_csv('Importar Productos.csv')
+    
+    # Get template columns
+    template_columns = template_df.columns.tolist()
+    
+    # Create output dataframe
+    output_data = []
+    
+    # Enhanced processing tracking
+    processing_metadata = {
+        'input_products': len(stock_df),
+        'output_products': 0,
+        'failed_lookups': [],
+        'processed_products': 0,
+        'success_rate': 0.0
+    }
+    
+    print(f"Processing {len(stock_df)} products...")
+    
+    # Group stock items by product name to handle variants
+    grouped_stock = stock_df.groupby('Name')
+    
+    for product_name, product_variants in grouped_stock:
+        print(f"Processing: {product_name}")
+        
+        # Get the first SKU for this product (smallest size)
+        first_sku = get_first_sku_for_product(stock_df, product_name)
+        
+        # Process each variant
+        for _, stock_row in product_variants.iterrows():
+            processing_metadata['processed_products'] += 1
+            
+            # Find matching info row by Item number
+            info_row = info_df[info_df['Artikelnummer'] == stock_row['Item']]
+            
+            if len(info_row) == 0:
+                print(f"Warning: No info found for item {stock_row['Item']}")
+                # Track failed lookup
+                failed_product = {
+                    'sku': str(stock_row['Item']),
+                    'name': str(stock_row['Name']),
+                    'reason': f'No matching Artikelnummer found in {len(info_df)} EAN info records'
+                }
+                processing_metadata['failed_lookups'].append(failed_product)
+                continue
+                
+            info_row = info_row.iloc[0]
+            
+            # Build the output row (same logic as main function)
+            row_data = {}
+            
+            # Fill template columns
+            row_data['SKU'] = first_sku
+            row_data['Nombre'] = stock_row['Name']
+            row_data['Descripción'] = build_description(info_row, stock_row)
+            row_data['Código de barras'] = ''  # Empty as specified
+            row_data['Código de fábrica'] = first_sku
+            row_data['Talla'] = stock_row['size']
+            row_data['Color'] = translate_color(stock_row['color'])
+            row_data['Medida de la Rueda'] = get_wheel_size(stock_row['ws'])
+            row_data['Tipo de Bici'] = categorize_bike_type(info_row['Gruppentext'])
+            row_data['Forma del Cuadro'] = categorize_frame_shape(info_row['Artikeltext'])
+            row_data['Sku Variante'] = str(stock_row['Item'])
+            # Format EAN as integer without decimals
+            ean_value = info_row['EAN']
+            if pd.notna(ean_value):
+                try:
+                    # Convert to int to remove decimals, then back to string
+                    ean_int = int(float(ean_value))
+                    row_data['Código barras Variante'] = str(ean_int)
+                except (ValueError, TypeError):
+                    row_data['Código barras Variante'] = str(ean_value)
+            else:
+                row_data['Código barras Variante'] = ''
+            row_data['cat - Cycplus'] = ''  # Empty
+            row_data['cat - DARE'] = ''  # Empty
+            row_data['cat - Conway'] = categorize_conway(info_row['Gruppentext'])
+            row_data['cat - Kogel'] = ''  # Empty
+            row_data['Coste (Subtotal)'] = ''  # Empty
+            row_data['Precio compra (Subtotal)'] = ''  # Empty
+            row_data['Precio venta (Subtotal)'] = f"{clean_price(info_row['EVP']) / 1.21}"
+            row_data['Impuesto de venta'] = 21
+            row_data['Impuesto de compras'] = ''  # Empty
+            row_data['Stock'] = clean_stock(stock_row['Stock qty'])
+            row_data['Peso'] = ''  # Empty
+            row_data['Fecha de inicio dd/mm/yyyy'] = datetime.now().strftime('%d/%m/%Y')
+            row_data['Tags separados por -'] = ''  # Empty
+            row_data['Proveedor (Código)'] = '67a5b434b4aa620153059995'
+            row_data['Cuenta ventas'] = '700000000'
+            row_data['Cuenta compras'] = '600000000'
+            row_data['Almacén'] = '67a373952eadb1b9db02a9c4'
+            
+            output_data.append(row_data)
+    
+    # Create final dataframe with exact template structure
+    output_df = pd.DataFrame(output_data, columns=template_columns)
+    
+    # Update processing metadata
+    processing_metadata['output_products'] = len(output_df)
+    if processing_metadata['input_products'] > 0:
+        processing_metadata['success_rate'] = (processing_metadata['output_products'] / processing_metadata['input_products']) * 100
+    
+    # Store metadata globally for access
+    _last_processing_metadata = processing_metadata
+    
+    # Save to CSV with proper escaping for multiline descriptions
+    output_filename = 'conway_products_holded_import.csv'
+    output_df.to_csv(output_filename, index=False, quoting=1)  # Quote all fields
+    
+    print(f"Transformation complete! Output saved to: {output_filename}")
+    print(f"Total products processed: {len(output_df)} of {processing_metadata['input_products']} input products ({processing_metadata['success_rate']:.1f}% success rate)")
+    
+    if processing_metadata['failed_lookups']:
+        print(f"Warning: {len(processing_metadata['failed_lookups'])} products failed EAN lookup and were skipped")
+        for failed in processing_metadata['failed_lookups'][:3]:  # Show first 3 failures
+            print(f"  - SKU {failed['sku']}: {failed['name']} - {failed['reason']}")
+        if len(processing_metadata['failed_lookups']) > 3:
+            print(f"  ... and {len(processing_metadata['failed_lookups']) - 3} more failures")
+    
+    return output_df, processing_metadata
+
+def get_last_processing_metadata():
+    """Get the metadata from the last transformation run."""
+    global _last_processing_metadata
+    return _last_processing_metadata.copy()
 
 if __name__ == "__main__":
     result = main()

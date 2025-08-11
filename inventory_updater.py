@@ -607,35 +607,53 @@ class RobustInventoryUpdater:
                     self.logger.error(error_msg)
                     scenario_results['errors'].append(error_msg)
         
-        # Scenario 3: SKUs in stock list but not in Conway -> track for manual creation
-        self.logger.info("Scenario 3: SKUs in stock list but not in Conway - tracking for manual creation")
+        # Scenario 3: SKUs in stock list but not in Conway -> distinguish new products vs new variants
+        self.logger.info("Scenario 3: SKUs in stock list but not in Conway - analyzing for new products vs new variants")
+        
+        # Initialize new result categories
+        scenario_results['completely_new_products'] = []
+        scenario_results['new_variants_of_existing_products'] = []
+        
         for sku, file_product in file_skus.items():
             if sku not in conway_skus:
                 try:
                     scenario_results['skipped_not_in_holded'] += 1
+                    
+                    # Check if this is a new variant of an existing product
+                    product_name = file_product.get('name', '')
+                    is_new_variant = self._is_new_variant_of_existing_product(product_name, conway_skus)
                     
                     # Track product details for email notification using FileProcessor data
                     new_product_info = {
                         'sku': str(sku) if sku else 'N/A',
                         'stock': int(file_product.get('stock', 0)) if file_product.get('stock', 0) is not None else 0,
                         'price': file_product.get('price', 'N/A'),
-                        'name': file_product.get('name', ''),  # Include name from FileProcessor
-                        'is_offer': file_product.get('is_offer', False),  # Include offer flag
+                        'name': product_name,
+                        'is_offer': file_product.get('is_offer', False),
                         'source_file': str(file_product.get('source_file', 'Unknown')),
                         # Conway-specific fields
                         'size': file_product.get('size', ''),
                         'color': file_product.get('color', ''),
-                        'ws': file_product.get('ws', '')
+                        'ws': file_product.get('ws', ''),
+                        # Enhanced classification
+                        'is_new_variant': is_new_variant
                     }
                     
-                    # Debug logging to track data flow
-                    self.logger.debug(f"Creating new_product_info for SKU {sku}: name='{file_product.get('name', '')}', full_data={new_product_info}")
+                    if is_new_variant:
+                        scenario_results['new_variants_of_existing_products'].append(new_product_info)
+                        self.logger.info(f"Detected NEW VARIANT: {sku} of existing product '{product_name}' (Size: {file_product.get('size', 'N/A')}, Color: {file_product.get('color', 'N/A')})")
+                    else:
+                        scenario_results['completely_new_products'].append(new_product_info)
+                        self.logger.info(f"Detected COMPLETELY NEW PRODUCT: {sku} - '{product_name}' (Stock: {file_product.get('stock', 0)})")
+                    
+                    # Keep the old structure for backward compatibility
                     scenario_results['new_products_for_creation'].append(new_product_info)
                     
-                    self.logger.info(f"Tracked non-Conway SKU for manual creation: {sku} (Stock: {file_product.get('stock', 0)}, Name: '{file_product.get('name', 'N/A')}')")
+                    # Debug logging to track data flow
+                    self.logger.debug(f"Creating new_product_info for SKU {sku}: name='{product_name}', is_new_variant={is_new_variant}, full_data={new_product_info}")
                     
                 except Exception as e:
-                    error_msg = f"Error tracking new product SKU {sku} for manual creation: {e}"
+                    error_msg = f"Error analyzing product SKU {sku}: {e}"
                     self.logger.error(error_msg)
                     scenario_results['errors'].append(error_msg)
         
@@ -644,7 +662,9 @@ class RobustInventoryUpdater:
         self.logger.info(f"  Conway SKUs reset to 0: {scenario_results['stock_resets']}")
         self.logger.info(f"  Stock updates applied: {scenario_results['stock_updates']}")
         self.logger.info(f"  Non-Conway SKUs skipped: {scenario_results['skipped_not_in_holded']}")
-        self.logger.info(f"  New products tracked for creation: {len(scenario_results['new_products_for_creation'])}")
+        self.logger.info(f"  Completely new products: {len(scenario_results['completely_new_products'])}")
+        self.logger.info(f"  New variants of existing products: {len(scenario_results['new_variants_of_existing_products'])}")
+        self.logger.info(f"  Total new products tracked: {len(scenario_results['new_products_for_creation'])}")
         self.logger.info(f"  Errors encountered: {len(scenario_results['errors'])}")
         
         return scenario_results
@@ -708,6 +728,49 @@ class RobustInventoryUpdater:
             current_stock=current_stock,
             variant_id=str(variant_id)
         )
+    
+    def _is_new_variant_of_existing_product(self, product_name: str, conway_skus: Dict[str, Dict[str, Any]]) -> bool:
+        """
+        Determine if a new product is actually a new variant of an existing product.
+        
+        Args:
+            product_name: Name of the product from the stock file
+            conway_skus: Dictionary of Conway variant SKUs from Holded
+            
+        Returns:
+            True if this is a new variant of an existing product, False if completely new
+        """
+        if not product_name:
+            return False
+        
+        # Normalize product name for comparison
+        normalized_new_name = product_name.strip().lower()
+        
+        # Check against all existing Conway products
+        for sku, holded_product in conway_skus.items():
+            existing_name = holded_product.get('name', '').strip().lower()
+            
+            if existing_name and existing_name == normalized_new_name:
+                self.logger.debug(f"Found exact match for '{product_name}' - this is a new variant")
+                return True
+                
+        # Check for partial matches (in case of slight name variations)
+        for sku, holded_product in conway_skus.items():
+            existing_name = holded_product.get('name', '').strip().lower()
+            
+            if existing_name:
+                # Remove common variant indicators for comparison
+                normalized_existing = existing_name.replace(' - ', ' ').replace('-', ' ')
+                normalized_new = normalized_new_name.replace(' - ', ' ').replace('-', ' ')
+                
+                # Check if names match (allowing for minor formatting differences)
+                if normalized_existing == normalized_new:
+                    self.logger.debug(f"Found normalized match: '{product_name}' matches '{existing_name}' - this is a new variant")
+                    return True
+        
+        # If no matches found, this is a completely new product
+        self.logger.debug(f"No existing product matches '{product_name}' - this is a completely new product")
+        return False
 
 
 def update_inventory_from_files(file_paths: List[str]) -> Dict[str, Any]:

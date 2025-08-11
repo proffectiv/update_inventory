@@ -100,6 +100,18 @@ def main():
                         attachment_files['Product Images.zip'] = new_products_result['images_zip']
                         logger.info(f"Prepared images ZIP file for email attachment: {new_products_result['images_zip']}")
                     
+                    # Merge enhanced new products data into update_results for email notification
+                    if new_products_result.get('completely_new_products'):
+                        update_results['completely_new_products'] = new_products_result['completely_new_products']
+                    if new_products_result.get('new_variants_of_existing_products'):
+                        update_results['new_variants_of_existing_products'] = new_products_result['new_variants_of_existing_products']
+                    if new_products_result.get('products_for_deletion'):
+                        update_results['products_for_deletion'] = new_products_result['products_for_deletion']
+                    if new_products_result.get('data_integrity_issues'):
+                        update_results['data_integrity_issues'] = new_products_result['data_integrity_issues']
+                    if new_products_result.get('processing_metadata'):
+                        update_results['processing_metadata'] = new_products_result['processing_metadata']
+                    
                     logger.info(f"New products processing completed successfully with {len(attachment_files)} attachments")
                 else:
                     logger.warning("New products processing failed or returned no results")
@@ -130,7 +142,16 @@ def main():
         if new_products_data and attachment_files:
             logger.info("Step 4.5: Cleaning up new products temporary files...")
             try:
-                cleanup_new_products_files(new_products_result if 'new_products_result' in locals() else None)
+                if 'new_products_result' in locals() and new_products_result:
+                    # Extract only file paths for cleanup
+                    file_paths = {
+                        'holded_import': new_products_result.get('holded_import'),
+                        'images_zip': new_products_result.get('images_zip'),
+                        'temp_stock_csv': new_products_result.get('temp_stock_csv')
+                    }
+                    cleanup_new_products_files(file_paths)
+                else:
+                    cleanup_new_products_files(None)
             except Exception as e:
                 logger.warning(f"Error cleaning up new products files: {e}")
         
@@ -270,7 +291,16 @@ def run_dropbox_only():
             # Cleanup new products files if any were created
             if new_products_data and attachment_files:
                 try:
-                    cleanup_new_products_files(new_products_result if 'new_products_result' in locals() else None)
+                    if 'new_products_result' in locals() and new_products_result:
+                        # Extract only file paths for cleanup
+                        file_paths = {
+                            'holded_import': new_products_result.get('holded_import'),
+                            'images_zip': new_products_result.get('images_zip'),
+                            'temp_stock_csv': new_products_result.get('temp_stock_csv')
+                        }
+                        cleanup_new_products_files(file_paths)
+                    else:
+                        cleanup_new_products_files(None)
                 except Exception as e:
                     logger.warning(f"Error cleaning up new products files: {e}")
         else:
@@ -316,7 +346,16 @@ def process_local_file(file_path: str):
         # Cleanup new products files if any were created
         if new_products_data and attachment_files:
             try:
-                cleanup_new_products_files(new_products_result if 'new_products_result' in locals() else None)
+                if 'new_products_result' in locals() and new_products_result:
+                    # Extract only file paths for cleanup
+                    file_paths = {
+                        'holded_import': new_products_result.get('holded_import'),
+                        'images_zip': new_products_result.get('images_zip'),
+                        'temp_stock_csv': new_products_result.get('temp_stock_csv')
+                    }
+                    cleanup_new_products_files(file_paths)
+                else:
+                    cleanup_new_products_files(None)
             except Exception as e:
                 logger.warning(f"Error cleaning up new products files: {e}")
         

@@ -350,9 +350,19 @@ class EmailNotifier:
             """
             
         
-        # Agregar sección de productos nuevos si los hay
+        # Enhanced New Products Section with Categorization
+        html += self._create_enhanced_new_products_section(update_results)
+        
+        # Add Variant Consolidation Section
+        html += self._create_variant_consolidation_section(update_results)
+        
+        # Add Data Integrity Section
+        html += self._create_data_integrity_section(update_results)
+        
+        # Keep legacy new products for backward compatibility
         new_products = update_results.get('new_products_for_creation', [])
-        if new_products:
+        if new_products and not update_results.get('completely_new_products') and not update_results.get('new_variants_of_existing_products'):
+            # Only show legacy section if enhanced data is not available
             html += self._format_new_products_html(new_products)
         
         # Agregar errores si los hay
@@ -363,11 +373,9 @@ class EmailNotifier:
                 <ul>
             """
             
-            for error in update_results['errors'][:5]:  # Limit to first 5 errors
+            for error in update_results['errors']:  # Show all errors
                 html += f"<li class='error'>{error}</li>"
             
-            if len(update_results['errors']) > 5:
-                html += f"<li>... y {len(update_results['errors']) - 5} errores más</li>"
             
             html += "</ul></div>"
         
@@ -435,7 +443,7 @@ Errores: {len(update_results.get('errors', []))}
             text += f"\n\nCAMBIOS DE STOCK - VARIANTES ({len(update_results['summary']['stock_updates'])})\n"
             text += "=" * 60 + "\n"
             
-            for update in update_results['summary']['stock_updates'][:8]:
+            for update in update_results['summary']['stock_updates']:
                 old_stock = update.get('old_stock', 0)
                 new_stock = update.get('new_stock', 0)
                 action = update.get('action', 'update')
@@ -445,8 +453,6 @@ Errores: {len(update_results.get('errors', []))}
                 text += f"SKU: {update.get('sku', 'N/A')} | {product_name}\n"
                 text += f"     {old_stock} -> {new_stock} [{action_text}]\n\n"
             
-            if len(update_results['summary']['stock_updates']) > 8:
-                text += f"... y {len(update_results['summary']['stock_updates']) - 8} más\n"
         
         # Agregar sección de productos nuevos si los hay
         new_products = update_results.get('new_products_for_creation', [])
@@ -458,11 +464,8 @@ Errores: {len(update_results.get('errors', []))}
             text += f"\n\nERRORES ({len(update_results['errors'])})\n"
             text += "=" * 50 + "\n"
             
-            for error in update_results['errors'][:3]:
+            for error in update_results['errors']:
                 text += f"- {error}\n"
-            
-            if len(update_results['errors']) > 3:
-                text += f"... y {len(update_results['errors']) - 3} errores más\n"
         
         text += "\n\nEsta es una notificación automática del Sistema de Actualización de Inventario.\n"
         
@@ -678,6 +681,223 @@ Por favor revise los logs del sistema y reintente la operación si es necesario.
 """
         
         return text
+    
+    def _create_enhanced_new_products_section(self, update_results: Dict[str, Any]) -> str:
+        """Create enhanced new products section with categorization."""
+        completely_new = update_results.get('completely_new_products', [])
+        new_variants = update_results.get('new_variants_of_existing_products', [])
+        
+        if not completely_new and not new_variants:
+            return ""
+        
+        html = ""
+        
+        # Completely New Products Section
+        if completely_new:
+            html += f"""
+            <div class="details" style="margin-top: 30px;">
+                <h3 style="color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 5px;">
+                    🆕 Productos Completamente Nuevos ({len(completely_new)})
+                </h3>
+                <p style="background-color: #e7f3ff; padding: 10px; border-radius: 5px; border-left: 4px solid #007bff;">
+                    Los siguientes productos son completamente nuevos y requieren creación manual en Holded.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Nombre del Producto</th>
+                            <th>Stock</th>
+                            <th>Talla</th>
+                            <th>Color</th>
+                            <th>Medida Rueda</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            """
+            
+            for product in completely_new:  # Show all products
+                html += f"""
+                        <tr>
+                            <td>{product.get('sku', 'N/A')}</td>
+                            <td>{product.get('name', 'N/A')[:30]}...</td>
+                            <td>{product.get('stock', 0)}</td>
+                            <td>{product.get('size', 'N/A')}</td>
+                            <td>{product.get('color', 'N/A')}</td>
+                            <td>{product.get('ws', 'N/A')}</td>
+                        </tr>
+                """
+            
+            
+            html += """
+                    </tbody>
+                </table>
+            </div>
+            """
+        
+        # New Variants Section
+        if new_variants:
+            html += f"""
+            <div class="details" style="margin-top: 30px;">
+                <h3 style="color: #ffc107; border-bottom: 2px solid #ffc107; padding-bottom: 5px;">
+                    🔄 Nuevas Variantes de Productos Existentes ({len(new_variants)})
+                </h3>
+                <p style="background-color: #fff3cd; padding: 10px; border-radius: 5px; border-left: 4px solid #ffc107;">
+                    Los siguientes productos son nuevas variantes (tallas/colores) de productos que ya existen en Holded.
+                    Los productos existentes serán eliminados y re-importados con todas las variantes.
+                </p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>SKU Variante</th>
+                            <th>Nombre del Producto</th>
+                            <th>Nueva Talla</th>
+                            <th>Nuevo Color</th>
+                            <th>Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            """
+            
+            for product in new_variants:  # Show all variants
+                html += f"""
+                        <tr>
+                            <td>{product.get('sku', 'N/A')}</td>
+                            <td>{product.get('name', 'N/A')[:25]}...</td>
+                            <td>{product.get('size', 'N/A')}</td>
+                            <td>{product.get('color', 'N/A')}</td>
+                            <td>{product.get('stock', 0)}</td>
+                        </tr>
+                """
+            
+            
+            html += """
+                    </tbody>
+                </table>
+            </div>
+            """
+        
+        return html
+    
+    def _create_variant_consolidation_section(self, update_results: Dict[str, Any]) -> str:
+        """Create variant consolidation section."""
+        products_for_deletion = update_results.get('products_for_deletion', [])
+        
+        if not products_for_deletion:
+            return ""
+        
+        html = f"""
+        <div class="details" style="margin-top: 30px;">
+            <h3 style="color: #dc3545; border-bottom: 2px solid #dc3545; padding-bottom: 5px;">
+                🗑️ Productos Programados para Eliminación y Re-importación ({len(products_for_deletion)})
+            </h3>
+            <p style="background-color: #f8d7da; padding: 10px; border-radius: 5px; border-left: 4px solid #dc3545;">
+                Los siguientes productos existentes serán eliminados de Holded antes de la importación 
+                para consolidar todas sus variantes bajo un único producto principal.
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto ID</th>
+                        <th>Nombre del Producto</th>
+                        <th>Variantes Existentes</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+        """
+        
+        for product in products_for_deletion:  # Show all products scheduled for deletion
+            html += f"""
+                    <tr>
+                        <td>{product.get('product_id', 'N/A')}</td>
+                        <td>{product.get('product_name', 'N/A')[:30]}...</td>
+                        <td>{product.get('existing_variants_count', 0)}</td>
+                        <td style="color: #dc3545;">Eliminar y Re-importar</td>
+                    </tr>
+            """
+        
+        
+        html += """
+                </tbody>
+            </table>
+        </div>
+        """
+        
+        return html
+    
+    def _create_data_integrity_section(self, update_results: Dict[str, Any]) -> str:
+        """Create data integrity issues section."""
+        data_issues = update_results.get('data_integrity_issues', [])
+        processing_metadata = update_results.get('processing_metadata', {})
+        
+        if not data_issues and not processing_metadata.get('failed_lookups'):
+            return ""
+        
+        # Combine issues from both sources
+        all_issues = list(data_issues)
+        if processing_metadata.get('failed_lookups'):
+            all_issues.extend(processing_metadata['failed_lookups'])
+        
+        if not all_issues:
+            return ""
+        
+        html = f"""
+        <div class="details" style="margin-top: 30px;">
+            <h3 style="color: #6f42c1; border-bottom: 2px solid #6f42c1; padding-bottom: 5px;">
+                ⚠️ Problemas de Integridad de Datos ({len(all_issues)})
+            </h3>
+            <p style="background-color: #f3e5ff; padding: 10px; border-radius: 5px; border-left: 4px solid #6f42c1;">
+                Los siguientes productos estaban en el archivo de stock pero no pudieron ser procesados 
+                debido a problemas con la información EAN o datos faltantes.
+            </p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Nombre del Producto</th>
+                        <th>Razón del Fallo</th>
+                    </tr>
+                </thead>
+                <tbody>
+        """
+        
+        for issue in all_issues:  # Show all data integrity issues
+            html += f"""
+                    <tr>
+                        <td>{issue.get('sku', 'N/A')}</td>
+                        <td>{issue.get('name', 'N/A')[:25]}...</td>
+                        <td style="font-size: 12px; color: #666;">{issue.get('reason', 'Razón desconocida')}</td>
+                    </tr>
+            """
+        
+        
+        # Add processing statistics if available
+        if processing_metadata:
+            success_rate = processing_metadata.get('success_rate', 0)
+            html += f"""
+                    <tr style="background-color: #f8f9fa;">
+                        <td colspan="3" style="text-align: center; font-weight: bold;">
+                            Tasa de Éxito del Procesamiento: {success_rate:.1f}% 
+                            ({processing_metadata.get('output_products', 0)}/{processing_metadata.get('input_products', 0)} productos)
+                        </td>
+                    </tr>
+            """
+        
+        html += """
+                </tbody>
+            </table>
+            <div style="background-color: #e9ecef; border: 1px solid #dee2e6; border-radius: 5px; padding: 10px; margin-top: 10px;">
+                <p style="margin: 0; color: #495057; font-size: 14px;">
+                    💡 <strong>Acción Recomendada:</strong> Revise estos productos manualmente para verificar que 
+                    la información EAN esté correcta en el archivo 'Información_EAN_Conway_2025.csv' o que 
+                    los productos tengan todos los datos requeridos.
+                </p>
+            </div>
+        </div>
+        """
+        
+        return html
 
 
 def send_update_notification(update_results: Dict[str, Any], attachment_files: Optional[Dict[str, str]] = None) -> bool:
