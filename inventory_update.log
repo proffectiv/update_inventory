@@ -7883,3 +7883,15 @@
 2025-08-11 10:01:14,738 - __main__ - INFO - ============================================================
 2025-08-11 10:01:14,738 - __main__ - INFO - INVENTORY UPDATE AUTOMATION COMPLETED
 2025-08-11 10:01:14,738 - __main__ - INFO - ============================================================
+2025-08-11 10:30:28,248 - __main__ - INFO - RUNNING DROPBOX-ONLY MODE
+2025-08-11 10:30:28,603 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-11 10:30:28,604 - dropbox - INFO - Request to users/get_current_account
+2025-08-11 10:30:29,287 - dropbox - INFO - Request to users/get_current_account
+2025-08-11 10:30:29,832 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-08-11 10:30:29,832 - dropbox - INFO - Request to users/get_current_account
+2025-08-11 10:30:30,456 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-08-11 10:30:30,457 - dropbox - INFO - Request to files/list_folder
+2025-08-11 10:30:30,893 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: [FILENAME_REDACTED]
+2025-08-11 10:30:30,894 - dropbox_handler - INFO - Most recent stock file unchanged: [FILENAME_REDACTED]
+2025-08-11 10:30:30,894 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-08-11 10:30:30,895 - __main__ - INFO - No Dropbox files found
