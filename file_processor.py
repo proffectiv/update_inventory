@@ -29,9 +29,10 @@ class FileProcessor:
         
         # Common column name variations for auto-detection
         # Updated to include Conway-specific columns
+        self.model_year_columns = ['model_year', 'year', 'año', 'MY']
         self.sku_columns = ['sku', 'codigo', 'code', 'product_code', 'item_code', 'ref', 'item']
         self.name_columns = ['name', 'nombre', 'product_name', 'producto', 'title', 'titulo', 'description', 'descripcion', 'desc']
-        self.price_columns = ['price', 'precio', 'cost', 'coste', 'amount', 'importe', 'evp']
+        self.price_columns = ['price', 'precio', 'cost', 'coste', 'amount', 'importe', 'evp', 'EVP']
         self.offer_columns = ['oferta', 'offer', 'special_price', 'promo_price']
         self.stock_columns = ['stock', 'quantity', 'cantidad', 'units', 'unidades', 'inventory', 'stock qty']
         # Conway-specific columns
@@ -144,6 +145,7 @@ class FileProcessor:
         df.columns = df.columns.str.strip().str.lower()
         
         # Auto-detect column mappings
+        model_year_col = self._find_column(df, self.model_year_columns)
         sku_col = self._find_column(df, self.sku_columns)
         name_col = self._find_column(df, self.name_columns)
         price_col = self._find_column(df, self.price_columns)
@@ -153,7 +155,6 @@ class FileProcessor:
         size_col = self._find_column(df, self.size_columns)
         color_col = self._find_column(df, self.color_columns)
         wheel_size_col = self._find_column(df, self.wheel_size_columns)
-        
         if not sku_col:
             self.logger.error("Could not find SKU column in file")
             return []
@@ -169,10 +170,16 @@ class FileProcessor:
         
         for index, row in df.iterrows():
             try:
+
                 # Extract SKU (required)
                 sku = str(row[sku_col]).strip()
                 if not sku or sku.lower() in ['nan', 'none', '']:
                     continue
+                
+                if model_year_col and pd.notna(row[model_year_col]):
+                    model_year = str(row[model_year_col]).strip()
+                    if model_year and model_year.lower() not in ['nan', 'none', '']:
+                        product['model_year'] = model_year
                 
                 # Clean up SKU format - remove .0 from numeric SKUs
                 if sku.endswith('.0') and sku[:-2].isdigit():

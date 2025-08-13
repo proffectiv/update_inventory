@@ -7907,3 +7907,915 @@
 2025-08-12 10:30:27,392 - dropbox_handler - INFO - Most recent stock file unchanged: [FILENAME_REDACTED]
 2025-08-12 10:30:27,392 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
 2025-08-12 10:30:27,394 - __main__ - INFO - No Dropbox files found
+2025-08-13 10:25:13,230 - __main__ - INFO - ============================================================
+2025-08-13 10:25:13,231 - __main__ - INFO - STARTING INVENTORY UPDATE AUTOMATION
+2025-08-13 10:25:13,231 - __main__ - INFO - ============================================================
+2025-08-13 10:25:13,231 - __main__ - INFO - Step 1: Checking for Dropbox file updates...
+2025-08-13 10:25:13,508 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-13 10:25:13,511 - dropbox - INFO - Request to users/get_current_account
+2025-08-13 10:25:14,230 - dropbox - INFO - Request to users/get_current_account
+2025-08-13 10:25:15,157 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-08-13 10:25:15,157 - dropbox - INFO - Request to users/get_current_account
+2025-08-13 10:25:15,831 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-08-13 10:25:15,832 - dropbox - INFO - Request to files/list_folder
+2025-08-13 10:25:16,282 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: [FILENAME_REDACTED]
+2025-08-13 10:25:16,283 - dropbox_handler - INFO - Processing most recent stock file: [FILENAME_REDACTED]
+2025-08-13 10:25:16,285 - dropbox_handler - INFO - Downloading file: [FILENAME_REDACTED]
+2025-08-13 10:25:16,285 - dropbox - INFO - Request to files/download
+2025-08-13 10:25:17,780 - dropbox_handler - INFO - Downloaded file to: [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:25:17,782 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-08-13 10:25:17,786 - __main__ - INFO - Found 1 files from Dropbox
+2025-08-13 10:25:17,787 - __main__ - INFO - Total files to process: 1
+2025-08-13 10:25:17,787 - __main__ - INFO -   - [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:25:17,787 - __main__ - INFO - Step 2: Processing inventory updates with robust Conway category logic...
+2025-08-13 10:25:17,788 - inventory_updater - INFO - Retrieving Conway category variant SKUs from Holded...
+2025-08-13 10:25:17,788 - holded_api - INFO - Fetching Conway category products page 1
+2025-08-13 10:25:19,324 - holded_api - INFO - Fetching Conway category products page 2
+2025-08-13 10:25:19,400 - holded_api - INFO - Retrieved [COUNT_REDACTED] Conway category products
+2025-08-13 10:25:19,402 - holded_api - INFO - Found [COUNT_REDACTED] Conway variant SKUs
+2025-08-13 10:25:19,402 - inventory_updater - INFO - Found [COUNT_REDACTED] Conway variant SKUs in Holded
+2025-08-13 10:25:19,403 - inventory_updater - INFO - Processing stock file: [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:25:19,502 - file_processor - INFO - Successfully read Excel file
+2025-08-13 10:25:19,502 - file_processor - INFO - Column mappings - [COLUMN_MAPPING_REDACTED]: item, Name: name, Price: evp, Offer: None, Stock: stock qty
+2025-08-13 10:25:19,502 - file_processor - INFO - Conway columns - Size: size, Color: color, Wheel Size: ws
+2025-08-13 10:25:19,503 - file_processor - INFO - Available columns in file: ['my', 'item', 'name', 'form', 'ws', 'size', 'color', 'drive unit', 'family', 'evp', 'hek', 'sale price', 'stock qty', 'order']
+2025-08-13 10:25:19,511 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file
+2025-08-13 10:25:19,511 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file: [FILENAME_REDACTED]
+2025-08-13 10:25:19,512 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products out of 428
+2025-08-13 10:25:19,512 - inventory_updater - INFO - Extracted [COUNT_REDACTED] SKUs from file
+2025-08-13 10:25:19,512 - inventory_updater - INFO - [PRODUCT_COUNT_REDACTED] products in stock files
+2025-08-13 10:25:19,512 - inventory_updater - INFO - Scenario 1: Conway SKUs not in stock list - setting to 0
+2025-08-13 10:25:19,512 - inventory_updater - INFO - Scenario 2: SKUs in both Conway and stock list - checking for updates
+2025-08-13 10:25:19,512 - inventory_updater - INFO - Scenario 3: SKUs in stock list but not in Conway - analyzing for new products vs new variants
+2025-08-13 10:25:19,512 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2897015 - 'Cairon T 5.0' (Stock: 5)
+2025-08-13 10:25:19,513 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830008 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:25:19,513 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830016 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:25:19,513 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830024 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:25:19,513 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830032 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:25:19,513 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830057 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:25:19,513 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830065 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:25:19,514 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830073 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:25:19,514 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830446 - 'Cairon T 6.0' (Stock: 2)
+2025-08-13 10:25:19,514 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830495 - 'Cairon T 6.0' (Stock: 4)
+2025-08-13 10:25:19,514 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810279 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,514 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810280 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,514 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810282 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,514 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810283 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,515 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810284 - 'Cairon T 6.0' (Stock: 4)
+2025-08-13 10:25:19,515 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810285 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,515 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810286 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,515 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810287 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,515 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810449 - 'Cairon T 6.0' (Stock: 7)
+2025-08-13 10:25:19,515 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810451 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,516 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810452 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,516 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810998 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:25:19,516 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811000 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:25:19,517 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811001 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,517 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811002 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,517 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811003 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:25:19,517 - inventory_updater - INFO - SCENARIO SUMMARY:
+2025-08-13 10:25:19,517 - inventory_updater - INFO -   Conway SKUs reset to 0: [COUNT_REDACTED]
+2025-08-13 10:25:19,517 - inventory_updater - INFO -   Stock updates applied: [COUNT_REDACTED]
+2025-08-13 10:25:19,517 - inventory_updater - INFO -   Non-Conway SKUs skipped: [COUNT_REDACTED]
+2025-08-13 10:25:19,517 - inventory_updater - INFO -   Completely new products: 26
+2025-08-13 10:25:19,517 - inventory_updater - INFO -   New variants of existing products: 0
+2025-08-13 10:25:19,517 - inventory_updater - INFO -   Total new products tracked: 26
+2025-08-13 10:25:19,517 - inventory_updater - INFO -   Errors encountered: 0
+2025-08-13 10:25:19,518 - __main__ - INFO - UPDATE SUMMARY:
+2025-08-13 10:25:19,518 - __main__ - INFO -   Files processed: 1
+2025-08-13 10:25:19,518 - __main__ - INFO -   Products processed: 428
+2025-08-13 10:25:19,518 - __main__ - INFO -   Stock updates: 0
+2025-08-13 10:25:19,519 - __main__ - INFO -   Stock resets (Conway SKUs not in files): 0
+2025-08-13 10:25:19,519 - __main__ - INFO -   SKUs skipped (not Conway): 26
+2025-08-13 10:25:19,519 - __main__ - INFO -   New products for manual creation: 26
+2025-08-13 10:25:19,519 - __main__ - INFO -   Errors: 0
+2025-08-13 10:25:19,519 - __main__ - INFO - Step 2.5: Processing 26 new products for import files and images...
+2025-08-13 10:25:19,793 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-13 10:25:19,794 - new_products_processor - INFO - Processing 26 total products:
+2025-08-13 10:25:19,795 - new_products_processor - INFO -   - Completely new products: 26
+2025-08-13 10:25:19,795 - new_products_processor - INFO -   - New variants of existing products: 0
+2025-08-13 10:25:19,797 - new_products_processor - INFO - Created temporary stock CSV with 26 products using real Conway data: [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:25:19,797 - new_products_processor - INFO - Sample product data - SKU: 2897015, Size: S, Color: red metallic / black metallic, WS: 28
+2025-08-13 10:25:19,798 - new_products_processor - INFO - Saved stock file as: [FILENAME_REDACTED]
+2025-08-13 10:25:19,798 - new_products_processor - INFO - Running transform_products to generate Holded import file...
+2025-08-13 10:25:19,868 - new_products_processor - INFO - Transform products completed successfully: [FILENAME_REDACTED]
+2025-08-13 10:25:19,869 - new_products_processor - WARNING - Data integrity issue: 5 products missing from output CSV
+2025-08-13 10:25:19,870 - new_products_processor - INFO - Transform products integrity check: 21/26 products (80.8% success rate)
+2025-08-13 10:25:19,870 - new_products_processor - INFO - Step 5: No products scheduled for deletion
+2025-08-13 10:25:19,870 - new_products_processor - INFO - Running download_product_images to download product images...
+2025-08-13 10:25:19,915 - download_product_images - INFO - Successfully loaded 4422 image URLs from [FILENAME_REDACTED]
+2025-08-13 10:25:19,915 - download_product_images - INFO - Sample SKUs from info CSV: ['02879351', '02879369', '02879377', '02879385', '02892776']
+2025-08-13 10:25:19,915 - download_product_images - INFO - Initialized downloader with images directory: product_images
+2025-08-13 10:25:19,915 - download_product_images - INFO - Loaded 4422 image URLs from [FILENAME_REDACTED]
+2025-08-13 10:25:19,915 - download_product_images - INFO - Starting image download process for all products
+2025-08-13 10:25:19,915 - download_product_images - INFO - Successfully loaded CSV with 21 products
+2025-08-13 10:25:19,915 - download_product_images - INFO - Sample SKUs from products CSV: ['2897015', '2830008', '2830016', '2830024', '2830032']
+2025-08-13 10:25:19,916 - download_product_images - INFO - Processing product 1/21
+2025-08-13 10:25:19,916 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:19,916 - download_product_images - INFO - Found image URL using padded SKU 02897015 for Cairon T 5.0
+2025-08-13 10:25:19,916 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2897015): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3Rjd21qbmZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpeXh6aXpvdGkxfDI5OTYwN3w0MzY4MjJ8NzE5MTczfHhsfGRoUElN
+2025-08-13 10:25:19,916 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:25:20,518 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2897015_Rojo Metálico _ Negro Metálico_Diamante.jpg
+2025-08-13 10:25:20,519 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Rojo Metálico / Negro Metálico, Diamante)
+2025-08-13 10:25:21,525 - download_product_images - INFO - Processing product 2/21
+2025-08-13 10:25:21,526 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:21,527 - download_product_images - INFO - Found image URL using padded SKU 02830008 for Cairon T 5.0
+2025-08-13 10:25:21,527 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830008): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMTl8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:25:21,528 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:25:21,916 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:25:21,917 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:25:22,923 - download_product_images - INFO - Processing product 3/21
+2025-08-13 10:25:22,923 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:22,923 - download_product_images - INFO - Found image URL using padded SKU 02830016 for Cairon T 5.0
+2025-08-13 10:25:22,923 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830016): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMjB8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:25:22,924 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:25:23,205 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:25:23,205 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:25:24,210 - download_product_images - INFO - Processing product 4/21
+2025-08-13 10:25:24,213 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:24,213 - download_product_images - INFO - Found image URL using padded SKU 02830024 for Cairon T 5.0
+2025-08-13 10:25:24,213 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830024): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMjF8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:25:24,214 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:25:24,806 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:25:24,806 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:25:25,812 - download_product_images - INFO - Processing product 5/21
+2025-08-13 10:25:25,813 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:25,813 - download_product_images - INFO - Found image URL using padded SKU 02830032 for Cairon T 5.0
+2025-08-13 10:25:25,814 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830032): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMjJ8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:25:25,815 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:25:26,108 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:25:26,110 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:25:27,111 - download_product_images - INFO - Processing product 6/21
+2025-08-13 10:25:27,112 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:27,113 - download_product_images - INFO - Found image URL using padded SKU 02830057 for Cairon T 5.0
+2025-08-13 10:25:27,113 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830057): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd25semZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk1fDMyNTIxMnw0NDYwMjR8Njg2MjI3fHhsfGRoUElN
+2025-08-13 10:25:27,114 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:25:27,467 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830057_Shadowgris Metálico Mate _ Bronze Metálico_Trapecio.jpg
+2025-08-13 10:25:27,468 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Trapecio)
+2025-08-13 10:25:28,469 - download_product_images - INFO - Processing product 7/21
+2025-08-13 10:25:28,470 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:28,470 - download_product_images - INFO - Found image URL using padded SKU 02830065 for Cairon T 5.0
+2025-08-13 10:25:28,471 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830065): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd25semZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk1fDMyNTIxMnw0NDYwMjV8Njg2MjI3fHhsfGRoUElN
+2025-08-13 10:25:28,472 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:25:28,762 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Trapecio' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830057_Shadowgris Metálico Mate _ Bronze Metálico_Trapecio.jpg
+2025-08-13 10:25:28,763 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Trapecio)
+2025-08-13 10:25:29,764 - download_product_images - INFO - Processing product 8/21
+2025-08-13 10:25:29,765 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:29,766 - download_product_images - INFO - Found image URL using padded SKU 02830073 for Cairon T 5.0
+2025-08-13 10:25:29,766 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830073): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd25semZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk1fDMyNTIxMnw0NDYwMjZ8Njg2MjI3fHhsfGRoUElN
+2025-08-13 10:25:29,767 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:25:30,068 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Trapecio' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830057_Shadowgris Metálico Mate _ Bronze Metálico_Trapecio.jpg
+2025-08-13 10:25:30,069 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Trapecio)
+2025-08-13 10:25:31,072 - download_product_images - INFO - Processing product 9/21
+2025-08-13 10:25:31,072 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:31,073 - download_product_images - INFO - Found image URL using padded SKU 02830446 for Cairon T 6.0
+2025-08-13 10:25:31,074 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2830446): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphem9kaGZxMDlvdjBmengwbmhheGp2Ymw5dXh6emZtZjh5bWRpenh6aTNudGF4fDMyNzk4Mnw0NDcwMzV8NzE1NzA2fHhsfGRoUElN
+2025-08-13 10:25:31,074 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:31,383 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2830446_Negro Metálico _ Dorado Metálico Mate_Trapecio.jpg
+2025-08-13 10:25:31,383 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Metálico / Dorado Metálico Mate, Trapecio)
+2025-08-13 10:25:32,388 - download_product_images - INFO - Processing product 10/21
+2025-08-13 10:25:32,389 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:32,390 - download_product_images - INFO - Found image URL using padded SKU 02830495 for Cairon T 6.0
+2025-08-13 10:25:32,390 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2830495): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphMG92emZxMDlvdjBmengwbmhheGp2Ymw5dXh6emZtZjh5bWRpenh6aTRvZHF4fDMzMTY3MXw0NDcwMzd8Njk2NjcxfHhsfGRoUElN
+2025-08-13 10:25:32,391 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:32,646 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2830495_Negro Metálico _ Dorado Metálico Mate_Wave.jpg
+2025-08-13 10:25:32,647 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Metálico / Dorado Metálico Mate, Wave)
+2025-08-13 10:25:33,652 - download_product_images - INFO - Processing product 11/21
+2025-08-13 10:25:33,653 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:33,653 - download_product_images - INFO - Found image URL using padded SKU 02810279 for Cairon T 6.0
+2025-08-13 10:25:33,654 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810279): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1MzZ8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:25:33,655 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:33,929 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:25:33,930 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:25:34,932 - download_product_images - INFO - Processing product 12/21
+2025-08-13 10:25:34,933 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:34,933 - download_product_images - INFO - Found image URL using padded SKU 02810280 for Cairon T 6.0
+2025-08-13 10:25:34,933 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810280): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1Mzd8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:25:34,934 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:35,168 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:25:35,169 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:25:36,175 - download_product_images - INFO - Processing product 13/21
+2025-08-13 10:25:36,175 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:36,176 - download_product_images - INFO - Found image URL using padded SKU 02810282 for Cairon T 6.0
+2025-08-13 10:25:36,176 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810282): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1Mzh8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:25:36,176 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:36,448 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:25:36,449 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:25:37,453 - download_product_images - INFO - Processing product 14/21
+2025-08-13 10:25:37,454 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:37,454 - download_product_images - INFO - Found image URL using padded SKU 02810283 for Cairon T 6.0
+2025-08-13 10:25:37,455 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810283): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1Mzl8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:25:37,456 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:37,723 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:25:37,724 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:25:38,730 - download_product_images - INFO - Processing product 15/21
+2025-08-13 10:25:38,731 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:38,732 - download_product_images - INFO - Found image URL using padded SKU 02810284 for Cairon T 6.0
+2025-08-13 10:25:38,732 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810284): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0MHw1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:25:38,733 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:39,027 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:25:39,028 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:25:40,029 - download_product_images - INFO - Processing product 16/21
+2025-08-13 10:25:40,030 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:40,030 - download_product_images - INFO - Found image URL using padded SKU 02810285 for Cairon T 6.0
+2025-08-13 10:25:40,031 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810285): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0MXw1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:25:40,032 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:40,306 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:25:40,307 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:25:41,312 - download_product_images - INFO - Processing product 17/21
+2025-08-13 10:25:41,313 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:41,314 - download_product_images - INFO - Found image URL using padded SKU 02810286 for Cairon T 6.0
+2025-08-13 10:25:41,314 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810286): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0Mnw1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:25:41,316 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:41,610 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:25:41,611 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:25:42,617 - download_product_images - INFO - Processing product 18/21
+2025-08-13 10:25:42,618 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:42,618 - download_product_images - INFO - Found image URL using padded SKU 02810287 for Cairon T 6.0
+2025-08-13 10:25:42,619 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810287): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0M3w1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:25:42,620 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:42,910 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:25:42,910 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:25:43,915 - download_product_images - INFO - Processing product 19/21
+2025-08-13 10:25:43,916 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:43,917 - download_product_images - INFO - Found image URL using padded SKU 02810449 for Cairon T 6.0
+2025-08-13 10:25:43,917 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810449): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG50YmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWt6eG5sY25ydHl4cjB5bXhoeTJ0bmJnOXpjd3wzNDQ4MTN8NDgzNTQ0fDU4MjQ2MXx4bHxkaFBJTQ==
+2025-08-13 10:25:43,918 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:44,223 - download_product_images - INFO - Image already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810449_Desert Mate_Wave.jpg
+2025-08-13 10:25:44,224 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Desert Mate, Wave)
+2025-08-13 10:25:45,230 - download_product_images - INFO - Processing product 20/21
+2025-08-13 10:25:45,231 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:45,231 - download_product_images - INFO - Found image URL using padded SKU 02810451 for Cairon T 6.0
+2025-08-13 10:25:45,232 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810451): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG50YmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWt6eG5sY25ydHl4cjB5bXhoeTJ0bmJnOXpjd3wzNDQ4MTN8NDgzNTQ2fDU4MjQ2MXx4bHxkaFBJTQ==
+2025-08-13 10:25:45,233 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:45,528 - download_product_images - INFO - Image for color 'Desert Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810449_Desert Mate_Wave.jpg
+2025-08-13 10:25:45,529 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Desert Mate, Wave)
+2025-08-13 10:25:46,534 - download_product_images - INFO - Processing product 21/21
+2025-08-13 10:25:46,536 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:25:46,536 - download_product_images - INFO - Found image URL using padded SKU 02810452 for Cairon T 6.0
+2025-08-13 10:25:46,537 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810452): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG50YmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWt6eG5sY25ydHl4cjB5bXhoeTJ0bmJnOXpjd3wzNDQ4MTN8NDgzNTQ3fDU4MjQ2MXx4bHxkaFBJTQ==
+2025-08-13 10:25:46,538 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:25:46,819 - download_product_images - INFO - Image for color 'Desert Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810449_Desert Mate_Wave.jpg
+2025-08-13 10:25:46,820 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Desert Mate, Wave)
+2025-08-13 10:25:47,825 - download_product_images - INFO - No failed items to report
+2025-08-13 10:25:47,826 - download_product_images - INFO - Image download process completed!
+2025-08-13 10:25:47,826 - download_product_images - INFO - Total products processed: 21
+2025-08-13 10:25:47,827 - download_product_images - INFO - Successful downloads: 21
+2025-08-13 10:25:47,827 - download_product_images - INFO - Failed downloads: 0
+2025-08-13 10:25:47,827 - download_product_images - INFO - Items without images: 0
+2025-08-13 10:25:47,828 - download_product_images - INFO - No failed items to report!
+2025-08-13 10:25:47,840 - download_product_images - INFO - Creating ZIP archive with 164 images...
+2025-08-13 10:25:49,419 - download_product_images - INFO - ZIP archive created successfully: conway_product_images_20250813_102547.zip (90.12 MB)
+2025-08-13 10:25:49,420 - download_product_images - INFO - Images ZIP archive created: conway_product_images_20250813_102547.zip
+2025-08-13 10:25:49,420 - new_products_processor - INFO - Image download completed successfully: conway_product_images_20250813_102547.zip
+2025-08-13 10:25:49,420 - new_products_processor - INFO - Uploading images ZIP to Dropbox: /stock-update/conway_product_images.zip
+2025-08-13 10:25:49,420 - dropbox_handler - INFO - Uploading file to Dropbox: conway_product_images_20250813_102547.zip (90.1 MB)
+2025-08-13 10:25:49,421 - dropbox - INFO - Request to files/upload_session/start
+2025-08-13 10:25:51,140 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:25:51,688 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:25:52,451 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:25:53,920 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:25:54,905 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:25:56,519 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:25:57,254 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:25:58,285 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:25:59,865 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:01,058 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:01,870 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:02,731 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:04,332 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:05,690 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:07,265 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:08,242 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:09,733 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:10,885 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:12,519 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:13,714 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:15,286 - dropbox - INFO - Request to files/upload_session/append_v2
+2025-08-13 10:26:16,468 - dropbox - INFO - Request to files/upload_session/finish
+2025-08-13 10:26:18,433 - dropbox_handler - INFO - Successfully uploaded file to Dropbox: /stock-update/conway_product_images.zip
+2025-08-13 10:26:18,434 - dropbox_handler - INFO - File ID: id:RxB2kJutMEAAAAAAAACirQ
+2025-08-13 10:26:18,434 - dropbox - INFO - Request to files/get_metadata
+2025-08-13 10:26:18,735 - dropbox - INFO - Request to sharing/list_shared_links
+2025-08-13 10:26:19,174 - dropbox - INFO - Request to sharing/create_shared_link_with_settings
+2025-08-13 10:26:20,188 - dropbox_handler - INFO - Created new shareable link for: /stock-update/conway_product_images.zip
+2025-08-13 10:26:20,189 - new_products_processor - INFO - Images uploaded successfully to Dropbox. Download link generated: https://www.dropbox.com/scl/fi/f862edut3qfduxysyef8l/conway_product_images.zip?rlkey=5gugc45oqoevd346t5wf18zg7&dl=0
+2025-08-13 10:26:20,190 - new_products_processor - INFO - Enhanced new products processing completed successfully
+2025-08-13 10:26:20,191 - new_products_processor - INFO -   - Holded import file: [FILENAME_REDACTED]
+2025-08-13 10:26:20,191 - new_products_processor - INFO -   - Images download link: https://www.dropbox.com/scl/fi/f862edut3qfduxysyef8l/conway_product_images.zip?rlkey=5gugc45oqoevd346t5wf18zg7&dl=0
+2025-08-13 10:26:20,191 - new_products_processor - INFO -   - Products scheduled for deletion: 0
+2025-08-13 10:26:20,191 - new_products_processor - INFO -   - Data integrity issues: 5
+2025-08-13 10:26:20,195 - __main__ - INFO - Prepared Holded import file for email attachment: [FILENAME_REDACTED]
+2025-08-13 10:26:20,195 - __main__ - INFO - New products processing completed successfully with CSV attachment and Dropbox images link
+2025-08-13 10:26:20,195 - __main__ - INFO - Step 3: Sending notification email...
+2025-08-13 10:26:20,196 - email_notifier - INFO - Text format - Processing product: SKU='2897015', name='Cairon T 5.0', has_name=True
+2025-08-13 10:26:20,196 - email_notifier - INFO - Text format - Using product name: 'Cairon T 5.0'
+2025-08-13 10:26:20,197 - email_notifier - INFO - Adding 1 attachments to email
+2025-08-13 10:26:20,199 - email_notifier - INFO - Added attachment: Conway Products [FILENAME_REDACTED] ([FILENAME_REDACTED])
+2025-08-13 10:26:20,199 - email_notifier - INFO - Conectando al servidor SMTP: [SMTP_SERVER_REDACTED]
+2025-08-13 10:26:20,937 - email_notifier - INFO - Email enviado exitosamente
+2025-08-13 10:26:20,976 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
+2025-08-13 10:26:20,976 - __main__ - INFO - Notification email sent successfully
+2025-08-13 10:26:20,976 - __main__ - INFO - Step 4: Cleaning up temporary files...
+2025-08-13 10:26:20,977 - __main__ - INFO - Step 4.5: Cleaning up new products temporary files...
+2025-08-13 10:26:20,977 - new_products_processor - INFO - Cleaned up: [FILENAME_REDACTED]
+2025-08-13 10:26:20,978 - new_products_processor - INFO - Cleaned up: [FILENAME_REDACTED]
+2025-08-13 10:26:20,978 - new_products_processor - INFO - New products cleanup completed: 2 files/directories removed
+2025-08-13 10:26:20,978 - __main__ - INFO - ============================================================
+2025-08-13 10:26:20,978 - __main__ - INFO - INVENTORY UPDATE AUTOMATION COMPLETED
+2025-08-13 10:26:20,978 - __main__ - INFO - ============================================================
+2025-08-13 10:28:50,480 - __main__ - INFO - ============================================================
+2025-08-13 10:28:50,480 - __main__ - INFO - STARTING INVENTORY UPDATE AUTOMATION
+2025-08-13 10:28:50,480 - __main__ - INFO - ============================================================
+2025-08-13 10:28:50,480 - __main__ - INFO - Step 1: Checking for Dropbox file updates...
+2025-08-13 10:28:50,775 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-13 10:28:50,778 - dropbox - INFO - Request to users/get_current_account
+2025-08-13 10:28:51,638 - dropbox - INFO - Request to users/get_current_account
+2025-08-13 10:28:52,342 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-08-13 10:28:52,343 - dropbox - INFO - Request to users/get_current_account
+2025-08-13 10:28:53,003 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-08-13 10:28:53,004 - dropbox - INFO - Request to files/list_folder
+2025-08-13 10:28:53,500 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: [FILENAME_REDACTED]
+2025-08-13 10:28:53,501 - dropbox_handler - INFO - Processing most recent stock file: [FILENAME_REDACTED]
+2025-08-13 10:28:53,503 - dropbox_handler - INFO - Downloading file: [FILENAME_REDACTED]
+2025-08-13 10:28:53,504 - dropbox - INFO - Request to files/download
+2025-08-13 10:28:54,333 - dropbox_handler - INFO - Downloaded file to: [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:28:54,335 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-08-13 10:28:54,338 - __main__ - INFO - Found 1 files from Dropbox
+2025-08-13 10:28:54,339 - __main__ - INFO - Total files to process: 1
+2025-08-13 10:28:54,339 - __main__ - INFO -   - [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:28:54,339 - __main__ - INFO - Step 2: Processing inventory updates with robust Conway category logic...
+2025-08-13 10:28:54,340 - inventory_updater - INFO - Retrieving Conway category variant SKUs from Holded...
+2025-08-13 10:28:54,340 - holded_api - INFO - Fetching Conway category products page 1
+2025-08-13 10:28:55,360 - holded_api - INFO - Fetching Conway category products page 2
+2025-08-13 10:28:55,438 - holded_api - INFO - Retrieved [COUNT_REDACTED] Conway category products
+2025-08-13 10:28:55,439 - holded_api - INFO - Found [COUNT_REDACTED] Conway variant SKUs
+2025-08-13 10:28:55,439 - inventory_updater - INFO - Found [COUNT_REDACTED] Conway variant SKUs in Holded
+2025-08-13 10:28:55,439 - inventory_updater - INFO - Processing stock file: [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:28:55,527 - file_processor - INFO - Successfully read Excel file
+2025-08-13 10:28:55,527 - file_processor - INFO - Column mappings - [COLUMN_MAPPING_REDACTED]: item, Name: name, Price: evp, Offer: None, Stock: stock qty
+2025-08-13 10:28:55,527 - file_processor - INFO - Conway columns - Size: size, Color: color, Wheel Size: ws
+2025-08-13 10:28:55,527 - file_processor - INFO - Available columns in file: ['my', 'item', 'name', 'form', 'ws', 'size', 'color', 'drive unit', 'family', 'evp', 'hek', 'sale price', 'stock qty', 'order']
+2025-08-13 10:28:55,537 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file
+2025-08-13 10:28:55,537 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file: [FILENAME_REDACTED]
+2025-08-13 10:28:55,537 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products out of 428
+2025-08-13 10:28:55,537 - inventory_updater - INFO - Extracted [COUNT_REDACTED] SKUs from file
+2025-08-13 10:28:55,537 - inventory_updater - INFO - [PRODUCT_COUNT_REDACTED] products in stock files
+2025-08-13 10:28:55,537 - inventory_updater - INFO - Scenario 1: Conway SKUs not in stock list - setting to 0
+2025-08-13 10:28:55,537 - inventory_updater - INFO - Scenario 2: SKUs in both Conway and stock list - checking for updates
+2025-08-13 10:28:55,538 - inventory_updater - INFO - Scenario 3: SKUs in stock list but not in Conway - analyzing for new products vs new variants
+2025-08-13 10:28:55,538 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2897015 - 'Cairon T 5.0' (Stock: 5)
+2025-08-13 10:28:55,538 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830008 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:28:55,538 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830016 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:28:55,538 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830024 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:28:55,538 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830032 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:28:55,539 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830057 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:28:55,539 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830065 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:28:55,539 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830073 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:28:55,539 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830446 - 'Cairon T 6.0' (Stock: 2)
+2025-08-13 10:28:55,539 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830495 - 'Cairon T 6.0' (Stock: 4)
+2025-08-13 10:28:55,539 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810279 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,539 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810280 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,540 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810282 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,540 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810283 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,540 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810284 - 'Cairon T 6.0' (Stock: 4)
+2025-08-13 10:28:55,540 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810285 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,540 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810286 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,540 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810287 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,541 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810449 - 'Cairon T 6.0' (Stock: 7)
+2025-08-13 10:28:55,541 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810451 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,541 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810452 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,541 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810998 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:28:55,541 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811000 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:28:55,541 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811001 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,542 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811002 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,542 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811003 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:28:55,542 - inventory_updater - INFO - SCENARIO SUMMARY:
+2025-08-13 10:28:55,542 - inventory_updater - INFO -   Conway SKUs reset to 0: [COUNT_REDACTED]
+2025-08-13 10:28:55,542 - inventory_updater - INFO -   Stock updates applied: [COUNT_REDACTED]
+2025-08-13 10:28:55,542 - inventory_updater - INFO -   Non-Conway SKUs skipped: [COUNT_REDACTED]
+2025-08-13 10:28:55,542 - inventory_updater - INFO -   Completely new products: 26
+2025-08-13 10:28:55,542 - inventory_updater - INFO -   New variants of existing products: 0
+2025-08-13 10:28:55,542 - inventory_updater - INFO -   Total new products tracked: 26
+2025-08-13 10:28:55,542 - inventory_updater - INFO -   Errors encountered: 0
+2025-08-13 10:28:55,543 - __main__ - INFO - UPDATE SUMMARY:
+2025-08-13 10:28:55,543 - __main__ - INFO -   Files processed: 1
+2025-08-13 10:28:55,543 - __main__ - INFO -   Products processed: 428
+2025-08-13 10:28:55,543 - __main__ - INFO -   Stock updates: 0
+2025-08-13 10:28:55,543 - __main__ - INFO -   Stock resets (Conway SKUs not in files): 0
+2025-08-13 10:28:55,543 - __main__ - INFO -   SKUs skipped (not Conway): 26
+2025-08-13 10:28:55,543 - __main__ - INFO -   New products for manual creation: 26
+2025-08-13 10:28:55,544 - __main__ - INFO -   Errors: 0
+2025-08-13 10:28:55,544 - __main__ - INFO - Step 2.5: Processing 26 new products for import files and images...
+2025-08-13 10:28:55,819 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-13 10:28:55,821 - new_products_processor - INFO - Processing 26 total products:
+2025-08-13 10:28:55,822 - new_products_processor - INFO -   - Completely new products: 26
+2025-08-13 10:28:55,822 - new_products_processor - INFO -   - New variants of existing products: 0
+2025-08-13 10:28:55,828 - new_products_processor - INFO - Created temporary stock CSV with 26 products using real Conway data: [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:28:55,828 - new_products_processor - INFO - Sample product data - SKU: 2897015, Size: S, Color: red metallic / black metallic, WS: 28
+2025-08-13 10:28:55,829 - new_products_processor - INFO - Saved stock file as: [FILENAME_REDACTED]
+2025-08-13 10:28:55,830 - new_products_processor - INFO - Running transform_products to generate Holded import file...
+2025-08-13 10:28:55,914 - new_products_processor - INFO - Transform products completed successfully: [FILENAME_REDACTED]
+2025-08-13 10:28:55,915 - new_products_processor - WARNING - Data integrity issue: 5 products missing from output CSV
+2025-08-13 10:28:55,916 - new_products_processor - INFO - Transform products integrity check: 21/26 products (80.8% success rate)
+2025-08-13 10:28:55,916 - new_products_processor - INFO - Step 5: No products scheduled for deletion
+2025-08-13 10:28:55,916 - new_products_processor - INFO - Running download_product_images to download product images...
+2025-08-13 10:28:55,961 - download_product_images - INFO - Successfully loaded 4422 image URLs from [FILENAME_REDACTED]
+2025-08-13 10:28:55,961 - download_product_images - INFO - Sample SKUs from info CSV: ['02879351', '02879369', '02879377', '02879385', '02892776']
+2025-08-13 10:28:55,961 - download_product_images - INFO - Initialized downloader with images directory: product_images
+2025-08-13 10:28:55,961 - download_product_images - INFO - Loaded 4422 image URLs from [FILENAME_REDACTED]
+2025-08-13 10:28:55,961 - download_product_images - INFO - Starting image download process for all products
+2025-08-13 10:28:55,962 - download_product_images - INFO - Successfully loaded CSV with 21 products
+2025-08-13 10:28:55,962 - download_product_images - INFO - Sample SKUs from products CSV: ['2897015', '2830008', '2830016', '2830024', '2830032']
+2025-08-13 10:28:55,962 - download_product_images - INFO - Processing product 1/21
+2025-08-13 10:28:55,962 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:28:55,962 - download_product_images - INFO - Found image URL using padded SKU 02897015 for Cairon T 5.0
+2025-08-13 10:28:55,962 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2897015): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3Rjd21qbmZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpeXh6aXpvdGkxfDI5OTYwN3w0MzY4MjJ8NzE5MTczfHhsfGRoUElN
+2025-08-13 10:28:55,962 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:28:56,645 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2897015_Rojo Metálico _ Negro Metálico_Diamante.jpg
+2025-08-13 10:28:56,646 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Rojo Metálico / Negro Metálico, Diamante)
+2025-08-13 10:28:57,647 - download_product_images - INFO - Processing product 2/21
+2025-08-13 10:28:57,648 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:28:57,648 - download_product_images - INFO - Found image URL using padded SKU 02830008 for Cairon T 5.0
+2025-08-13 10:28:57,649 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830008): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMTl8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:28:57,650 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:28:57,908 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:28:57,908 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:28:58,911 - download_product_images - INFO - Processing product 3/21
+2025-08-13 10:28:58,911 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:28:58,911 - download_product_images - INFO - Found image URL using padded SKU 02830016 for Cairon T 5.0
+2025-08-13 10:28:58,911 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830016): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMjB8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:28:58,912 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:28:59,254 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:28:59,255 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:29:00,257 - download_product_images - INFO - Processing product 4/21
+2025-08-13 10:29:00,258 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:00,259 - download_product_images - INFO - Found image URL using padded SKU 02830024 for Cairon T 5.0
+2025-08-13 10:29:00,259 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830024): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMjF8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:29:00,260 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:29:00,539 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:29:00,539 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:29:01,545 - download_product_images - INFO - Processing product 5/21
+2025-08-13 10:29:01,545 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:01,546 - download_product_images - INFO - Found image URL using padded SKU 02830032 for Cairon T 5.0
+2025-08-13 10:29:01,547 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830032): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMjJ8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:29:01,548 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:29:01,889 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:29:01,890 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:29:02,895 - download_product_images - INFO - Processing product 6/21
+2025-08-13 10:29:02,896 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:02,897 - download_product_images - INFO - Found image URL using padded SKU 02830057 for Cairon T 5.0
+2025-08-13 10:29:02,897 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830057): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd25semZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk1fDMyNTIxMnw0NDYwMjR8Njg2MjI3fHhsfGRoUElN
+2025-08-13 10:29:02,898 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:29:03,205 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830057_Shadowgris Metálico Mate _ Bronze Metálico_Trapecio.jpg
+2025-08-13 10:29:03,205 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Trapecio)
+2025-08-13 10:29:04,210 - download_product_images - INFO - Processing product 7/21
+2025-08-13 10:29:04,211 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:04,212 - download_product_images - INFO - Found image URL using padded SKU 02830065 for Cairon T 5.0
+2025-08-13 10:29:04,212 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830065): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd25semZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk1fDMyNTIxMnw0NDYwMjV8Njg2MjI3fHhsfGRoUElN
+2025-08-13 10:29:04,213 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:29:04,539 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Trapecio' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830057_Shadowgris Metálico Mate _ Bronze Metálico_Trapecio.jpg
+2025-08-13 10:29:04,541 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Trapecio)
+2025-08-13 10:29:05,545 - download_product_images - INFO - Processing product 8/21
+2025-08-13 10:29:05,545 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:05,546 - download_product_images - INFO - Found image URL using padded SKU 02830073 for Cairon T 5.0
+2025-08-13 10:29:05,546 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830073): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd25semZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk1fDMyNTIxMnw0NDYwMjZ8Njg2MjI3fHhsfGRoUElN
+2025-08-13 10:29:05,546 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:29:05,847 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Trapecio' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830057_Shadowgris Metálico Mate _ Bronze Metálico_Trapecio.jpg
+2025-08-13 10:29:05,848 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Trapecio)
+2025-08-13 10:29:06,854 - download_product_images - INFO - Processing product 9/21
+2025-08-13 10:29:06,854 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:06,854 - download_product_images - INFO - Found image URL using padded SKU 02830446 for Cairon T 6.0
+2025-08-13 10:29:06,854 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2830446): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphem9kaGZxMDlvdjBmengwbmhheGp2Ymw5dXh6emZtZjh5bWRpenh6aTNudGF4fDMyNzk4Mnw0NDcwMzV8NzE1NzA2fHhsfGRoUElN
+2025-08-13 10:29:06,855 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:07,187 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2830446_Negro Metálico _ Dorado Metálico Mate_Trapecio.jpg
+2025-08-13 10:29:07,187 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Metálico / Dorado Metálico Mate, Trapecio)
+2025-08-13 10:29:08,192 - download_product_images - INFO - Processing product 10/21
+2025-08-13 10:29:08,192 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:08,193 - download_product_images - INFO - Found image URL using padded SKU 02830495 for Cairon T 6.0
+2025-08-13 10:29:08,193 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2830495): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphMG92emZxMDlvdjBmengwbmhheGp2Ymw5dXh6emZtZjh5bWRpenh6aTRvZHF4fDMzMTY3MXw0NDcwMzd8Njk2NjcxfHhsfGRoUElN
+2025-08-13 10:29:08,193 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:08,502 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2830495_Negro Metálico _ Dorado Metálico Mate_Wave.jpg
+2025-08-13 10:29:08,503 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Metálico / Dorado Metálico Mate, Wave)
+2025-08-13 10:29:09,509 - download_product_images - INFO - Processing product 11/21
+2025-08-13 10:29:09,509 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:09,510 - download_product_images - INFO - Found image URL using padded SKU 02810279 for Cairon T 6.0
+2025-08-13 10:29:09,511 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810279): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1MzZ8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:29:09,511 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:09,806 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:29:09,807 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:29:10,812 - download_product_images - INFO - Processing product 12/21
+2025-08-13 10:29:10,812 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:10,812 - download_product_images - INFO - Found image URL using padded SKU 02810280 for Cairon T 6.0
+2025-08-13 10:29:10,812 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810280): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1Mzd8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:29:10,812 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:11,090 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:29:11,091 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:29:12,097 - download_product_images - INFO - Processing product 13/21
+2025-08-13 10:29:12,097 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:12,097 - download_product_images - INFO - Found image URL using padded SKU 02810282 for Cairon T 6.0
+2025-08-13 10:29:12,097 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810282): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1Mzh8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:29:12,097 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:12,375 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:29:12,376 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:29:13,379 - download_product_images - INFO - Processing product 14/21
+2025-08-13 10:29:13,379 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:13,380 - download_product_images - INFO - Found image URL using padded SKU 02810283 for Cairon T 6.0
+2025-08-13 10:29:13,380 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810283): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1Mzl8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:29:13,381 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:13,654 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:29:13,655 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:29:14,660 - download_product_images - INFO - Processing product 15/21
+2025-08-13 10:29:14,661 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:14,662 - download_product_images - INFO - Found image URL using padded SKU 02810284 for Cairon T 6.0
+2025-08-13 10:29:14,662 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810284): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0MHw1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:29:14,663 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:14,950 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:29:14,950 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:29:15,952 - download_product_images - INFO - Processing product 16/21
+2025-08-13 10:29:15,953 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:15,954 - download_product_images - INFO - Found image URL using padded SKU 02810285 for Cairon T 6.0
+2025-08-13 10:29:15,954 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810285): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0MXw1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:29:15,956 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:16,224 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:29:16,224 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:29:17,228 - download_product_images - INFO - Processing product 17/21
+2025-08-13 10:29:17,229 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:17,229 - download_product_images - INFO - Found image URL using padded SKU 02810286 for Cairon T 6.0
+2025-08-13 10:29:17,229 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810286): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0Mnw1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:29:17,230 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:17,500 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:29:17,501 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:29:18,504 - download_product_images - INFO - Processing product 18/21
+2025-08-13 10:29:18,504 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:18,505 - download_product_images - INFO - Found image URL using padded SKU 02810287 for Cairon T 6.0
+2025-08-13 10:29:18,506 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810287): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0M3w1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:29:18,506 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:18,809 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:29:18,810 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:29:19,811 - download_product_images - INFO - Processing product 19/21
+2025-08-13 10:29:19,812 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:19,813 - download_product_images - INFO - Found image URL using padded SKU 02810449 for Cairon T 6.0
+2025-08-13 10:29:19,813 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810449): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG50YmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWt6eG5sY25ydHl4cjB5bXhoeTJ0bmJnOXpjd3wzNDQ4MTN8NDgzNTQ0fDU4MjQ2MXx4bHxkaFBJTQ==
+2025-08-13 10:29:19,814 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:20,098 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810449_Desert Mate_Wave.jpg
+2025-08-13 10:29:20,099 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Desert Mate, Wave)
+2025-08-13 10:29:21,102 - download_product_images - INFO - Processing product 20/21
+2025-08-13 10:29:21,103 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:21,104 - download_product_images - INFO - Found image URL using padded SKU 02810451 for Cairon T 6.0
+2025-08-13 10:29:21,104 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810451): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG50YmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWt6eG5sY25ydHl4cjB5bXhoeTJ0bmJnOXpjd3wzNDQ4MTN8NDgzNTQ2fDU4MjQ2MXx4bHxkaFBJTQ==
+2025-08-13 10:29:21,105 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:21,386 - download_product_images - INFO - Image for color 'Desert Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810449_Desert Mate_Wave.jpg
+2025-08-13 10:29:21,387 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Desert Mate, Wave)
+2025-08-13 10:29:22,392 - download_product_images - INFO - Processing product 21/21
+2025-08-13 10:29:22,393 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:29:22,394 - download_product_images - INFO - Found image URL using padded SKU 02810452 for Cairon T 6.0
+2025-08-13 10:29:22,394 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810452): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG50YmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWt6eG5sY25ydHl4cjB5bXhoeTJ0bmJnOXpjd3wzNDQ4MTN8NDgzNTQ3fDU4MjQ2MXx4bHxkaFBJTQ==
+2025-08-13 10:29:22,395 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:29:22,672 - download_product_images - INFO - Image for color 'Desert Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810449_Desert Mate_Wave.jpg
+2025-08-13 10:29:22,673 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Desert Mate, Wave)
+2025-08-13 10:29:23,678 - download_product_images - INFO - No failed items to report
+2025-08-13 10:29:23,679 - download_product_images - INFO - Image download process completed!
+2025-08-13 10:29:23,680 - download_product_images - INFO - Total products processed: 21
+2025-08-13 10:29:23,680 - download_product_images - INFO - Successful downloads: 21
+2025-08-13 10:29:23,680 - download_product_images - INFO - Failed downloads: 0
+2025-08-13 10:29:23,681 - download_product_images - INFO - Items without images: 0
+2025-08-13 10:29:23,681 - download_product_images - INFO - No failed items to report!
+2025-08-13 10:29:23,682 - download_product_images - INFO - Creating ZIP archive with 8 images...
+2025-08-13 10:29:23,785 - download_product_images - INFO - ZIP archive created successfully: conway_product_images_20250813_102923.zip (4.7 MB)
+2025-08-13 10:29:23,785 - download_product_images - INFO - Images ZIP archive created: conway_product_images_20250813_102923.zip
+2025-08-13 10:29:23,786 - new_products_processor - INFO - Image download completed successfully: conway_product_images_20250813_102923.zip
+2025-08-13 10:29:23,786 - new_products_processor - INFO - Uploading images ZIP to Dropbox: /stock-update/conway_product_images.zip
+2025-08-13 10:29:23,786 - dropbox_handler - INFO - Uploading file to Dropbox: conway_product_images_20250813_102923.zip (4.7 MB)
+2025-08-13 10:29:23,786 - dropbox - INFO - Request to files/upload_session/start
+2025-08-13 10:29:24,658 - dropbox - INFO - Request to files/upload_session/finish
+2025-08-13 10:29:26,328 - dropbox_handler - INFO - Successfully uploaded file to Dropbox: /stock-update/conway_product_images.zip
+2025-08-13 10:29:26,329 - dropbox_handler - INFO - File ID: id:RxB2kJutMEAAAAAAAACirg
+2025-08-13 10:29:26,329 - dropbox - INFO - Request to files/get_metadata
+2025-08-13 10:29:26,618 - dropbox - INFO - Request to sharing/list_shared_links
+2025-08-13 10:29:27,005 - dropbox - INFO - Request to sharing/create_shared_link_with_settings
+2025-08-13 10:29:28,193 - dropbox - INFO - HttpError status_code=500: Retrying in 0.6 seconds
+2025-08-13 10:29:28,817 - dropbox - INFO - Request to sharing/create_shared_link_with_settings
+2025-08-13 10:29:29,173 - dropbox_handler - ERROR - Dropbox API error creating shareable link: ApiError('b4353fcc27494b38a37db2f1a1c4ad36', CreateSharedLinkWithSettingsError('path', LookupError('not_found', None)))
+2025-08-13 10:29:29,174 - new_products_processor - ERROR - Failed to generate download link for uploaded images
+2025-08-13 10:29:29,175 - new_products_processor - INFO - Enhanced new products processing completed successfully
+2025-08-13 10:29:29,175 - new_products_processor - INFO -   - Holded import file: [FILENAME_REDACTED]
+2025-08-13 10:29:29,175 - new_products_processor - INFO -   - Images download link: UPLOADED_NO_LINK
+2025-08-13 10:29:29,176 - new_products_processor - INFO -   - Products scheduled for deletion: 0
+2025-08-13 10:29:29,176 - new_products_processor - INFO -   - Data integrity issues: 5
+2025-08-13 10:29:29,180 - __main__ - INFO - Prepared Holded import file for email attachment: [FILENAME_REDACTED]
+2025-08-13 10:29:29,180 - __main__ - INFO - New products processing completed successfully with CSV attachment and Dropbox images link
+2025-08-13 10:29:29,181 - __main__ - INFO - Step 3: Sending notification email...
+2025-08-13 10:29:29,181 - email_notifier - INFO - Text format - Processing product: SKU='2897015', name='Cairon T 5.0', has_name=True
+2025-08-13 10:29:29,182 - email_notifier - INFO - Text format - Using product name: 'Cairon T 5.0'
+2025-08-13 10:29:29,183 - email_notifier - INFO - Adding 1 attachments to email
+2025-08-13 10:29:29,184 - email_notifier - INFO - Added attachment: Conway Products [FILENAME_REDACTED] ([FILENAME_REDACTED])
+2025-08-13 10:29:29,184 - email_notifier - INFO - Conectando al servidor SMTP: [SMTP_SERVER_REDACTED]
+2025-08-13 10:29:29,904 - email_notifier - INFO - Email enviado exitosamente
+2025-08-13 10:29:29,944 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
+2025-08-13 10:29:29,945 - __main__ - INFO - Notification email sent successfully
+2025-08-13 10:29:29,945 - __main__ - INFO - Step 4: Cleaning up temporary files...
+2025-08-13 10:29:29,946 - __main__ - INFO - Step 4.5: Cleaning up new products temporary files...
+2025-08-13 10:29:29,947 - new_products_processor - INFO - Cleaned up: [FILENAME_REDACTED]
+2025-08-13 10:29:29,947 - new_products_processor - INFO - Cleaned up: [FILENAME_REDACTED]
+2025-08-13 10:29:29,948 - new_products_processor - INFO - New products cleanup completed: 2 files/directories removed
+2025-08-13 10:29:29,948 - __main__ - INFO - ============================================================
+2025-08-13 10:29:29,948 - __main__ - INFO - INVENTORY UPDATE AUTOMATION COMPLETED
+2025-08-13 10:29:29,948 - __main__ - INFO - ============================================================
+2025-08-13 10:39:46,536 - __main__ - INFO - ============================================================
+2025-08-13 10:39:46,536 - __main__ - INFO - STARTING INVENTORY UPDATE AUTOMATION
+2025-08-13 10:39:46,536 - __main__ - INFO - ============================================================
+2025-08-13 10:39:46,536 - __main__ - INFO - Step 1: Checking for Dropbox file updates...
+2025-08-13 10:39:46,816 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-13 10:39:46,819 - dropbox - INFO - Request to users/get_current_account
+2025-08-13 10:39:47,514 - dropbox - INFO - Request to users/get_current_account
+2025-08-13 10:39:48,160 - dropbox_handler - INFO - Connected to Dropbox account: [EMAIL_REDACTED]
+2025-08-13 10:39:48,161 - dropbox - INFO - Request to users/get_current_account
+2025-08-13 10:39:48,936 - dropbox_handler - INFO - Checking Dropbox folder: [FOLDER_PATH_REDACTED]
+2025-08-13 10:39:48,937 - dropbox - INFO - Request to files/list_folder
+2025-08-13 10:39:49,466 - dropbox_handler - INFO - Found [COUNT_REDACTED] stock files, most recent: [FILENAME_REDACTED]
+2025-08-13 10:39:49,467 - dropbox_handler - INFO - Processing most recent stock file: [FILENAME_REDACTED]
+2025-08-13 10:39:49,468 - dropbox_handler - INFO - Downloading file: [FILENAME_REDACTED]
+2025-08-13 10:39:49,469 - dropbox - INFO - Request to files/download
+2025-08-13 10:39:50,440 - dropbox_handler - INFO - Downloaded file to: [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:39:50,441 - dropbox_handler - INFO - Downloaded [COUNT_REDACTED] stock file(s)
+2025-08-13 10:39:50,444 - __main__ - INFO - Found 1 files from Dropbox
+2025-08-13 10:39:50,445 - __main__ - INFO - Total files to process: 1
+2025-08-13 10:39:50,445 - __main__ - INFO -   - [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:39:50,445 - __main__ - INFO - Step 2: Processing inventory updates with robust Conway category logic...
+2025-08-13 10:39:50,445 - inventory_updater - INFO - Retrieving Conway category variant SKUs from Holded...
+2025-08-13 10:39:50,446 - holded_api - INFO - Fetching Conway category products page 1
+2025-08-13 10:39:51,454 - holded_api - INFO - Fetching Conway category products page 2
+2025-08-13 10:39:51,532 - holded_api - INFO - Retrieved [COUNT_REDACTED] Conway category products
+2025-08-13 10:39:51,532 - holded_api - INFO - Found [COUNT_REDACTED] Conway variant SKUs
+2025-08-13 10:39:51,532 - inventory_updater - INFO - Found [COUNT_REDACTED] Conway variant SKUs in Holded
+2025-08-13 10:39:51,532 - inventory_updater - INFO - Processing stock file: [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:39:51,602 - file_processor - INFO - Successfully read Excel file
+2025-08-13 10:39:51,603 - file_processor - INFO - Column mappings - [COLUMN_MAPPING_REDACTED]: item, Name: name, Price: evp, Offer: None, Stock: stock qty
+2025-08-13 10:39:51,603 - file_processor - INFO - Conway columns - Size: size, Color: color, Wheel Size: ws
+2025-08-13 10:39:51,603 - file_processor - INFO - Available columns in file: ['my', 'item', 'name', 'form', 'ws', 'size', 'color', 'drive unit', 'family', 'evp', 'hek', 'sale price', 'stock qty', 'order']
+2025-08-13 10:39:51,612 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file
+2025-08-13 10:39:51,612 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products from file: [FILENAME_REDACTED]
+2025-08-13 10:39:51,612 - file_processor - INFO - [PRODUCT_COUNT_REDACTED] products out of 428
+2025-08-13 10:39:51,612 - inventory_updater - INFO - Extracted [COUNT_REDACTED] SKUs from file
+2025-08-13 10:39:51,612 - inventory_updater - INFO - [PRODUCT_COUNT_REDACTED] products in stock files
+2025-08-13 10:39:51,613 - inventory_updater - INFO - Scenario 1: Conway SKUs not in stock list - setting to 0
+2025-08-13 10:39:51,613 - inventory_updater - INFO - Scenario 2: SKUs in both Conway and stock list - checking for updates
+2025-08-13 10:39:51,613 - inventory_updater - INFO - Scenario 3: SKUs in stock list but not in Conway - analyzing for new products vs new variants
+2025-08-13 10:39:51,613 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2897015 - 'Cairon T 5.0' (Stock: 5)
+2025-08-13 10:39:51,613 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830008 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:39:51,613 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830016 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:39:51,614 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830024 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:39:51,614 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830032 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:39:51,614 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830057 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:39:51,614 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830065 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:39:51,614 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830073 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:39:51,614 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830446 - 'Cairon T 6.0' (Stock: 2)
+2025-08-13 10:39:51,614 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2830495 - 'Cairon T 6.0' (Stock: 4)
+2025-08-13 10:39:51,615 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810279 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,615 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810280 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,615 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810282 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,615 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810283 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,615 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810284 - 'Cairon T 6.0' (Stock: 4)
+2025-08-13 10:39:51,615 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810285 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,616 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810286 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,616 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810287 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,616 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810449 - 'Cairon T 6.0' (Stock: 7)
+2025-08-13 10:39:51,616 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810451 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,616 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810452 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,616 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2810998 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:39:51,617 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811000 - 'Cairon T 5.0' (Stock: 10)
+2025-08-13 10:39:51,617 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811001 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,617 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811002 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,617 - inventory_updater - INFO - Detected COMPLETELY NEW PRODUCT: 2811003 - 'Cairon T 6.0' (Stock: 10)
+2025-08-13 10:39:51,617 - inventory_updater - INFO - SCENARIO SUMMARY:
+2025-08-13 10:39:51,617 - inventory_updater - INFO -   Conway SKUs reset to 0: [COUNT_REDACTED]
+2025-08-13 10:39:51,617 - inventory_updater - INFO -   Stock updates applied: [COUNT_REDACTED]
+2025-08-13 10:39:51,617 - inventory_updater - INFO -   Non-Conway SKUs skipped: [COUNT_REDACTED]
+2025-08-13 10:39:51,617 - inventory_updater - INFO -   Completely new products: 26
+2025-08-13 10:39:51,618 - inventory_updater - INFO -   New variants of existing products: 0
+2025-08-13 10:39:51,618 - inventory_updater - INFO -   Total new products tracked: 26
+2025-08-13 10:39:51,618 - inventory_updater - INFO -   Errors encountered: 0
+2025-08-13 10:39:51,618 - __main__ - INFO - UPDATE SUMMARY:
+2025-08-13 10:39:51,619 - __main__ - INFO -   Files processed: 1
+2025-08-13 10:39:51,619 - __main__ - INFO -   Products processed: 428
+2025-08-13 10:39:51,619 - __main__ - INFO -   Stock updates: 0
+2025-08-13 10:39:51,619 - __main__ - INFO -   Stock resets (Conway SKUs not in files): 0
+2025-08-13 10:39:51,619 - __main__ - INFO -   SKUs skipped (not Conway): 26
+2025-08-13 10:39:51,619 - __main__ - INFO -   New products for manual creation: 26
+2025-08-13 10:39:51,619 - __main__ - INFO -   Errors: 0
+2025-08-13 10:39:51,619 - __main__ - INFO - Step 2.5: Processing 26 new products for import files and images...
+2025-08-13 10:39:51,920 - dropbox_handler - INFO - Successfully refreshed Dropbox access token
+2025-08-13 10:39:51,923 - new_products_processor - INFO - Processing 26 total products:
+2025-08-13 10:39:51,923 - new_products_processor - INFO -   - Completely new products: 26
+2025-08-13 10:39:51,923 - new_products_processor - INFO -   - New variants of existing products: 0
+2025-08-13 10:39:51,929 - new_products_processor - INFO - Created temporary stock CSV with 26 products using real Conway data: [TEMP_FILE_PATH_REDACTED]
+2025-08-13 10:39:51,929 - new_products_processor - INFO - Sample product data - SKU: 2897015, Size: S, Color: red metallic / black metallic, WS: 28
+2025-08-13 10:39:51,931 - new_products_processor - INFO - Saved stock file as: [FILENAME_REDACTED]
+2025-08-13 10:39:51,934 - new_products_processor - INFO - Created minimal template file: Importar [FILENAME_REDACTED]
+2025-08-13 10:39:51,934 - new_products_processor - INFO - Running transform_products to generate Holded import file...
+2025-08-13 10:39:52,010 - new_products_processor - INFO - Transform products completed successfully: [FILENAME_REDACTED]
+2025-08-13 10:39:52,011 - new_products_processor - WARNING - Data integrity issue: 5 products missing from output CSV
+2025-08-13 10:39:52,012 - new_products_processor - INFO - Transform products integrity check: 21/26 products (80.8% success rate)
+2025-08-13 10:39:52,012 - new_products_processor - INFO - Step 5: No products scheduled for deletion
+2025-08-13 10:39:52,012 - new_products_processor - INFO - Running download_product_images to download product images...
+2025-08-13 10:39:52,057 - download_product_images - INFO - Successfully loaded 4422 image URLs from [FILENAME_REDACTED]
+2025-08-13 10:39:52,057 - download_product_images - INFO - Sample SKUs from info CSV: ['02879351', '02879369', '02879377', '02879385', '02892776']
+2025-08-13 10:39:52,057 - download_product_images - INFO - Initialized downloader with images directory: product_images
+2025-08-13 10:39:52,058 - download_product_images - INFO - Loaded 4422 image URLs from [FILENAME_REDACTED]
+2025-08-13 10:39:52,058 - download_product_images - INFO - Starting image download process for all products
+2025-08-13 10:39:52,058 - download_product_images - INFO - Successfully loaded CSV with 21 products
+2025-08-13 10:39:52,058 - download_product_images - INFO - Sample SKUs from products CSV: ['2897015', '2830008', '2830016', '2830024', '2830032']
+2025-08-13 10:39:52,058 - download_product_images - INFO - Processing product 1/21
+2025-08-13 10:39:52,058 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:39:52,058 - download_product_images - INFO - Found image URL using padded SKU 02897015 for Cairon T 5.0
+2025-08-13 10:39:52,058 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2897015): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0b3Rjd21qbmZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpeXh6aXpvdGkxfDI5OTYwN3w0MzY4MjJ8NzE5MTczfHhsfGRoUElN
+2025-08-13 10:39:52,059 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:39:52,527 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2897015_Rojo Metálico _ Negro Metálico_Diamante.jpg
+2025-08-13 10:39:52,528 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Rojo Metálico / Negro Metálico, Diamante)
+2025-08-13 10:39:53,534 - download_product_images - INFO - Processing product 2/21
+2025-08-13 10:39:53,534 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:39:53,535 - download_product_images - INFO - Found image URL using padded SKU 02830008 for Cairon T 5.0
+2025-08-13 10:39:53,536 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830008): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMTl8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:39:53,536 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:39:53,813 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:39:53,813 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:39:54,818 - download_product_images - INFO - Processing product 3/21
+2025-08-13 10:39:54,819 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:39:54,820 - download_product_images - INFO - Found image URL using padded SKU 02830016 for Cairon T 5.0
+2025-08-13 10:39:54,821 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830016): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMjB8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:39:54,822 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:39:55,104 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:39:55,105 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:39:56,109 - download_product_images - INFO - Processing product 4/21
+2025-08-13 10:39:56,109 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:39:56,110 - download_product_images - INFO - Found image URL using padded SKU 02830024 for Cairon T 5.0
+2025-08-13 10:39:56,110 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830024): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMjF8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:39:56,110 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:39:56,395 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:39:56,397 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:39:57,401 - download_product_images - INFO - Processing product 5/21
+2025-08-13 10:39:57,402 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:39:57,402 - download_product_images - INFO - Found image URL using padded SKU 02830032 for Cairon T 5.0
+2025-08-13 10:39:57,402 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830032): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd212emZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk0fDMyNTIwN3w0NDYwMjJ8Njg2NjEzfHhsfGRoUElN
+2025-08-13 10:39:57,403 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:39:57,662 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830008_Shadowgris Metálico Mate _ Bronze Metálico_Diamante.jpg
+2025-08-13 10:39:57,663 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Diamante)
+2025-08-13 10:39:58,668 - download_product_images - INFO - Processing product 6/21
+2025-08-13 10:39:58,669 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:39:58,670 - download_product_images - INFO - Found image URL using padded SKU 02830057 for Cairon T 5.0
+2025-08-13 10:39:58,670 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830057): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd25semZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk1fDMyNTIxMnw0NDYwMjR8Njg2MjI3fHhsfGRoUElN
+2025-08-13 10:39:58,671 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:39:58,945 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830057_Shadowgris Metálico Mate _ Bronze Metálico_Trapecio.jpg
+2025-08-13 10:39:58,945 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Trapecio)
+2025-08-13 10:39:59,950 - download_product_images - INFO - Processing product 7/21
+2025-08-13 10:39:59,951 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:39:59,952 - download_product_images - INFO - Found image URL using padded SKU 02830065 for Cairon T 5.0
+2025-08-13 10:39:59,952 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830065): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd25semZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk1fDMyNTIxMnw0NDYwMjV8Njg2MjI3fHhsfGRoUElN
+2025-08-13 10:39:59,953 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:40:00,235 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Trapecio' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830057_Shadowgris Metálico Mate _ Bronze Metálico_Trapecio.jpg
+2025-08-13 10:40:00,236 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Trapecio)
+2025-08-13 10:40:01,242 - download_product_images - INFO - Processing product 8/21
+2025-08-13 10:40:01,243 - download_product_images - INFO - Processing product: Cairon T 5.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:01,244 - download_product_images - INFO - Found image URL using padded SKU 02830073 for Cairon T 5.0
+2025-08-13 10:40:01,244 - download_product_images - INFO - Found image URL for Cairon T 5.0 (SKU: 2830073): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphd25semZxMDlvdjBmengwbmhheGp2Ymw5dXh6dmZtZjh5bWRpenh6aTRudHk1fDMyNTIxMnw0NDYwMjZ8Njg2MjI3fHhsfGRoUElN
+2025-08-13 10:40:01,245 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 5.0
+2025-08-13 10:40:01,540 - download_product_images - INFO - Image for color 'Shadowgris Metálico Mate / Bronze Metálico' and frame 'Trapecio' already exists: product_images[FOLDER_PATH_REDACTED]airon T 5.0/2830057_Shadowgris Metálico Mate _ Bronze Metálico_Trapecio.jpg
+2025-08-13 10:40:01,540 - download_product_images - INFO - Successfully processed image for Cairon T 5.0 (Shadowgris Metálico Mate / Bronze Metálico, Trapecio)
+2025-08-13 10:40:02,545 - download_product_images - INFO - Processing product 9/21
+2025-08-13 10:40:02,546 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:02,546 - download_product_images - INFO - Found image URL using padded SKU 02830446 for Cairon T 6.0
+2025-08-13 10:40:02,546 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2830446): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphem9kaGZxMDlvdjBmengwbmhheGp2Ymw5dXh6emZtZjh5bWRpenh6aTNudGF4fDMyNzk4Mnw0NDcwMzV8NzE1NzA2fHhsfGRoUElN
+2025-08-13 10:40:02,547 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:02,824 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2830446_Negro Metálico _ Dorado Metálico Mate_Trapecio.jpg
+2025-08-13 10:40:02,825 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Metálico / Dorado Metálico Mate, Trapecio)
+2025-08-13 10:40:03,830 - download_product_images - INFO - Processing product 10/21
+2025-08-13 10:40:03,830 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:03,831 - download_product_images - INFO - Found image URL using padded SKU 02830495 for Cairon T 6.0
+2025-08-13 10:40:03,831 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2830495): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXphMG92emZxMDlvdjBmengwbmhheGp2Ymw5dXh6emZtZjh5bWRpenh6aTRvZHF4fDMzMTY3MXw0NDcwMzd8Njk2NjcxfHhsfGRoUElN
+2025-08-13 10:40:03,831 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:04,105 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2830495_Negro Metálico _ Dorado Metálico Mate_Wave.jpg
+2025-08-13 10:40:04,105 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Metálico / Dorado Metálico Mate, Wave)
+2025-08-13 10:40:05,109 - download_product_images - INFO - Processing product 11/21
+2025-08-13 10:40:05,110 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:05,110 - download_product_images - INFO - Found image URL using padded SKU 02810279 for Cairon T 6.0
+2025-08-13 10:40:05,111 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810279): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1MzZ8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:40:05,112 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:05,361 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:40:05,362 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:40:06,367 - download_product_images - INFO - Processing product 12/21
+2025-08-13 10:40:06,368 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:06,369 - download_product_images - INFO - Found image URL using padded SKU 02810280 for Cairon T 6.0
+2025-08-13 10:40:06,369 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810280): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1Mzd8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:40:06,370 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:06,633 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:40:06,633 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:40:07,639 - download_product_images - INFO - Processing product 13/21
+2025-08-13 10:40:07,639 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:07,640 - download_product_images - INFO - Found image URL using padded SKU 02810282 for Cairon T 6.0
+2025-08-13 10:40:07,641 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810282): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1Mzh8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:40:07,642 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:07,926 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:40:07,927 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:40:08,932 - download_product_images - INFO - Processing product 14/21
+2025-08-13 10:40:08,933 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:08,933 - download_product_images - INFO - Found image URL using padded SKU 02810283 for Cairon T 6.0
+2025-08-13 10:40:08,934 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810283): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kYmZxMGZqdWs5b3gxcmZuamJmemdsaGJ3ZnVkZjlpYmdmamEyMWhkaHJpYmdmamEyZHNiM256fDM0NDgxMXw0ODM1Mzl8NTUzNDY0fHhsfGRoUElN
+2025-08-13 10:40:08,935 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:09,217 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Diamante' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810279_Negro Mate_Diamante.jpg
+2025-08-13 10:40:09,217 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Diamante)
+2025-08-13 10:40:10,223 - download_product_images - INFO - Processing product 15/21
+2025-08-13 10:40:10,224 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:10,224 - download_product_images - INFO - Found image URL using padded SKU 02810284 for Cairon T 6.0
+2025-08-13 10:40:10,225 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810284): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0MHw1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:40:10,225 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:10,516 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:40:10,517 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:40:11,518 - download_product_images - INFO - Processing product 16/21
+2025-08-13 10:40:11,518 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:11,518 - download_product_images - INFO - Found image URL using padded SKU 02810285 for Cairon T 6.0
+2025-08-13 10:40:11,518 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810285): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0MXw1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:40:11,518 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:11,795 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:40:11,796 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:40:12,801 - download_product_images - INFO - Processing product 17/21
+2025-08-13 10:40:12,802 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:12,802 - download_product_images - INFO - Found image URL using padded SKU 02810286 for Cairon T 6.0
+2025-08-13 10:40:12,803 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810286): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0Mnw1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:40:12,804 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:13,085 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:40:13,086 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:40:14,090 - download_product_images - INFO - Processing product 18/21
+2025-08-13 10:40:14,090 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:14,091 - download_product_images - INFO - Found image URL using padded SKU 02810287 for Cairon T 6.0
+2025-08-13 10:40:14,092 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810287): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRheW9kdmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWliZ2ZqYTIxaGRocmliZ2ZqYTJkc2Izbnp8MzQ0ODEyfDQ4MzU0M3w1NDE4MDZ8eGx8ZGhQSU0=
+2025-08-13 10:40:14,092 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:14,378 - download_product_images - INFO - Image for color 'Negro Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810284_Negro Mate_Wave.jpg
+2025-08-13 10:40:14,378 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Negro Mate, Wave)
+2025-08-13 10:40:15,384 - download_product_images - INFO - Processing product 19/21
+2025-08-13 10:40:15,385 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:15,385 - download_product_images - INFO - Found image URL using padded SKU 02810449 for Cairon T 6.0
+2025-08-13 10:40:15,386 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810449): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG50YmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWt6eG5sY25ydHl4cjB5bXhoeTJ0bmJnOXpjd3wzNDQ4MTN8NDgzNTQ0fDU4MjQ2MXx4bHxkaFBJTQ==
+2025-08-13 10:40:15,387 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:15,665 - download_product_images - INFO - Downloaded image: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810449_Desert Mate_Wave.jpg
+2025-08-13 10:40:15,665 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Desert Mate, Wave)
+2025-08-13 10:40:16,667 - download_product_images - INFO - Processing product 20/21
+2025-08-13 10:40:16,668 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:16,668 - download_product_images - INFO - Found image URL using padded SKU 02810451 for Cairon T 6.0
+2025-08-13 10:40:16,668 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810451): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG50YmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWt6eG5sY25ydHl4cjB5bXhoeTJ0bmJnOXpjd3wzNDQ4MTN8NDgzNTQ2fDU4MjQ2MXx4bHxkaFBJTQ==
+2025-08-13 10:40:16,668 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:17,059 - download_product_images - INFO - Image for color 'Desert Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810449_Desert Mate_Wave.jpg
+2025-08-13 10:40:17,060 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Desert Mate, Wave)
+2025-08-13 10:40:18,063 - download_product_images - INFO - Processing product 21/21
+2025-08-13 10:40:18,064 - download_product_images - INFO - Processing product: Cairon T 6.0 ([PRODUCT_DETAILS_REDACTED])
+2025-08-13 10:40:18,064 - download_product_images - INFO - Found image URL using padded SKU 02810452 for Cairon T 6.0
+2025-08-13 10:40:18,064 - download_product_images - INFO - Found image URL for Cairon T 6.0 (SKU: 2810452): http://veloconnect.eosweb.de/veloconnect/get_image.php?param=YXJ0aWtlbF94bC9tZGk0L3xtZGk0bXRhMG50YmZxMGZqdWs5b3gxcmZuamJmZDJmMnp2OWt6eG5sY25ydHl4cjB5bXhoeTJ0bmJnOXpjd3wzNDQ4MTN8NDgzNTQ3fDU4MjQ2MXx4bHxkaFBJTQ==
+2025-08-13 10:40:18,065 - download_product_images - INFO - Created/verified folder: product_images[FOLDER_PATH_REDACTED]airon T 6.0
+2025-08-13 10:40:18,350 - download_product_images - INFO - Image for color 'Desert Mate' and frame 'Wave' already exists: product_images[FOLDER_PATH_REDACTED]airon T 6.0/2810449_Desert Mate_Wave.jpg
+2025-08-13 10:40:18,351 - download_product_images - INFO - Successfully processed image for Cairon T 6.0 (Desert Mate, Wave)
+2025-08-13 10:40:19,353 - download_product_images - INFO - No failed items to report
+2025-08-13 10:40:19,354 - download_product_images - INFO - Image download process completed!
+2025-08-13 10:40:19,355 - download_product_images - INFO - Total products processed: 21
+2025-08-13 10:40:19,355 - download_product_images - INFO - Successful downloads: 21
+2025-08-13 10:40:19,355 - download_product_images - INFO - Failed downloads: 0
+2025-08-13 10:40:19,356 - download_product_images - INFO - Items without images: 0
+2025-08-13 10:40:19,356 - download_product_images - INFO - No failed items to report!
+2025-08-13 10:40:19,357 - download_product_images - INFO - Creating ZIP archive with 8 images...
+2025-08-13 10:40:19,462 - download_product_images - INFO - ZIP archive created successfully: conway_product_images_20250813_104019.zip (4.7 MB)
+2025-08-13 10:40:19,462 - download_product_images - INFO - Images ZIP archive created: conway_product_images_20250813_104019.zip
+2025-08-13 10:40:19,462 - new_products_processor - INFO - Image download completed successfully: conway_product_images_20250813_104019.zip
+2025-08-13 10:40:19,462 - new_products_processor - INFO - Uploading images ZIP to Dropbox: /stock-update/stock_conway_product_images.zip
+2025-08-13 10:40:19,462 - dropbox_handler - INFO - Uploading file to Dropbox: conway_product_images_20250813_104019.zip (4.7 MB)
+2025-08-13 10:40:19,463 - dropbox - INFO - Request to files/upload_session/start
+2025-08-13 10:40:21,027 - dropbox - INFO - Request to files/upload_session/finish
+2025-08-13 10:40:22,089 - dropbox_handler - INFO - Successfully uploaded file to Dropbox: /stock-update/stock_conway_product_images.zip
+2025-08-13 10:40:22,090 - dropbox_handler - INFO - File ID: id:RxB2kJutMEAAAAAAAACirw
+2025-08-13 10:40:22,090 - dropbox - INFO - Request to files/get_metadata
+2025-08-13 10:40:22,961 - dropbox - INFO - Request to sharing/list_shared_links
+2025-08-13 10:40:23,312 - dropbox - INFO - Request to sharing/create_shared_link_with_settings
+2025-08-13 10:40:24,404 - dropbox_handler - INFO - Created new shareable link for: /stock-update/stock_conway_product_images.zip
+2025-08-13 10:40:24,404 - new_products_processor - INFO - Images uploaded successfully to Dropbox. Download link generated: https://www.dropbox.com/scl/fi/o2qcfrut4iot87487kv5f/stock_conway_product_images.zip?rlkey=5xc4b60teceovblrbtmwjc45n&dl=0
+2025-08-13 10:40:24,405 - new_products_processor - INFO - Enhanced new products processing completed successfully
+2025-08-13 10:40:24,405 - new_products_processor - INFO -   - Holded import file: [FILENAME_REDACTED]
+2025-08-13 10:40:24,405 - new_products_processor - INFO -   - Images download link: https://www.dropbox.com/scl/fi/o2qcfrut4iot87487kv5f/stock_conway_product_images.zip?rlkey=5xc4b60teceovblrbtmwjc45n&dl=0
+2025-08-13 10:40:24,405 - new_products_processor - INFO -   - Products scheduled for deletion: 0
+2025-08-13 10:40:24,405 - new_products_processor - INFO -   - Data integrity issues: 5
+2025-08-13 10:40:24,407 - __main__ - INFO - Prepared Holded import file for email attachment: [FILENAME_REDACTED]
+2025-08-13 10:40:24,407 - __main__ - INFO - New products processing completed successfully with CSV attachment and Dropbox images link
+2025-08-13 10:40:24,407 - __main__ - INFO - Step 3: Sending notification email...
+2025-08-13 10:40:24,407 - email_notifier - INFO - Text format - Processing product: SKU='2897015', name='Cairon T 5.0', has_name=True
+2025-08-13 10:40:24,407 - email_notifier - INFO - Text format - Using product name: 'Cairon T 5.0'
+2025-08-13 10:40:24,408 - email_notifier - INFO - Adding 1 attachments to email
+2025-08-13 10:40:24,408 - email_notifier - INFO - Added attachment: Conway Products [FILENAME_REDACTED] ([FILENAME_REDACTED])
+2025-08-13 10:40:24,408 - email_notifier - INFO - Conectando al servidor SMTP: [SMTP_SERVER_REDACTED]
+2025-08-13 10:40:24,994 - email_notifier - INFO - Email enviado exitosamente
+2025-08-13 10:40:25,032 - email_notifier - INFO - Email de confirmación de actualización enviado exitosamente
+2025-08-13 10:40:25,032 - __main__ - INFO - Notification email sent successfully
+2025-08-13 10:40:25,033 - __main__ - INFO - Step 4: Cleaning up temporary files...
+2025-08-13 10:40:25,033 - __main__ - INFO - Step 4.5: Cleaning up new products temporary files...
+2025-08-13 10:40:25,034 - new_products_processor - INFO - Cleaned up: [FILENAME_REDACTED]
+2025-08-13 10:40:25,034 - new_products_processor - INFO - Cleaned up: [FILENAME_REDACTED]
+2025-08-13 10:40:25,034 - new_products_processor - INFO - New products cleanup completed: 2 files/directories removed
+2025-08-13 10:40:25,035 - __main__ - INFO - ============================================================
+2025-08-13 10:40:25,035 - __main__ - INFO - INVENTORY UPDATE AUTOMATION COMPLETED
+2025-08-13 10:40:25,035 - __main__ - INFO - ============================================================

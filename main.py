@@ -96,9 +96,8 @@ def main():
                         attachment_files['Conway Products Import.csv'] = new_products_result['holded_import']
                         logger.info(f"Prepared Holded import file for email attachment: {new_products_result['holded_import']}")
                     
-                    if new_products_result.get('images_zip'):
-                        attachment_files['Product Images.zip'] = new_products_result['images_zip']
-                        logger.info(f"Prepared images ZIP file for email attachment: {new_products_result['images_zip']}")
+                    # Images are now uploaded to Dropbox and shared via download link
+                    # No longer attach images ZIP to email
                     
                     # Merge enhanced new products data into update_results for email notification
                     if new_products_result.get('completely_new_products'):
@@ -113,8 +112,10 @@ def main():
                         update_results['data_integrity_issues'] = new_products_result['data_integrity_issues']
                     if new_products_result.get('processing_metadata'):
                         update_results['processing_metadata'] = new_products_result['processing_metadata']
+                    if new_products_result.get('images_download_link'):
+                        update_results['images_download_link'] = new_products_result['images_download_link']
                     
-                    logger.info(f"New products processing completed successfully with {len(attachment_files)} attachments")
+                    logger.info(f"New products processing completed successfully with CSV attachment and Dropbox images link")
                 else:
                     logger.warning("New products processing failed or returned no results")
                     
@@ -148,7 +149,7 @@ def main():
                     # Extract only file paths for cleanup
                     file_paths = {
                         'holded_import': new_products_result.get('holded_import'),
-                        'images_zip': new_products_result.get('images_zip'),
+                        # images_zip no longer used - images uploaded to Dropbox
                         'temp_stock_csv': new_products_result.get('temp_stock_csv')
                     }
                     cleanup_new_products_files(file_paths)
@@ -282,8 +283,7 @@ def run_dropbox_only():
                         attachment_files = {}
                         if new_products_result.get('holded_import'):
                             attachment_files['Conway Products Import.csv'] = new_products_result['holded_import']
-                        if new_products_result.get('images_zip'):
-                            attachment_files['Product Images.zip'] = new_products_result['images_zip']
+                        # Images are now uploaded to Dropbox - no email attachment needed
                 except Exception as e:
                     logger.error(f"Error processing new products: {e}")
             
@@ -297,7 +297,7 @@ def run_dropbox_only():
                         # Extract only file paths for cleanup
                         file_paths = {
                             'holded_import': new_products_result.get('holded_import'),
-                            'images_zip': new_products_result.get('images_zip'),
+                            # images_zip no longer used - images uploaded to Dropbox
                             'temp_stock_csv': new_products_result.get('temp_stock_csv')
                         }
                         cleanup_new_products_files(file_paths)
@@ -338,8 +338,7 @@ def process_local_file(file_path: str):
                     attachment_files = {}
                     if new_products_result.get('holded_import'):
                         attachment_files['Conway Products Import.csv'] = new_products_result['holded_import']
-                    if new_products_result.get('images_zip'):
-                        attachment_files['Product Images.zip'] = new_products_result['images_zip']
+                    # Images are now uploaded to Dropbox - no email attachment needed
             except Exception as e:
                 logger.error(f"Error processing new products: {e}")
         
@@ -352,7 +351,7 @@ def process_local_file(file_path: str):
                     # Extract only file paths for cleanup
                     file_paths = {
                         'holded_import': new_products_result.get('holded_import'),
-                        'images_zip': new_products_result.get('images_zip'),
+                        # images_zip no longer used - images uploaded to Dropbox
                         'temp_stock_csv': new_products_result.get('temp_stock_csv')
                     }
                     cleanup_new_products_files(file_paths)

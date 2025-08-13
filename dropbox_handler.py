@@ -366,6 +366,141 @@ class DropboxHandler:
             except Exception as e:
                 self.logger.warning(f"Could not delete temporary file {file_path}: {e}")
     
+    def upload_file(self, local_file_path: str, dropbox_file_path: str, overwrite: bool = True) -> bool:
+        """
+        Upload a file to Dropbox.
+        
+        Args:
+            local_file_path: Path to the local file to upload
+            dropbox_file_path: Target path in Dropbox (e.g., '/stock-update/conway_product_images.zip')
+            overwrite: Whether to overwrite existing file (default: True)
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            if not os.path.exists(local_file_path):
+                self.logger.error(f"Local file not found: {local_file_path}")
+                return False
+            
+            file_size = os.path.getsize(local_file_path)
+            self.logger.info(f"Uploading file to Dropbox: {local_file_path} ({file_size / (1024*1024):.1f} MB)")
+            
+            # Choose upload mode based on overwrite setting
+            mode = dropbox.files.WriteMode('overwrite') if overwrite else dropbox.files.WriteMode('add')
+            
+            # For large files (>150MB), use upload sessions
+            CHUNK_SIZE = 4 * 1024 * 1024  # 4MB chunks
+            
+            with open(local_file_path, 'rb') as file:
+                if file_size <= CHUNK_SIZE:
+                    # Small file - upload in one request
+                    file_data = file.read()
+                    result = self.dbx.files_upload(
+                        file_data,
+                        dropbox_file_path,
+                        mode=mode,
+                        autorename=False
+                    )
+                else:
+                    # Large file - use upload session
+                    upload_session_start_result = self.dbx.files_upload_session_start(
+                        file.read(CHUNK_SIZE)
+                    )
+                    cursor = dropbox.files.UploadSessionCursor(
+                        session_id=upload_session_start_result.session_id,
+                        offset=file.tell()
+                    )
+                    
+                    # Upload remaining chunks
+                    while file.tell() < file_size:
+                        if (file_size - file.tell()) <= CHUNK_SIZE:
+                            # Last chunk
+                            commit = dropbox.files.CommitInfo(
+                                path=dropbox_file_path,
+                                mode=mode,
+                                autorename=False
+                            )
+                            result = self.dbx.files_upload_session_finish(
+                                file.read(CHUNK_SIZE),
+                                cursor,
+                                commit
+                            )
+                        else:
+                            # Middle chunk
+                            self.dbx.files_upload_session_append_v2(
+                                file.read(CHUNK_SIZE),
+                                cursor
+                            )
+                            cursor.offset = file.tell()
+            
+            self.logger.info(f"Successfully uploaded file to Dropbox: {dropbox_file_path}")
+            self.logger.info(f"File ID: {result.id}")
+            return True
+            
+        except dropbox.exceptions.ApiError as e:
+            self.logger.error(f"Dropbox API error during upload: {e}")
+            return False
+        except Exception as e:
+            self.logger.error(f"Error uploading file to Dropbox: {e}")
+            return False
+    
+    def generate_shareable_link(self, dropbox_file_path: str) -> Optional[str]:
+        """
+        Generate a shareable download link for a Dropbox file.
+        
+        Args:
+            dropbox_file_path: Path to the file in Dropbox
+            
+        Returns:
+            Shareable download URL or None if failed
+        """
+        try:
+            # Check if file exists first
+            try:
+                self.dbx.files_get_metadata(dropbox_file_path)
+            except dropbox.exceptions.ApiError as e:
+                self.logger.error(f"File not found in Dropbox: {dropbox_file_path} - {e}")
+                return None
+            
+            # Try to get existing shared link first
+            try:
+                shared_links = self.dbx.sharing_list_shared_links(path=dropbox_file_path, direct_only=True)
+                if shared_links.links:
+                    link = shared_links.links[0].url
+                    self.logger.info(f"Using existing shareable link: {dropbox_file_path}")
+                    return link
+            except dropbox.exceptions.ApiError as e:
+                if "missing_scope" in str(e) or "TokenScopeError" in str(e):
+                    self.logger.error(f"Dropbox app missing 'sharing.read' scope. Please regenerate refresh token with proper permissions.")
+                    return None
+                # No existing link, create new one
+                pass
+            
+            # Create new shareable link
+            shared_link_metadata = self.dbx.sharing_create_shared_link_with_settings(
+                dropbox_file_path,
+                settings=dropbox.sharing.SharedLinkSettings(
+                    requested_visibility=dropbox.sharing.RequestedVisibility.public,
+                    audience=dropbox.sharing.LinkAudience.public,
+                    access=dropbox.sharing.RequestedLinkAccessLevel.viewer
+                )
+            )
+            
+            link = shared_link_metadata.url
+            self.logger.info(f"Created new shareable link for: {dropbox_file_path}")
+            return link
+            
+        except dropbox.exceptions.ApiError as e:
+            if "missing_scope" in str(e) or "TokenScopeError" in str(e):
+                self.logger.error(f"Dropbox app missing sharing permissions. Please regenerate refresh token with 'sharing.read' and 'sharing.write' scopes.")
+            else:
+                self.logger.error(f"Dropbox API error creating shareable link: {e}")
+            return None
+        except Exception as e:
+            self.logger.error(f"Error creating shareable link: {e}")
+            return None
+    
     def test_connection(self) -> bool:
         """
         Test the Dropbox connection.

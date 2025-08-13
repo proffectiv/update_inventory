@@ -21,6 +21,7 @@ from pathlib import Path
 import transform_products
 import download_product_images
 from holded_api import HoldedAPI
+from dropbox_handler import DropboxHandler
 
 
 class NewProductsProcessor:
@@ -39,6 +40,9 @@ class NewProductsProcessor:
         
         # Initialize Holded API for variant management
         self.holded_api = HoldedAPI()
+        
+        # Initialize Dropbox handler for image uploads
+        self.dropbox_handler = DropboxHandler()
         
         # Data integrity tracking
         self.data_integrity_issues = []
@@ -102,13 +106,13 @@ class NewProductsProcessor:
             else:
                 self.logger.info("Step 5: No products scheduled for deletion")
             
-            # Step 6: Run download_product_images.py to get product images
-            images_zip_file = self._run_download_images(holded_import_file)
-            # Note: images_zip_file can be None if no images found, this is acceptable
+            # Step 6: Run download_product_images.py and upload to Dropbox
+            images_download_link = self._run_download_images(holded_import_file)
+            # Note: images_download_link can be None if no images found, this is acceptable
             
             result = {
                 'holded_import': holded_import_file,
-                'images_zip': images_zip_file,
+                'images_download_link': images_download_link,
                 'temp_stock_csv': temp_stock_csv,
                 # Enhanced results for email notification
                 'completely_new_products': completely_new_products,
@@ -121,7 +125,7 @@ class NewProductsProcessor:
             
             self.logger.info(f"Enhanced new products processing completed successfully")
             self.logger.info(f"  - Holded import file: {holded_import_file}")
-            self.logger.info(f"  - Images ZIP file: {images_zip_file if images_zip_file else 'None (no images found)'}")
+            self.logger.info(f"  - Images download link: {images_download_link if images_download_link else 'None (no images found)'}")
             self.logger.info(f"  - Products scheduled for deletion: {len(self.products_for_deletion)}")
             self.logger.info(f"  - Data integrity issues: {len(self.data_integrity_issues)}")
             
@@ -249,13 +253,13 @@ class NewProductsProcessor:
     
     def _run_download_images(self, holded_import_csv: str) -> Optional[str]:
         """
-        Run the download_product_images.py script to download product images.
+        Run the download_product_images.py script and upload images to Dropbox.
         
         Args:
             holded_import_csv: Path to the Holded import CSV file
             
         Returns:
-            Path to generated images ZIP file or None if failed/no images
+            Dropbox download link for images ZIP file or None if failed/no images
         """
         try:
             self.logger.info("Running download_product_images to download product images...")
@@ -276,15 +280,36 @@ class NewProductsProcessor:
                 images_dir = downloader.images_dir
                 if images_dir.exists():
                     self.temp_files.append(str(images_dir))
-                    
+                
                 self.logger.info(f"Image download completed successfully: {zip_path}")
-                return zip_path
+                
+                # Upload to Dropbox and get download link
+                dropbox_path = "/stock-update/stock_conway_product_images.zip"
+                
+                self.logger.info(f"Uploading images ZIP to Dropbox: {dropbox_path}")
+                upload_success = self.dropbox_handler.upload_file(zip_path, dropbox_path, overwrite=True)
+                
+                if upload_success:
+                    # Generate shareable download link
+                    download_link = self.dropbox_handler.generate_shareable_link(dropbox_path)
+                    
+                    if download_link:
+                        self.logger.info(f"Images uploaded successfully to Dropbox. Download link generated: {download_link}")
+                        return download_link
+                    else:
+                        self.logger.error("Failed to generate download link for uploaded images")
+                        # Return a fallback message indicating upload success but no link
+                        return "UPLOADED_NO_LINK"
+                else:
+                    self.logger.error("Failed to upload images ZIP to Dropbox")
+                    return None
+                    
             else:
                 self.logger.warning("No images ZIP file was created (possibly no images found)")
                 return None
                 
         except Exception as e:
-            self.logger.error(f"Error running download_product_images: {e}")
+            self.logger.error(f"Error processing images for Dropbox upload: {e}")
             return None
     
     def _create_minimal_template(self):

@@ -382,24 +382,8 @@ class EmailNotifier:
             
             html += "</ul></div>"
         
-        # Add attachment notice if new products exist
-        if new_products:
-            html += """
-            <div class="details" style="margin-top: 30px; background-color: #e7f3ff; border: 2px solid #007bff; border-radius: 8px; padding: 20px;">
-                <h3 style="color: #007bff; margin-top: 0;">📎 Archivos Adjuntos Incluidos</h3>
-                <p style="margin-bottom: 15px;">Este email incluye archivos adjuntos para facilitar la creación manual de productos:</p>
-                <ul style="margin: 0; padding-left: 20px;">
-                    <li><strong>Conway Products Import.csv</strong> - Archivo listo para importar a Holded con formato correcto</li>
-                    <li><strong>Product Images.zip</strong> - Imágenes de productos descargadas y comprimidas (si están disponibles)</li>
-                </ul>
-                <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; border-radius: 5px; padding: 10px; margin-top: 15px;">
-                    <p style="margin: 0; color: #0c5460; font-size: 14px;">
-                        💡 <strong>Instrucciones:</strong> Descargue los archivos adjuntos y utilícelos para importar los productos nuevos a Holded. 
-                        El archivo CSV contiene toda la información necesaria con el formato correcto para importación directa.
-                    </p>
-                </div>
-            </div>
-            """
+        # Add attachment and download section for new products
+        html += self._create_attachments_and_downloads_section(update_results)
         
         html += """
             <div class="footer">
@@ -923,6 +907,92 @@ Por favor revise los logs del sistema y reintente la operación si es necesario.
                 </p>
             </div>
             """
+        
+        return html
+    
+    def _create_attachments_and_downloads_section(self, update_results: Dict[str, Any]) -> str:
+        """Create section for attachments and downloads based on available data."""
+        # Check if we have new products that require files
+        new_products = update_results.get('new_products_for_creation', [])
+        completely_new = update_results.get('completely_new_products', [])
+        new_variants = update_results.get('new_variants_of_existing_products', [])
+        images_download_link = update_results.get('images_download_link')
+        
+        
+        # Check if we have any new products to process
+        has_new_products = bool(new_products or completely_new or new_variants)
+        
+        if not has_new_products:
+            return ""
+        
+        html = """
+        <div class="details" style="margin-top: 30px; background-color: #e7f3ff; border: 2px solid #007bff; border-radius: 8px; padding: 20px;">
+            <h3 style="color: #007bff; margin-top: 0;">📎 Archivos para Importación</h3>
+            <p style="margin-bottom: 15px;">Los siguientes archivos están disponibles para facilitar la importación de productos:</p>
+            <ul style="margin: 0; padding-left: 20px;">
+                <li><strong>Conway Products Import.csv</strong> - Archivo adjunto listo para importar a Holded con formato correcto</li>
+        """
+        
+        # Handle images based on whether we have download link or attachment
+        if images_download_link and images_download_link != "UPLOADED_NO_LINK":
+            # Enhanced workflow with Dropbox link
+            html += f"""
+                <li><strong>Imágenes de Productos</strong> - Disponibles para descarga en Dropbox 
+                    <div style="margin-top: 8px;">
+                        <a href="{images_download_link}" 
+                           style="background-color: #007bff; color: white; padding: 8px 16px; 
+                                  text-decoration: none; border-radius: 4px; font-weight: bold;">
+                            📥 Descargar Imágenes ZIP
+                        </a>
+                    </div>
+                </li>
+            """
+        elif images_download_link == "UPLOADED_NO_LINK":
+            # Images uploaded but no shareable link available  
+            html += """
+                <li><strong>Imágenes de Productos</strong> - Subidas exitosamente a Dropbox
+                    <div style="margin-top: 8px; padding: 8px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px;">
+                        <span style="color: #856404; font-size: 14px;">
+                            ⚠️ Las imágenes están disponibles en Dropbox en la carpeta '/stock-update/conway_product_images.zip' 
+                            pero no se pudo generar un enlace de descarga público debido a configuración de permisos.
+                        </span>
+                    </div>
+                </li>
+            """
+        else:
+            # Legacy workflow or no images available
+            html += """
+                <li><strong>Product Images.zip</strong> - Imágenes de productos (si están disponibles como archivo adjunto)</li>
+            """
+        
+        html += """
+            </ul>
+            <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; border-radius: 5px; padding: 10px; margin-top: 15px;">
+                <p style="margin: 0; color: #0c5460; font-size: 14px;">
+                    💡 <strong>Instrucciones:</strong> 
+        """
+        
+        if images_download_link and images_download_link != "UPLOADED_NO_LINK":
+            html += """
+                    Descargue el archivo CSV adjunto e impórtelo a Holded. Para las imágenes, haga clic en el botón de descarga 
+                    para obtener el archivo ZIP desde Dropbox. Las imágenes se organizan por producto y están listas para usar.
+            """
+        elif images_download_link == "UPLOADED_NO_LINK":
+            html += """
+                    Descargue el archivo CSV adjunto e impórtelo a Holded. Las imágenes están disponibles en su cuenta de Dropbox 
+                    en la carpeta '/stock-update/conway_product_images.zip'. Acceda manualmente a Dropbox para descargar las imágenes.
+            """
+        else:
+            html += """
+                    Descargue los archivos adjuntos y utilícelos para importar los productos nuevos a Holded. 
+                    El archivo CSV contiene toda la información necesaria con el formato correcto para importación directa.
+            """
+        
+        html += """
+                </p>
+            </div>
+        </div>
+        """
         
         return html
     

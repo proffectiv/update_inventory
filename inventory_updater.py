@@ -625,6 +625,7 @@ class RobustInventoryUpdater:
                     
                     # Track product details for email notification using FileProcessor data
                     new_product_info = {
+                        'model_year': file_product.get('model_year', ''),
                         'sku': str(sku) if sku else 'N/A',
                         'stock': int(file_product.get('stock', 0)) if file_product.get('stock', 0) is not None else 0,
                         'price': file_product.get('price', 'N/A'),

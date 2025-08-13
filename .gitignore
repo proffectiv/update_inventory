@@ -213,3 +213,8 @@ stock_*
 
 # YoYo AI version control directory
 .yoyo/
+
+#Product images
+product_images/
+conway_product_images_*.zip
+Importar Productos.csv

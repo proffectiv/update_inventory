@@ -99,6 +99,13 @@ def translate_color(color: str) -> str:
     # Capitalize each word
     return ' '.join(word.capitalize() for word in result.split())
 
+def translate_model_year(model_year: str) -> str:
+    """Translate model year to Spanish."""
+    if pd.isna(model_year):
+        return ''
+    
+    return str(model_year)
+
 def get_wheel_size(ws: str) -> str:
     """Convert wheel size to proper format."""
     if pd.isna(ws) or ws == '':
@@ -234,10 +241,6 @@ def build_description(info_row: pd.Series, stock_row: pd.Series) -> str:
         frame_shape = categorize_frame_shape(info_row['Artikeltext'])
         description_parts.append(f'• Tipo de cuadro: {frame_shape}')
     
-    # Model year
-    if pd.notna(info_row.get('Modelljahr')):
-        description_parts.append(f'• Año del modelo: {info_row["Modelljahr"]}')
-    
     # Extract specific characteristics from Artikeltext (avoiding duplicates)
     if pd.notna(info_row.get('Artikeltext')):
         specific_chars = extract_specific_characteristics(info_row['Artikeltext'], stock_row)
@@ -351,6 +354,7 @@ def main():
             row_data['Medida de la Rueda'] = get_wheel_size(stock_row['ws'])
             row_data['Tipo de Bici'] = categorize_bike_type(info_row['Gruppentext'])
             row_data['Forma del Cuadro'] = categorize_frame_shape(info_row['Artikeltext'])
+            row_data['Año'] = translate_model_year(info_row['Modelljahr'])
             row_data['Sku Variante'] = str(stock_row['Item'])
             # Format EAN as integer without decimals
             ean_value = info_row['EAN']
@@ -482,6 +486,7 @@ def main_with_metadata():
             row_data['Medida de la Rueda'] = get_wheel_size(stock_row['ws'])
             row_data['Tipo de Bici'] = categorize_bike_type(info_row['Gruppentext'])
             row_data['Forma del Cuadro'] = categorize_frame_shape(info_row['Artikeltext'])
+            row_data['Año'] = translate_model_year(info_row['Modelljahr'])
             row_data['Sku Variante'] = str(stock_row['Item'])
             # Format EAN as integer without decimals
             ean_value = info_row['EAN']
@@ -494,23 +499,23 @@ def main_with_metadata():
                     row_data['Código barras Variante'] = str(ean_value)
             else:
                 row_data['Código barras Variante'] = ''
-            row_data['cat - Cycplus'] = ''  # Empty
-            row_data['cat - DARE'] = ''  # Empty
-            row_data['cat - Conway'] = categorize_conway(info_row['Gruppentext'])
-            row_data['cat - Kogel'] = ''  # Empty
-            row_data['Coste (Subtotal)'] = ''  # Empty
-            row_data['Precio compra (Subtotal)'] = ''  # Empty
-            row_data['Precio venta (Subtotal)'] = f"{clean_price(info_row['EVP']) / 1.21}"
-            row_data['Impuesto de venta'] = 21
-            row_data['Impuesto de compras'] = ''  # Empty
-            row_data['Stock'] = clean_stock(stock_row['Stock qty'])
-            row_data['Peso'] = ''  # Empty
-            row_data['Fecha de inicio dd/mm/yyyy'] = datetime.now().strftime('%d/%m/%Y')
-            row_data['Tags separados por -'] = ''  # Empty
-            row_data['Proveedor (Código)'] = '67a5b434b4aa620153059995'
-            row_data['Cuenta ventas'] = '700000000'
-            row_data['Cuenta compras'] = '600000000'
-            row_data['Almacén'] = '67a373952eadb1b9db02a9c4'
+                row_data['cat - Cycplus'] = ''  # Empty
+                row_data['cat - DARE'] = ''  # Empty
+                row_data['cat - Conway'] = categorize_conway(info_row['Gruppentext'])
+                row_data['cat - Kogel'] = ''  # Empty
+                row_data['Coste (Subtotal)'] = ''  # Empty
+                row_data['Precio compra (Subtotal)'] = ''  # Empty
+                row_data['Precio venta (Subtotal)'] = f"{clean_price(info_row['EVP']) / 1.21}"
+                row_data['Impuesto de venta'] = 21
+                row_data['Impuesto de compras'] = ''  # Empty
+                row_data['Stock'] = clean_stock(stock_row['Stock qty'])
+                row_data['Peso'] = ''  # Empty
+                row_data['Fecha de inicio dd/mm/yyyy'] = datetime.now().strftime('%d/%m/%Y')
+                row_data['Tags separados por -'] = ''  # Empty
+                row_data['Proveedor (Código)'] = '67a5b434b4aa620153059995'
+                row_data['Cuenta ventas'] = '700000000'
+                row_data['Cuenta compras'] = '600000000'
+                row_data['Almacén'] = '67a373952eadb1b9db02a9c4'
             
             output_data.append(row_data)
     
