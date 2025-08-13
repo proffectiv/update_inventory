@@ -294,9 +294,11 @@ Configure cron-job.org schedule (examples):
 
 ### Logs
 
-- Local runs: Check `inventory_update.log`
-- GitHub Actions: Download logs from Actions tab
-- cron-job.org: Check execution history in dashboard
+- Local runs: All logs are displayed in the console/terminal (no log files saved)
+- GitHub Actions: Download logs from Actions tab (console output only)
+- cron-job.org: Check execution history in dashboard (console output only)
+
+**Note**: Log files are no longer saved to disk. All logging output goes to the console for real-time monitoring.
 
 ## 🔒 Security and Privacy Features
 

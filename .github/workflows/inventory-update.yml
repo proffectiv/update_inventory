@@ -98,7 +98,6 @@ jobs:
         with:
           name: inventory-update-logs-${{ github.run_number }}
           path: |
-            inventory_update.log
             dropbox_state.json
           retention-days: 30
 
@@ -114,11 +113,7 @@ jobs:
           # Add timestamp to commit message
           TIMESTAMP=$(date -u '+%Y-%m-%d %H:%M:%S UTC')
 
-          # Stage log files if they exist
-          if [ -f "inventory_update.log" ]; then
-            git add inventory_update.log
-            echo "Added inventory_update.log"
-          fi
+          # Note: Log files are no longer saved to disk - logging is console-only
 
           if [ -f "dropbox_state.json" ]; then
             git add dropbox_state.json

@@ -218,14 +218,10 @@ def setup_sanitized_logging():
     console_handler = logging.StreamHandler()
     console_handler.setFormatter(formatter)
     
-    # Set up file handler with sanitizer
-    file_handler = logging.FileHandler('inventory_update.log')
-    file_handler.setFormatter(formatter)
-    
-    # Configure root logger
+    # Configure root logger (console only - no file logging)
     logging.basicConfig(
         level=logging.INFO,
-        handlers=[console_handler, file_handler]
+        handlers=[console_handler]
     )
 
 

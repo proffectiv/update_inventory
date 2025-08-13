@@ -16,12 +16,11 @@ import time
 import zipfile
 from datetime import datetime
 
-# Configure logging
+# Configure logging (console only - no file logging)
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('image_download.log'),
         logging.StreamHandler()
     ]
 )
@@ -40,8 +39,14 @@ class ConwayImageDownloader:
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         })
         
-        # Create images directory if it doesn't exist
-        self.images_dir.mkdir(exist_ok=True)
+        # Create fresh images directory (remove existing if present)
+        if self.images_dir.exists():
+            import shutil
+            shutil.rmtree(self.images_dir)
+            logger.info(f"Cleared existing images directory: {self.images_dir}")
+        
+        self.images_dir.mkdir(parents=True)
+        logger.info(f"Created fresh images directory: {self.images_dir}")
         
         # Track failed downloads for reporting
         self.failed_items = []

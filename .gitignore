@@ -208,6 +208,8 @@ __marimo__/
 # Sensitive files and logs
 test_file.csv
 .claude/
+.cursor/
+.vscode/
 
 stock_*
 

@@ -578,27 +578,116 @@ class NewProductsProcessor:
         return deletion_results
 
     def cleanup_temp_files(self):
-        """Clean up all temporary files created during processing."""
-        cleanup_count = 0
+        """
+        Clean up all temporary files created during processing.
+        Enhanced with pattern matching for specific folders.
+        """
+        import glob
+        import shutil
         
+        cleanup_count = 0
+        folders_removed = 0
+        files_removed = 0
+        
+        # First clean up tracked temp files
         for file_path in self.temp_files:
             try:
                 if os.path.exists(file_path):
                     if os.path.isdir(file_path):
                         # Remove directory and contents
-                        import shutil
                         shutil.rmtree(file_path)
-                        self.logger.info(f"Cleaned up directory: {file_path}")
+                        folders_removed += 1
+                        self.logger.info(f"🗂️ Cleaned up directory: {os.path.basename(file_path)}")
                     else:
                         # Remove file
                         os.remove(file_path)
-                        self.logger.info(f"Cleaned up file: {file_path}")
+                        files_removed += 1
+                        self.logger.info(f"📄 Cleaned up file: {os.path.basename(file_path)}")
                     cleanup_count += 1
                         
             except Exception as e:
-                self.logger.warning(f"Could not clean up {file_path}: {e}")
+                self.logger.warning(f"❌ Could not clean up {file_path}: {e}")
         
-        self.logger.info(f"Cleaned up {cleanup_count} temporary files/directories")
+        # Enhanced cleanup with pattern matching for folders that might not be tracked
+        current_dir = os.getcwd()
+        
+        # Look for folder patterns that might have been missed
+        additional_patterns = [
+            'product_images*',          # product_images, product_images_123, etc.
+            'conway_product_images*',   # conway_product_images, conway_product_images_456, etc.
+        ]
+        
+        for pattern in additional_patterns:
+            matching_items = glob.glob(os.path.join(current_dir, pattern))
+            for item_path in matching_items:
+                if os.path.exists(item_path) and item_path not in self.temp_files:
+                    try:
+                        if os.path.isdir(item_path):
+                            shutil.rmtree(item_path)
+                            folders_removed += 1
+                            cleanup_count += 1
+                            self.logger.info(f"🗂️ Found and removed untracked folder: {os.path.basename(item_path)}")
+                        elif os.path.isfile(item_path):
+                            os.remove(item_path)
+                            files_removed += 1
+                            cleanup_count += 1
+                            self.logger.info(f"📄 Found and removed untracked file: {os.path.basename(item_path)}")
+                    except Exception as e:
+                        self.logger.warning(f"❌ Could not clean up untracked item {item_path}: {e}")
+        
+        # Look for Importar Productos.csv files (case-insensitive)
+        import_patterns = [
+            'Importar Productos.csv',
+            'importar productos.csv',
+            'IMPORTAR PRODUCTOS.csv',
+            'Importar productos.csv',
+            'importar Productos.csv'
+        ]
+        
+        # Look for log files that should not be saved
+        log_patterns = [
+            'inventory_update.log',
+            'image_download.log',
+            '*.log'  # Any log files
+        ]
+        
+        for pattern in import_patterns:
+            matching_files = glob.glob(os.path.join(current_dir, pattern))
+            for file_path in matching_files:
+                if os.path.exists(file_path) and file_path not in self.temp_files:
+                    try:
+                        os.remove(file_path)
+                        files_removed += 1
+                        cleanup_count += 1
+                        self.logger.info(f"📄 Found and removed import file: {os.path.basename(file_path)}")
+                    except Exception as e:
+                        self.logger.warning(f"❌ Could not clean up import file {file_path}: {e}")
+        
+        # Look for and remove log files
+        for pattern in log_patterns:
+            if '*' in pattern:
+                # Use glob for pattern matching
+                matching_files = glob.glob(os.path.join(current_dir, pattern))
+            else:
+                # Direct file check
+                file_path = os.path.join(current_dir, pattern)
+                matching_files = [file_path] if os.path.exists(file_path) else []
+                
+            for file_path in matching_files:
+                if os.path.exists(file_path) and file_path not in self.temp_files:
+                    try:
+                        os.remove(file_path)
+                        files_removed += 1
+                        cleanup_count += 1
+                        self.logger.info(f"🗑️  Removed log file: {os.path.basename(file_path)}")
+                    except Exception as e:
+                        self.logger.warning(f"❌ Could not clean up log file {file_path}: {e}")
+        
+        self.logger.info(f"✅ Enhanced cleanup completed:")
+        self.logger.info(f"   - Total items processed: {cleanup_count}")
+        self.logger.info(f"   - Folders removed: {folders_removed}")
+        self.logger.info(f"   - Files removed: {files_removed}")
+        
         self.temp_files.clear()
 
 
@@ -631,44 +720,113 @@ def process_new_products_workflow(new_products_data: List[Dict[str, Any]]) -> Op
 def cleanup_new_products_files(file_paths: Dict[str, str]):
     """
     Clean up new products files after email is sent.
+    Enhanced to handle pattern matching for specific folders and files.
     
     Args:
         file_paths: Dictionary with file paths from process_new_products_workflow
     """
+    import glob
+    import shutil
+    import re
+    
     logger = logging.getLogger(__name__)
     
     files_to_cleanup = []
+    
+    # Add all file paths from processing results to cleanup list
     if file_paths:
-        # Add all file paths to cleanup list
         for path in file_paths.values():
             if path and os.path.exists(path):
                 files_to_cleanup.append(path)
     
-    # Also cleanup common temp files
-    common_temp_files = [
-        'stock_Stocklist_CONWAY.csv',
-        'conway_products_holded_import.csv',
-        'Importar Productos.csv'
-        'product_images'
+    # Enhanced cleanup with pattern matching for specific folders and files
+    current_dir = os.getcwd()
+    
+    # 1. Find and add folders with patterns: product_images* and conway_product_images*
+    folder_patterns = [
+        'product_images*',        # Matches product_images, product_images_123, etc.
+        'conway_product_images*'  # Matches conway_product_images, conway_product_images_456, etc.
     ]
     
-    for file_path in common_temp_files:
-        if os.path.exists(file_path):
-            files_to_cleanup.append(file_path)
+    for pattern in folder_patterns:
+        matching_items = glob.glob(os.path.join(current_dir, pattern))
+        for item in matching_items:
+            if os.path.exists(item):
+                files_to_cleanup.append(item)
+                logger.info(f"Found folder matching pattern '{pattern}': {os.path.basename(item)}")
     
-    # Cleanup files
-    cleanup_count = 0
-    for file_path in files_to_cleanup:
-        try:
+    # 2. Find files with pattern: Importar Productos.csv (case-insensitive)
+    # Use glob with different case variations
+    import_file_patterns = [
+        'Importar Productos.csv',
+        'importar productos.csv', 
+        'IMPORTAR PRODUCTOS.csv',
+        'Importar productos.csv',
+        'importar Productos.csv'
+    ]
+    
+    for pattern in import_file_patterns:
+        matching_files = glob.glob(os.path.join(current_dir, pattern))
+        for file_path in matching_files:
             if os.path.exists(file_path):
-                if os.path.isdir(file_path):
-                    import shutil
-                    shutil.rmtree(file_path)
-                else:
-                    os.remove(file_path)
-                cleanup_count += 1
-                logger.info(f"Cleaned up: {file_path}")
-        except Exception as e:
-            logger.warning(f"Could not clean up {file_path}: {e}")
+                files_to_cleanup.append(file_path)
+                logger.info(f"Found import file: {os.path.basename(file_path)}")
     
-    logger.info(f"New products cleanup completed: {cleanup_count} files/directories removed")
+    # 3. Also cleanup other common temp files and log files
+    other_temp_files = [
+        'stock_Stocklist_CONWAY.csv',
+        'conway_products_holded_import.csv',
+        'stock_stocklist_conway.xlsx',  # Sometimes Excel files remain
+        'temp_stock_conway_*.csv',       # Temporary stock files with timestamps
+        'inventory_update.log',          # Log files that should not persist
+        'image_download.log',            # Image download log files
+        '*.log',                         # Any other log files
+    ]
+    
+    for file_pattern in other_temp_files:
+        if '*' in file_pattern:
+            # Use glob for pattern matching
+            matching_files = glob.glob(os.path.join(current_dir, file_pattern))
+            for file_path in matching_files:
+                if os.path.exists(file_path):
+                    files_to_cleanup.append(file_path)
+        else:
+            # Direct file check
+            file_path = os.path.join(current_dir, file_pattern)
+            if os.path.exists(file_path):
+                files_to_cleanup.append(file_path)
+    
+    # Remove duplicates from cleanup list
+    files_to_cleanup = list(set(files_to_cleanup))
+    
+    # Execute cleanup
+    cleanup_count = 0
+    folders_removed = 0
+    files_removed = 0
+    
+    logger.info(f"Starting enhanced cleanup of {len(files_to_cleanup)} items...")
+    
+    for item_path in files_to_cleanup:
+        try:
+            if os.path.exists(item_path):
+                if os.path.isdir(item_path):
+                    # Remove directory and all contents
+                    shutil.rmtree(item_path)
+                    folders_removed += 1
+                    logger.info(f"🗂️  Removed folder: {os.path.basename(item_path)}")
+                else:
+                    # Remove file
+                    os.remove(item_path)
+                    files_removed += 1
+                    logger.info(f"📄 Removed file: {os.path.basename(item_path)}")
+                cleanup_count += 1
+        except Exception as e:
+            logger.warning(f"❌ Could not clean up {item_path}: {e}")
+    
+    logger.info(f"✅ Enhanced cleanup completed:")
+    logger.info(f"   - Total items processed: {cleanup_count}")
+    logger.info(f"   - Folders removed: {folders_removed}")  
+    logger.info(f"   - Files removed: {files_removed}")
+    
+    if cleanup_count == 0:
+        logger.info("   - No temporary files found to clean up")
