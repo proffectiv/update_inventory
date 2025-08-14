@@ -319,7 +319,7 @@ class NewProductsProcessor:
             template_columns = [
                 'SKU', 'Nombre', 'Descripción', 'Código de barras', 'Código de fábrica',
                 'Talla', 'Color', 'Medida de la Rueda', 'Tipo de Bici', 'Forma del Cuadro',
-                'Sku Variante', 'Código barras Variante', 'cat - Cycplus', 'cat - DARE',
+                'Año', 'Sku Variante', 'Código barras Variante', 'cat - Cycplus', 'cat - DARE',
                 'cat - Conway', 'cat - Kogel', 'Coste (Subtotal)', 'Precio compra (Subtotal)',
                 'Precio venta (Subtotal)', 'Impuesto de venta', 'Impuesto de compras',
                 'Stock', 'Peso', 'Fecha de inicio dd/mm/yyyy', 'Tags separados por -',
@@ -394,7 +394,7 @@ class NewProductsProcessor:
                                     color = field_value
                                 elif 'rueda' in field_name or 'wheel' in field_name:
                                     ws = field_value
-                        
+
                         existing_as_new_format = {
                             'sku': existing_variant.get('_variant_sku', ''),
                             'stock': existing_variant.get('stock', 0),
@@ -406,7 +406,8 @@ class NewProductsProcessor:
                             'color': color,
                             'ws': ws,
                             'is_new_variant': False,  # Mark as existing
-                            '_from_holded': True  # Special flag
+                            '_from_holded': True,  # Special flag
+                            
                         }
                         
                         consolidated_data.append(existing_as_new_format)

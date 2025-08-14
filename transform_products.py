@@ -8,6 +8,9 @@ import pandas as pd
 import re
 from datetime import datetime
 from typing import Dict, Any, Optional
+import logging
+
+logger = logging.getLogger(__name__)
 
 def clean_price(price_str: str) -> float:
     """Clean and convert price string to float."""
@@ -367,6 +370,7 @@ def main():
                     row_data['Código barras Variante'] = str(ean_value)
             else:
                 row_data['Código barras Variante'] = ''
+            # Fill remaining template columns (these should always be assigned)
             row_data['cat - Cycplus'] = ''  # Empty
             row_data['cat - DARE'] = ''  # Empty
             row_data['cat - Conway'] = categorize_conway(info_row['Gruppentext'])
@@ -499,23 +503,25 @@ def main_with_metadata():
                     row_data['Código barras Variante'] = str(ean_value)
             else:
                 row_data['Código barras Variante'] = ''
-                row_data['cat - Cycplus'] = ''  # Empty
-                row_data['cat - DARE'] = ''  # Empty
-                row_data['cat - Conway'] = categorize_conway(info_row['Gruppentext'])
-                row_data['cat - Kogel'] = ''  # Empty
-                row_data['Coste (Subtotal)'] = ''  # Empty
-                row_data['Precio compra (Subtotal)'] = ''  # Empty
-                row_data['Precio venta (Subtotal)'] = f"{clean_price(info_row['EVP']) / 1.21}"
-                row_data['Impuesto de venta'] = 21
-                row_data['Impuesto de compras'] = ''  # Empty
-                row_data['Stock'] = clean_stock(stock_row['Stock qty'])
-                row_data['Peso'] = ''  # Empty
-                row_data['Fecha de inicio dd/mm/yyyy'] = datetime.now().strftime('%d/%m/%Y')
-                row_data['Tags separados por -'] = ''  # Empty
-                row_data['Proveedor (Código)'] = '67a5b434b4aa620153059995'
-                row_data['Cuenta ventas'] = '700000000'
-                row_data['Cuenta compras'] = '600000000'
-                row_data['Almacén'] = '67a373952eadb1b9db02a9c4'
+            
+            # Fill remaining template columns (these should always be assigned)
+            row_data['cat - Cycplus'] = ''  # Empty
+            row_data['cat - DARE'] = ''  # Empty
+            row_data['cat - Conway'] = categorize_conway(info_row['Gruppentext'])
+            row_data['cat - Kogel'] = ''  # Empty
+            row_data['Coste (Subtotal)'] = ''  # Empty
+            row_data['Precio compra (Subtotal)'] = ''  # Empty
+            row_data['Precio venta (Subtotal)'] = f"{clean_price(info_row['EVP']) / 1.21}"
+            row_data['Impuesto de venta'] = 21
+            row_data['Impuesto de compras'] = ''  # Empty
+            row_data['Stock'] = clean_stock(stock_row['Stock qty'])
+            row_data['Peso'] = ''  # Empty
+            row_data['Fecha de inicio dd/mm/yyyy'] = datetime.now().strftime('%d/%m/%Y')
+            row_data['Tags separados por -'] = ''  # Empty
+            row_data['Proveedor (Código)'] = '67a5b434b4aa620153059995'
+            row_data['Cuenta ventas'] = '700000000'
+            row_data['Cuenta compras'] = '600000000'
+            row_data['Almacén'] = '67a373952eadb1b9db02a9c4'
             
             output_data.append(row_data)
     
